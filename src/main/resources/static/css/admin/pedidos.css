@@ -1,0 +1,197 @@
+
+
+/* ---- TABLA DE ENTREGAS ---- */
+.busqueda{
+  width: 300px;
+}
+.filtros button{
+  font-size: 12px;
+}
+.table {
+  background:transparent;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px; /* separa las filas entre sí */
+}
+
+.table thead th {
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+  color: #0c2286;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+
+.table tbody tr {
+  background-color: #ffffff;
+  font-family: 'Aleo';
+  font-size: 14px;
+  border: 1px solid #fbfbfb;
+  border-radius: 10px;
+  transition: 0.2s ease-in-out;
+}
+
+.table tbody tr:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+}
+/* Este truco da bordes redondeados sólo en los extremos */
+.table tbody tr td:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.table tbody tr td:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.table tbody td {
+  border: none;
+  padding: 15px 12px;
+  vertical-align: middle;
+  background: #ffffff;
+}
+
+/* ---- TAGS DE ESTADO ---- */
+.tag {
+  display: inline-block;
+  font-family: 'Aleo';
+;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+
+}
+.codDelivery{
+  font-family: 'Aleo';
+  font-size: 13px;
+}
+
+.tienda {
+  border: 1px solid #306af1;
+  color: #306af1;
+  background: #eaf1ff;
+}
+
+.delivery {
+  border: 1px solid #c97cff;
+  color: #7d00c3;
+  background: #f5eaff;
+}
+
+.pendiente {
+  border: 1px solid #f05050;
+  color: #b50000;
+  background: #ffe8e8;
+}
+
+.ruta {
+  border: 1px solid #f0d050;
+  color: #7c6500;
+  background: #fff7d1;
+}
+
+.entregado {
+  border: 1px solid #65d35b;
+  color: #0e7400;
+  background: #e8ffe7;
+}
+
+/* ---- PANEL DERECHO ---- */
+.delivery-panel {
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.delivery-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.delivery-card + .delivery-card {
+  margin-top: 12px;
+}
+
+/* ---- BUSCADOR ---- */
+.search-box input {
+  width: 260px;
+}
+
+/* ---- BOTONES ---- */
+button.btn {
+  font-weight: 600;
+}
+
+/* ---- RESPONSIVO ---- */
+@media (max-width: 992px) {
+  .main-content {
+    margin-left: 0;
+  }
+  .search-box input {
+    width: 100%;
+  }
+}
+
+/* Contenedor general */
+.filtros-bar {
+  padding: 10px 0;
+}
+
+/* Contenedor del select */
+.custom-select {
+  position: relative;
+  width: 180px;
+}
+
+/* Eliminar flecha nativa (método universal) */
+.filtro-select {
+  width: 100%;
+  border: 1px solid #d0d0d0;
+  background-color: #fff;
+  font-size: 14px;
+  padding-right: 32px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  /* 🔹 Elimina flechas nativas en todos los navegadores */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none !important;
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
+/* Quitar la flecha en Internet Explorer */
+.filtro-select::-ms-expand {
+  display: none;
+}
+
+/* Ícono personalizado */
+.custom-select i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #333;
+  font-size: 0.9rem;
+  transition: transform 0.2s ease;
+}
+
+/* Hover y focus */
+.filtro-select:hover,
+.filtro-select:focus {
+  border-color: #000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Animación al abrir */
+.filtro-select:focus + i {
+  transform: translateY(-50%) rotate(180deg);
+}

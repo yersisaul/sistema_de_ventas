@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <footer th:fragment="footer" class="main-footer bg-dark text-white pt-3 pb-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-12 footer-col">
+                    <h5 class="footer-title text-uppercase fw-bold mb-4">UBICACION</h5>
+                    <p class="footer-text">
+                        <span class="material-symbols-outlined footer-icon">location_on</span>
+                        Multicentro - Santa Clara - Ate
+                    </p>
+                    <p class="footer-text">
+                        TIENDAS K19, 373
+                    </p>
+                    <a th:href="@{https://maps.app.goo.gl/TchCwu3QBTMD8LQY8}" target="_blank" class="btn btn-outline-light mt-3 boton">
+                        VER EN GOOGLE MAPS
+                    </a>       
+                </div>
+                <div class="col-md-4 col-sm-12 footer-col">
+                    <h5 class="footer-title text-uppercase fw-bold mb-4">CONTACTO</h5>
+                    <p class="footer-text">
+                        <span class="material-symbols-outlined footer-icon">phone</span>
+                        +51912321878
+                    </p>
+                    <p class="footer-text">
+                        <span class="material-symbols-outlined footer-icon">mail</span>
+                        MamboClothing@gmail.com
+                    </p>
+                </div>
+                <div class="col-md-4 col-sm-12 footer-col text-end">
+                    <h1 class="footer-brand display-5 fw-bold text-white mb-3">MAMBO</h1>
+                    <div class="social-icons">
+                        <a href="#" target="_blank" class="text-white mx-2 social-link">
+                            <img th:src="@{/Img/instagram.png}" alt="Instagram" class="social-icon-img">
+                        </a>             
+                        <a href="#" target="_blank" class="text-white mx-2 social-link">
+                            <img th:src="@{/Img/facebook.png}" alt="Facebook" class="social-icon-img">
+                        </a>
+                        <a href="#" target="_blank" class="text-white mx-2 social-link">
+                            <img th:src="@{/Img/whatsapp.png}" alt="WhatsApp" class="social-icon-img">
+                        </a>
+                    </div>
+                </div>
+                <div class="container text-center">
+                    <p class="mb-0">© 2024 Mambo Clothing. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

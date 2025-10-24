@@ -1,0 +1,47 @@
+<div th:fragment="navbar">
+  <nav class="sidebar d-flex flex-column align-items-center py-4">
+    <div class="logo mb-4">M.</div>
+
+    <a th:href="@{/admin/dashboard}"
+       th:classappend="${activePage == 'dashboard'} ? 'active' : ''"
+       class="nav-item"
+       data-title="Dashboard">
+       <i class="bi bi-grid"></i>
+    </a>
+
+    <a th:href="@{/admin/clientes}"
+       th:classappend="${activePage == 'clientes'} ? 'active' : ''"
+       class="nav-item"
+       data-title="Clientes">
+       <i class="bi bi-person"></i>
+    </a>
+
+    <a th:href="@{/admin/pedidos}"
+       th:classappend="${activePage == 'pedidos'} ? 'active' : ''"
+       class="nav-item"
+       data-title="Pedidos">
+       <i class="bi bi-truck"></i>
+    </a>
+
+    <a th:href="@{/admin/usuarios}"
+       th:classappend="${activePage == 'usuarios'} ? 'active' : ''"
+       class="nav-item"
+       data-title="Usuarios">
+       <i class="bi bi-people"></i>
+    </a>
+
+    <a th:href="@{/admin/inventario}"
+       th:classappend="${activePage == 'inventario'} ? 'active' : ''"
+       class="nav-item"
+       data-title="Productos">
+       <i class="bi bi-box"></i>
+    </a>
+
+    <div class="logout-icon mt-auto d-flex">
+      <a th:href="@{/logout}"
+         data-title="Salir">
+         <i class="bi bi-box-arrow-right"></i>
+      </a>
+    </div>
+  </nav>
+</div>

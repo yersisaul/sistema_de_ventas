@@ -1,0 +1,53 @@
+.contactanos-section {
+    padding-top: 120px !important; 
+    background-color: var(--bg-dark-color) !important;
+}
+
+.contactanos-title {
+    color: var(--text-white-color);
+}
+
+.underline-divisor {
+    width: 60px;
+    height: 3px;
+    background-color: var(--accent-color);
+}
+
+.contactanos-info {
+    font-size: 1.25rem;
+}
+.contactanos-info .text-warning {
+    color: var(--accent-color) !important; 
+    text-decoration: underline;
+}
+.custom-form-input {
+    background-color: #333333 !important;
+    border: none !important;
+    color: var(--text-white-color) !important;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: none !important;
+}
+
+.custom-form-input::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.custom-send-btn {
+    background-color: var(--text-white-color) !important;
+    color: var(--bg-dark-color) !important;
+    border: 2px solid var(--text-white-color) !important;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.custom-send-btn:hover {
+    background-color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--bg-dark-color) !important;
+}
+textarea.custom-form-input {
+    resize: vertical;
+}

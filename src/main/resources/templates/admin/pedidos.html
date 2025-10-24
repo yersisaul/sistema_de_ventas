@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entregas - MAMBO</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" th:href="@{/css/admin/pedidos.css}" />
+    <link rel="stylesheet" th:href="@{/css/admin/navbar.css}" />
+  </head>
+
+  <body>
+    <!-- 🔹 NAVBAR LATERAL -->
+    <div th:replace="admin/fragments/navbar :: navbar"></div>
+
+    <!-- 🔹 CONTENIDO PRINCIPAL -->
+    <main class="main-content p-4">
+      <div class="container-fluid">
+        <!-- 🔸 Título y barra de búsqueda -->
+        <div
+          class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2"
+        >
+          <div>
+            <h4 style="font-weight: 800">ENTREGAS DE MAMBO</h4>
+            <p class="text-secondary mb-0">Gestiona la cantidad de productos</p>
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <div class="busqueda search-box position-relative">
+              <input
+                type="text"
+                class="buscador form-control rounded-2 ps-4"
+                placeholder="Buscar por documento..."
+              />
+              <i
+                class="bi bi-search position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"
+              ></i>
+            </div>
+
+            <button
+              class="btn btn-outline-dark rounded-2 px-4"
+              style="font-size: 12px"
+            >
+              NUEVO
+            </button>
+          </div>
+        </div>
+
+        <!-- 🔸 Filtros -->
+        <div
+          class="d-flex align-items-center justify-content-start gap-3 flex-wrap filtros-bar"
+        >
+          <div>
+            <label class="fw-semibold small mb-1">Estado de entrega</label>
+            <div class="custom-select">
+              <select class="form-select rounded-2 filtro-select">
+                <option>Todos</option>
+                <option>Completado</option>
+                <option>Pendiente</option>
+                <option>Cancelado</option>
+              </select>
+              <i class="bi bi-caret-down-fill"></i>
+            </div>
+          </div>
+
+          <div>
+            <label class="fw-semibold small mb-1">Entrega</label>
+            <div class="custom-select">
+              <select class="form-select rounded-2 filtro-select">
+                <option>Todos</option>
+                <option>Hoy</option>
+                <option>Esta semana</option>
+                <option>Este mes</option>
+              </select>
+              <i class="bi bi-caret-down-fill"></i>
+            </div>
+          </div>
+
+          <div class="ms-auto d-flex gap-2 filtros">
+            <button class="btn btn-outline-dark rounded-2 px-4">FILTRAR</button>
+            <button class="btn btn-outline-dark rounded-2 px-4">LIMPIAR</button>
+          </div>
+        </div>
+
+        <!-- 🔸 Tabla principal -->
+        <div class="row">
+          <div class="col-lg-9">
+            <div class="table-responsive rounded-4 p-2">
+              <table class="table align-middle mb-0">
+                <thead>
+                  <tr class="text-uppercase small text-secondary">
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Compra</th>
+                    <th>Total</th>
+                    <th>Entrega</th>
+                    <th>Estado</th>
+                    <th>Pedido</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>0001</td>
+                    <td>Vanesa Mendoza</td>
+                    <td>20/09/2025</td>
+                    <td>s/ 250.00</td>
+                    <td><span class="tag tienda">En tienda</span></td>
+                    <td><span class="tag pendiente">Pendiente</span></td>
+                    <td>
+                      <a href="#" class="text-dark fw-semibold">Observar</a>
+                      <i class="bi bi-pencil-square ms-2"></i>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>0002</td>
+                    <td>Vanesa Mendoza</td>
+                    <td>20/09/2025</td>
+                    <td>s/ 250.00</td>
+                    <td><span class="tag delivery">Delivery</span></td>
+                    <td><span class="tag ruta">En ruta</span></td>
+                    <td>
+                      <a href="#" class="text-dark fw-semibold">OBSERVAR</a>
+                      <i class="bi bi-pencil-square ms-2"></i>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>0003</td>
+                    <td>Vanesa Mendoza</td>
+                    <td>20/09/2025</td>
+                    <td>s/ 250.00</td>
+                    <td><span class="tag delivery">Delivery</span></td>
+                    <td><span class="tag entregado">Entregado</span></td>
+                    <td>
+                      <a href="#" class="text-dark fw-semibold">OBSERVAR</a>
+                      <i class="bi bi-pencil-square ms-2"></i>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>0004</td>
+                    <td>Vanesa Mendoza</td>
+                    <td>20/09/2025</td>
+                    <td>s/ 250.00</td>
+                    <td><span class="tag tienda">En tienda</span></td>
+                    <td><span class="tag entregado">Entregado</span></td>
+                    <td>
+                      <a href="#" class="text-dark fw-semibold">OBSERVAR</a>
+                      <i class="bi bi-pencil-square ms-2"></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 🔸 Panel lateral -->
+          <div class="col-lg-3 mt-4 mt-lg-0">
+            <div class="card shadow-sm p-3 delivery-panel">
+              <h6 class="mb-3" style="font-weight: 700">DELIVERY</h6>
+
+              <div class="delivery-card mb-3">
+                <div class="d-flex justify-content-between">
+                  <span class="codDelivery">ID: 0001</span>
+                  <small class="codDelivery">20/05/2025</small>
+                </div>
+                <span class="tag pendiente mt-2">Pendiente</span>
+              </div>
+
+              <div class="delivery-card">
+                <div class="d-flex justify-content-between">
+                  <span>ID: 0001</span>
+                  <small>20/05/2025</small>
+                </div>
+                <span class="tag ruta mt-2">En ruta</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

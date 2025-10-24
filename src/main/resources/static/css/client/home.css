@@ -1,0 +1,35 @@
+.hero-section{
+    background-image: url(../Img/fondo.jpg);
+    min-height: 100vh;
+    padding-top: 56px;
+    position: relative;
+    overflow: hidden;
+}
+.hero-section::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 5%;
+    width: 50%;
+    height: 100%;
+    background-image: url(../static/Img/modelo.png);
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    z-index: 0;
+}
+.hero-text-content{
+    text-align: center;
+    position: relative;
+    z-index: 10;
+}
+.hero-text-content h1{
+    font-size: 7rem;
+    margin-top: 5vh;
+    letter-spacing: 5px;
+}
+.hero-text-content h2{
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-bottom: 3rem;
+}

@@ -1,0 +1,129 @@
+/* Base */
+body {
+  background: #f7f7f7;
+  font-family: "Alegreya Sans", sans-serif;
+}
+.main-content {
+  margin-left: 100px; /* si usas sidebar fija */
+}
+
+/* Tabla estilo tarjeta (filas separadas) */
+.inventory-table {
+  border-collapse: separate;
+  border-spacing: 0 12px; /* separa filas verticalmente */
+  width: 100%;
+}
+
+.inventory-table thead th {
+  background: #fafafa;
+  color: #6b6b6b;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  padding: 12px;
+  border: none;
+}
+
+/* cuerpo: filas estilo tarjeta blanca */
+.inventory-table tbody tr {
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.inventory-table tbody tr:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* padding por celda */
+.inventory-table tbody td {
+  padding: 14px 12px;
+  vertical-align: middle;
+  border: none;
+}
+
+/* bordes redondeados por células en extremos */
+.inventory-table tbody tr td:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.inventory-table tbody tr td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* columnas generales ocupan más ancho */
+.inventory-table th.gen-col,
+.inventory-table td.gen-col {
+  white-space: nowrap;
+}
+
+/* columnas de talla (centradas y estrechas) */
+.inventory-table th.size-col,
+.inventory-table td.size-col,
+.inventory-table td.text-center {
+  text-align: center;
+  width: 64px;
+  max-width: 64px;
+}
+
+/* estilo de stock */
+.stock {
+  display: inline-block;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-weight: 700;
+  color: #121212;
+  background: #f3f3f3;
+}
+
+/* stock zero - estilo especial */
+.inventory-table tbody td span.stock:empty,
+.inventory-table tbody td span.stock:contains("0") {
+  background: #ffe9e9;
+  color: #d32f2f;
+}
+
+/* etiquetas de estado si usas */
+.tag {
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #fff;
+}
+.tag.disponible { background: #2ecc71; }
+.tag.bajo { background: #f39c12; }
+.tag.agotado { background: #e74c3c; }
+
+/* Responsive: en pantallas pequeñas, apilar info */
+/* convertimos la fila en grid y mostramos las tallas en scroll horizontal */
+@media (max-width: 992px) {
+  .main-content { margin-left: 0; padding: 1rem; }
+
+  .inventory-table thead { display: none; } /* ocultamos header para vista móvil */
+
+  .inventory-table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .inventory-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  /* para las tallas, permitir scroll horizontal en la celda */
+  .inventory-table tbody td.size-col,
+  .inventory-table tbody td.text-center {
+    overflow-x: auto;
+  }
+}

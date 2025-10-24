@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | MAMBO</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+
+  <!-- Fuentes -->
+  <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;700;900&family=Aleo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/admin/login.css}" />
+  
+</head>
+
+<body>
+  <div class="login-container">
+    <div class="login-form">
+      <h1>MAMBO</h1>
+      <p>Ingrese al manejo interno de la tienda</p>
+
+      <form method="post" th:action="@{/login}">
+        
+        <div class="icon-input">
+          <i class="bi bi-envelope-fill"></i>
+          <input type="email" name="username" placeholder="Correo electrónico" required>
+        <div>
+
+        <div class="icon-input">
+          <i class="bi bi-lock-fill"></i>
+          <input type="password" name="password" placeholder="Contraseña" required>
+        </div>
+
+        <button type="submit" class="btn-login btn-outline-dark mt-3">INGRESAR</button>
+      </form>
+    </div>
+
+    <!-- Imagen al costado derecho -->
+    <div class="login-image">
+      <img th:src="@{/img/descarga.png}" alt="Administrador">
+    </div>
+  </div>
+</body>
+</html>
