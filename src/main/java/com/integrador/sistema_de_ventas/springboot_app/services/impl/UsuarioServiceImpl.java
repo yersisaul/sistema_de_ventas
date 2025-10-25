@@ -14,7 +14,8 @@ import java.util.Collections;
 
 @Service
 @Transactional
-public class UsuarioServiceImpl implements UsuarioService {
+public class UsuarioServiceImpl implements UsuarioService // Implementa la interfaz UsuarioService
+{
     
     @Autowired
     private UsuarioRepository usuarioRepository;

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.integrador.sistema_de_ventas.springboot_app.models.Usuario;
 import java.util.Optional;
 
+// Contiene las clases que interactúan directamente con la base de datos. (CRUD)
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByCorreo(String correo);
 }

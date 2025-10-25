@@ -8,7 +8,6 @@ import com.integrador.sistema_de_ventas.springboot_app.repository.UsuarioReposit
 
 @Component
 public class DataInitializer implements CommandLineRunner {
-
     @Autowired
     private UsuarioRepository usuarioRepository;
     
@@ -21,8 +20,7 @@ public class DataInitializer implements CommandLineRunner {
     }
     
     private void inicializarUsuarioAdmin() {
-        // Verificar si ya existe un usuario admin
-        if (usuarioRepository.findByCorreo("admin@mambo.com").isEmpty()) {
+        if (usuarioRepository.findByCorreo("admin@mambo.com").isEmpty()) { // Verificar si ya existe un usuario admin
             Usuario admin = new Usuario();
             admin.setNombreCompleto("Administrador del Sistema");
             admin.setCorreo("admin@mambo.com");
@@ -38,8 +36,7 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("ℹUsuario administrador ya existe en la base de datos");
         }
         
-        // Opcional: Crear un usuario cliente de prueba
-        if (usuarioRepository.findByCorreo("cliente1@mambo.com").isEmpty()) {
+        if (usuarioRepository.findByCorreo("cliente1@mambo.com").isEmpty()) { // Opcional: Crear un usuario cliente de prueba
             Usuario cliente = new Usuario();
             cliente.setNombreCompleto("Cliente de Prueba");
             cliente.setCorreo("cliente1@mambo.com");
