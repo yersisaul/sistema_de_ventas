@@ -1,5 +1,6 @@
 .hero-section{
-    background-image: url(../Img/fondo.jpg);
+    background-image: url("/Img/fondo.jpg");
+
     min-height: 100vh;
     padding-top: 56px;
     position: relative;
@@ -12,7 +13,7 @@
     right: 5%;
     width: 50%;
     height: 100%;
-    background-image: url(../static/Img/modelo.png);
+    background-image: url("/Img/modelo.png");
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;

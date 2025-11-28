@@ -8,33 +8,63 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class SecurityConfig {
-
+    private final CustomSuccessHandler customSuccessHandler;
     private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public SecurityConfig(UserDetailsService userDetailsService, CustomSuccessHandler customSuccessHandler) {
         this.userDetailsService = userDetailsService;
+        this.customSuccessHandler = customSuccessHandler;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/productos/**", "/css/**", "/imgs/**", "/admin/login").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                // URLs públicas - INCLUYENDO EL PREFIJO /vista
+                .requestMatchers(
+                    "/api/**",  // ← PERMITIR TODAS LAS RUTAS API
+                    "/vista/**",
+                    "/", 
+                    "/vista/**", 
+                    "/productos/**", 
+                    "/css/**", 
+                    "/img/**", 
+                    "/js/**", 
+                    "/static/**",
+                    "/templates/**",
+                    "/admin/login",
+                    "/api/admin/auth/**",
+                    "/client/**",
+                    "/api/client/**", 
+                    "/api/client/auth/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**", 
+                    "/swagger-ui.html",
+                    "/swagger-resources/**",
+                    "/webjars/**",
+                    "/configuration/ui",
+                    "/configuration/security"
+                ).permitAll()
+                // Rutas administrativas ACTUALIZADAS
+                .requestMatchers("/vista/admin/clientes", "/vista/admin/dashboard", "/vista/admin/inventario", "/vista/admin/usuarios").hasRole("ADMIN")
+                .requestMatchers("/vista/admin/pedidos").hasAnyRole("ADMIN", "CLIENTE")
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/admin/login")
+                .loginPage("/vista/admin/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/admin/dashboard", true)
-                .failureUrl("/admin/login?error=true")
+                .successHandler(customSuccessHandler)
+                .failureUrl("/vista/admin/login?error=true")
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/admin/login?logout=true")
+                .logoutSuccessUrl("/vista/admin/login?logout=true")
                 .permitAll()
             )
             .authenticationProvider(authenticationProvider())
@@ -54,5 +84,20 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/**")
+                    .allowedOrigins("*")
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                    .allowedHeaders("*")
+                    .allowCredentials(false)
+                    .maxAge(3600);
+            }
+        };
     }
 }

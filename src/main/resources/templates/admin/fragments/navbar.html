@@ -1,47 +1,93 @@
 <div th:fragment="navbar">
-  <nav class="sidebar d-flex flex-column align-items-center py-4">
+
+
+  <!-- SIDEBAR FIJO EN PANTALLAS GRANDES -->
+  <nav class="sidebar d-none d-md-flex flex-column align-items-center py-4">
     <div class="logo mb-4">M.</div>
 
-    <a th:href="@{/admin/dashboard}"
-       th:classappend="${activePage == 'dashboard'} ? 'active' : ''"
-       class="nav-item"
-       data-title="Dashboard">
+    <a sec:authorize="hasAnyRole('ADMIN','USUARIO')"  th:href="@{/admin/dashboard}" 
+       th:classappend="${activePage == 'dashboard'} ? 'active' : ''" 
+       class="nav-item" data-title="Dashboard">
        <i class="bi bi-grid"></i>
     </a>
 
-    <a th:href="@{/admin/clientes}"
-       th:classappend="${activePage == 'clientes'} ? 'active' : ''"
-       class="nav-item"
-       data-title="Clientes">
+    <a sec:authorize="hasAnyRole('ADMIN','USUARIO')" th:href="@{/admin/clientes}" 
+       th:classappend="${activePage == 'clientes'} ? 'active' : ''" 
+       class="nav-item" data-title="Clientes">
        <i class="bi bi-person"></i>
     </a>
 
-    <a th:href="@{/admin/pedidos}"
-       th:classappend="${activePage == 'pedidos'} ? 'active' : ''"
-       class="nav-item"
-       data-title="Pedidos">
+    <a th:href="@{/admin/pedidos}" 
+       th:classappend="${activePage == 'pedidos'} ? 'active' : ''" 
+       class="nav-item" data-title="Pedidos">
        <i class="bi bi-truck"></i>
     </a>
 
-    <a th:href="@{/admin/usuarios}"
-       th:classappend="${activePage == 'usuarios'} ? 'active' : ''"
-       class="nav-item"
-       data-title="Usuarios">
+    <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/usuarios}" 
+       th:classappend="${activePage == 'usuarios'} ? 'active' : ''" 
+       class="nav-item" data-title="Usuarios">
        <i class="bi bi-people"></i>
     </a>
 
-    <a th:href="@{/admin/inventario}"
-       th:classappend="${activePage == 'inventario'} ? 'active' : ''"
-       class="nav-item"
-       data-title="Productos">
+    <a sec:authorize="hasAnyRole('ADMIN','USUARIO')" th:href="@{/admin/inventario}" 
+       th:classappend="${activePage == 'inventario'} ? 'active' : ''" 
+       class="nav-item" data-title="Productos">
        <i class="bi bi-box"></i>
     </a>
 
-    <div class="logout-icon mt-auto d-flex">
-      <a th:href="@{/logout}"
-         data-title="Salir">
-         <i class="bi bi-box-arrow-right"></i>
+    <div sec:authorize="hasAnyRole('ADMIN','USUARIO')" class="logout-icon mt-auto d-flex">
+      <a th:href="@{/logout}" data-title="Salir">
+        <i class="bi bi-box-arrow-right"></i>
+      </a>
+    </div>
+
+    <div sec:authorize="hasRole('CLIENTE')" class="logout-icon mt-auto d-flex">
+      <a th:href="@{/client/productos}" data-title="Regresar">
+        <i class="bi bi-box-arrow-right"></i>
       </a>
     </div>
   </nav>
+
+  <!-- OFFCANVAS SOLO EN PANTALLAS PEQUEÑAS -->
+  <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebarOffcanvas" 
+       aria-labelledby="sidebarOffcanvasLabel" style="width: 250px;">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title" id="sidebarOffcanvasLabel">M.</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column align-items-start gap-3">
+
+      <a sec:authorize="hasAnyRole('ADMIN','CLIENTE')"  th:href="@{/admin/dashboard}" class="text-white text-decoration-none w-100 py-2 ps-2 
+         d-flex align-items-center gap-2" th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+        <i class="bi bi-grid"></i> Dashboard
+      </a>
+
+      <a sec:authorize="hasAnyRole('ADMIN','CLIENTE')" th:href="@{/admin/clientes}" class="text-white text-decoration-none w-100 py-2 ps-2 
+         d-flex align-items-center gap-2" th:classappend="${activePage == 'clientes'} ? 'active' : ''">
+        <i class="bi bi-person"></i> Clientes
+      </a>
+
+      <a th:href="@{/admin/pedidos}" class="text-white text-decoration-none w-100 py-2 ps-2 
+         d-flex align-items-center gap-2" th:classappend="${activePage == 'pedidos'} ? 'active' : ''">
+        <i class="bi bi-truck"></i> Pedidos
+      </a>
+
+      <a sec:authorize="hasRole('ADMIN')"  th:href="@{/admin/usuarios}" class="text-white text-decoration-none w-100 py-2 ps-2 
+         d-flex align-items-center gap-2" th:classappend="${activePage == 'usuarios'} ? 'active' : ''">
+        <i class="bi bi-people"></i> Usuarios
+      </a>
+
+      <a sec:authorize="hasAnyRole('ADMIN','CLIENTE')" th:href="@{/admin/inventario}" class="text-white text-decoration-none w-100 py-2 ps-2 
+         d-flex align-items-center gap-2" th:classappend="${activePage == 'inventario'} ? 'active' : ''">
+        <i class="bi bi-box"></i> Productos
+      </a>
+
+      <div class="mt-auto w-100 border-top pt-3">
+        <a th:href="@{/logout}" class="text-white text-decoration-none d-flex align-items-center gap-2 ps-2">
+          <i class="bi bi-box-arrow-right"></i> Salir
+        </a>
+      </div>
+
+    </div>
+  </div>
 </div>

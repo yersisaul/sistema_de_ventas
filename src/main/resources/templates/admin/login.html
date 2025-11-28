@@ -12,7 +12,6 @@
   <!-- Fuentes -->
   <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;700;900&family=Aleo:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/admin/login.css}" />
-  
 </head>
 
 <body>
@@ -22,24 +21,24 @@
       <p>Ingrese al manejo interno de la tienda</p>
 
       <form method="post" th:action="@{/login}">
-        
         <div class="icon-input">
-          <i class="bi bi-envelope-fill"></i>
-          <input type="email" name="username" placeholder="Correo electrónico" required>
-        <div>
+          <i class="bi bi-person-fill"></i>
+          <input id="username" name="username" placeholder="Numero de identificacion" required>
+        </div>
 
         <div class="icon-input">
           <i class="bi bi-lock-fill"></i>
-          <input type="password" name="password" placeholder="Contraseña" required>
+          <input type="password" id="password" name="password" placeholder="Contraseña" required>
         </div>
 
         <button type="submit" class="btn-login btn-outline-dark mt-3">INGRESAR</button>
       </form>
+      <a th:href="@{/client/productos}" class="forgot-password-link mt-3 d-block text-center">Regresa la tienda virtual</a>
     </div>
 
     <!-- Imagen al costado derecho -->
     <div class="login-image">
-      <img th:src="@{/img/descarga.png}" alt="Administrador">
+      <img th:src="@{/Img/descarga.png}" alt="Administrador">
     </div>
   </div>
 </body>

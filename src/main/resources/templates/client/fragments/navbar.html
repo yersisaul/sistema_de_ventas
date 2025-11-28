@@ -1,118 +1,149 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <body>
 
-    <header th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark shadow-lg fixed-top">
-        <div class="container-fluid">
-            <a class="logo navbar-brand" th:href="@{/client/Home.html}">MAMBO</a>
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item"><a class="nav-link fw-bold barra" th:href="@{/client/Home.html}">HOME</a></li>
-                <li class="nav-item"><a class="nav-link fw-bold barra" th:href="@{/client/Produtos.html}">PRODUCTOS</a></li>
-                <li class="nav-item"><a class="nav-link fw-bold barra" th:href="@{/client/Vestidor.html}">VESTIDOR IA</a></li>
-                <li class="nav-item"><a class="nav-link fw-bold barra" th:href="@{/client/Contactanos.html}">CONTACTANOS</a></li>
-            </ul>
-            <div class="nav-icons d-flex align-items-center">
-                <button class="btn btn-dark fw-bold boton" id="login" data-bs-toggle="modal" data-bs-target="#loginModal">
-                Iniciar Sesión</button>
-                <a href="#" class="nav-icon mx-2" data-bs-toggle="offcanvas" data-bs-target="#resumenCarritoModal">
-                    <span class="material-symbols-outlined text-white">shopping_cart</span>
-                </a>
-            </div>
-        </div>
-    </header>
-    <div th:fragment="loginModal" class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content custom-modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center pt-0">
-                    
-                    <h2 class="modal-title-mambo fw-bold text-white mb-2" id="loginModalLabel">MAMBO</h2>
-                    <p class="text-white mb-4" style="opacity: 0.8;">Listo pa' entrar al flow</p>
+  <header th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark shadow-lg fixed-top">
+    <div class="container-fluid">
+      <a class="logo navbar-brand" th:href="@{/client/Home.html}">MAMBO</a>
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link fw-bold barra" th:href="@{/}">HOME</a></li>
+        <li class="nav-item"><a class="nav-link fw-bold barra" th:href="@{/client/productos}">PRODUCTOS</a></li>
+        <li class="nav-item"><a class="nav-link fw-bold barra" th:href="@{/client/vestidor}">VESTIDOR IA</a></li>
+        <li class="nav-item"><a class="nav-link fw-bold barra" th:href="@{/client/contactanos}">CONTACTANOS</a></li>
+        <li sec:authorize="!isAuthenticated()" class="nav-item"><a class="nav-link fw-bold barra"
+            th:href="@{/admin/login}">HISTORIAL</a></li>
+        <li sec:authorize="hasRole('CLIENTE')" class="nav-item"><a class="nav-link fw-bold barra"
+            th:href="@{/admin/pedidos}">HISTORIAL</a></li>
+      </ul>
+      <div class="nav-icons d-flex align-items-center">
+        <button sec:authorize="!isAuthenticated()" class="btn btn-dark fw-bold boton" id="login" data-bs-toggle="modal" data-bs-target="#loginModal">
+          Iniciar Sesión</button>
+        <a href="#" class="nav-icon mx-2" data-bs-toggle="offcanvas" data-bs-target="#resumenCarritoModal">
+          <span class="material-symbols-outlined text-white">shopping_cart</span>
+        </a>
+      </div>
 
-                    <form>
-                        
-                        <div class="mb-3 custom-input-group">
-                            <label for="documento" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Identificación</label>
-                            <input type="text" class="form-control custom-input" id="documento" placeholder="| Documento de Identidad">
-                        </div>
+      <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-3 text-white">
+        <!-- Mostrar nombre del usuario autenticado -->
+        <span th:text="'Hola, ' + ${#authentication.name}"></span>
 
-                        <div class="mb-5 custom-input-group">
-                            <label for="contrasena" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Contraseña</label>
-                            <input type="password" class="form-control custom-input" id="contrasena" placeholder="| Llave de acceso">
-                        </div>
+        <!-- Botón de cerrar sesión -->
+        <button id="logoutBtn" class="btn btn-outline-light btn-sm fw-bold">Cerrar Sesión</button>
 
-                        <button type="submit" class="btn btn-block custom-login-submit-btn mb-3">
-                            Entrar al flow
-                        </button>
-                        
-                        <p class="text-white-50 mt-3" style="font-size: 0.9rem;">
-                            ¿Eres nuevo? <a href="#" class="custom-register-link" data-bs-target="#registerModal" data-bs-toggle="modal" data-bs-dismiss="modal">
-                                Únete al Flow</a>
-                        </p>
-                    </form>
+      </div>
 
-                </div>
-            </div>
-        </div>
     </div>
-    <div th:fragment="registerModal" class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content custom-modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center pt-0">
-                    
-                    <h2 class="modal-title-mambo fw-bold text-white mb-2" id="registerModalLabel">MAMBO</h2>
-                    <p class="text-white mb-4" style="opacity: 0.8; font-size: 1.1rem;">Unirme al flow</p>
+  </header>
+  <div th:fragment="loginModal" class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content custom-modal-content">
+        <div class="modal-header border-0 pb-0">
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center pt-0">
 
-                    <form>
-                        <div class="mb-3 custom-input-group">
-                            <label for="tipoDoc" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Tipo de Documento</label>
-                            <select class="form-select custom-input" id="tipoDoc" aria-label="Seleccionar tipo de documento">
-                                <option value="DNI">DNI</option>
-                                <option value="CE">CE</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 custom-input-group">
-                            <label for="dniNumero" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Número de Documento</label>
-                            <input type="text" class="form-control custom-input" id="dniNumero">
-                        </div>
-                        <div class="mb-3 custom-input-group">
-                            <label for="nombre" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Nombre</label>
-                            <input type="text" class="form-control custom-input" id="nombre">
-                        </div>
-                        <div class="mb-3 custom-input-group">
-                            <label for="apellidoP" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Apellido Paterno</label>
-                            <input type="text" class="form-control custom-input" id="apellidoP">
-                        </div>
-                        <div class="mb-3 custom-input-group">
-                            <label for="apellidoM" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Apellido Materno</label>
-                            <input type="text" class="form-control custom-input" id="apellidoM">
-                        </div>
-                        <div class="mb-3 custom-input-group">
-                            <label for="telefono" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Teléfono</label>
-                            <input type="tel" class="form-control custom-input" id="telefono">
-                        </div>
-                        <div class="mb-3 custom-input-group">
-                            <label for="correo" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Correo</label>
-                            <input type="email" class="form-control custom-input" id="correo">
-                        </div>
-                        <div class="mb-5 custom-input-group">
-                            <label for="direccion" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Dirección</label>
-                            <input type="text" class="form-control custom-input" id="direccion">
-                        </div>
-                        <button type="submit" class="btn btn-block custom-login-submit-btn mb-3">
-                            Entrar al flow
-                        </button>
-                    </form>
-                </div>
+          <h2 class="modal-title-mambo fw-bold text-white mb-2" id="loginModalLabel">MAMBO</h2>
+          <p class="text-white mb-4" style="opacity: 0.8;">Listo pa' entrar al flow</p>
+
+          <form>
+
+            <div class="mb-3 custom-input-group">
+              <label for="documento" class="form-label text-white text-uppercase"
+                style="font-size: 0.75rem;">Identificación</label>
+              <input type="text" class="form-control custom-input" id="documento"
+                placeholder="| Documento de Identidad">
             </div>
+
+            <div class="mb-5 custom-input-group">
+              <label for="contrasena" class="form-label text-white text-uppercase"
+                style="font-size: 0.75rem;">Contraseña</label>
+              <input type="password" class="form-control custom-input" id="contrasena" placeholder="| Llave de acceso">
+            </div>
+
+            <button type="submit" class="btn btn-block custom-login-submit-btn mb-3">
+              Entrar al flow
+            </button>
+
+            <p class="text-white-50 mt-3" style="font-size: 0.9rem;">
+              ¿Eres nuevo? <a href="#" class="custom-register-link" data-bs-target="#registerModal"
+                data-bs-toggle="modal" data-bs-dismiss="modal">
+                Únete al Flow</a>
+            </p>
+          </form>
+
         </div>
+      </div>
     </div>
-    <div th:fragment="carritoOffcanvas" class="offcanvas offcanvas-end bg-dark" tabindex="-1" id="resumenCarritoModal" aria-labelledby="resumenCarritoModalLabel">
+  </div>
+  <div th:fragment="registerModal" class="modal fade" id="registerModal" tabindex="-1"
+    aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content custom-modal-content">
+        <div class="modal-header border-0 pb-0">
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body text-center pt-0">
+
+          <h2 class="modal-title-mambo fw-bold text-white mb-2" id="registerModalLabel">MAMBO</h2>
+          <p class="text-white mb-4" style="opacity: 0.8; font-size: 1.1rem;">Unirme al flow</p>
+
+          <form>
+            <div class="mb-3 custom-input-group">
+              <label for="tipoDoc" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Tipo de
+                Documento</label>
+              <select class="form-select custom-input" id="tipoDoc" aria-label="Seleccionar tipo de documento">
+                <option value="DNI">DNI</option>
+                <option value="CE">CE</option>
+              </select>
+            </div>
+            <div class="mb-3 custom-input-group">
+              <label for="dniNumero" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Número de
+                Documento</label>
+              <input type="text" class="form-control custom-input" id="dniNumero">
+            </div>
+            <div class="mb-3 custom-input-group">
+              <label for="nombre" class="form-label text-white text-uppercase"
+                style="font-size: 0.75rem;">Nombre</label>
+              <input type="text" class="form-control custom-input" id="nombre">
+            </div>
+            <div class="mb-3 custom-input-group">
+              <label for="apellidoP" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Apellido
+                Paterno</label>
+              <input type="text" class="form-control custom-input" id="apellidoP">
+            </div>
+            <div class="mb-3 custom-input-group">
+              <label for="apellidoM" class="form-label text-white text-uppercase" style="font-size: 0.75rem;">Apellido
+                Materno</label>
+              <input type="text" class="form-control custom-input" id="apellidoM">
+            </div>
+            <div class="mb-3 custom-input-group">
+              <label for="telefono" class="form-label text-white text-uppercase"
+                style="font-size: 0.75rem;">Teléfono</label>
+              <input type="tel" class="form-control custom-input" id="telefono">
+            </div>
+            <div class="mb-3 custom-input-group">
+              <label for="correo" class="form-label text-white text-uppercase"
+                style="font-size: 0.75rem;">Correo</label>
+              <input type="email" class="form-control custom-input" id="correo">
+            </div>
+            <div class="mb-5 custom-input-group">
+              <label for="direccion" class="form-label text-white text-uppercase"
+                style="font-size: 0.75rem;">Dirección</label>
+              <input type="text" class="form-control custom-input" id="direccion">
+            </div>
+            <button type="submit" class="btn btn-block custom-login-submit-btn mb-3">
+              Entrar al flow
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:fragment="carritoOffcanvas" class="offcanvas offcanvas-end bg-dark" tabindex="-1" id="resumenCarritoModal"
+    aria-labelledby="resumenCarritoModalLabel">
+  </div>
 
 </body>
+
 </html>

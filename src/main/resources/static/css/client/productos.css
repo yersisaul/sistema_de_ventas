@@ -2,7 +2,8 @@
     padding-top: 70px !important;
 }
 .banner-top {
-    background-image: url(../static/Img/ropa-urbana.PNG);
+    background-image: url("/Img/ropa-urbana.PNG");
+
     background-size: cover;
     background-position: center;
     color: var(--text-white-color) ¡important;

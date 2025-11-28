@@ -4,7 +4,7 @@
 }
     body {
       font-family: 'Alegreya Sans', sans-serif;
-  background: url("/img/fon.jpg") no-repeat center center;
+  background: url("/Img/fon.jpg") no-repeat center center;
   background-size: cover; 
   background-attachment: fixed;
   display: flex;

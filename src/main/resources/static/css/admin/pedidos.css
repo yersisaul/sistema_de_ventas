@@ -59,8 +59,9 @@
   font-family: 'Aleo';
 ;
   padding: 4px 12px;
-  border-radius: 6px;
+  border-radius: 3px;
   font-size: 0.85rem;
+  font-weight: bold;
 
 }
 .codDelivery{
@@ -69,25 +70,25 @@
 }
 
 .tienda {
-  border: 1px solid #306af1;
+  border: 2px solid #306af1;
   color: #306af1;
   background: #eaf1ff;
 }
 
 .delivery {
-  border: 1px solid #c97cff;
+  border: 2px solid #c97cff;
   color: #7d00c3;
   background: #f5eaff;
 }
 
 .pendiente {
-  border: 1px solid #f05050;
+  border: 2px solid #f05050;
   color: #b50000;
   background: #ffe8e8;
 }
 
 .ruta {
-  border: 1px solid #f0d050;
+  border: 2px solid #f0d050;
   color: #7c6500;
   background: #fff7d1;
 }
@@ -134,6 +135,31 @@ button.btn {
   }
   .search-box input {
     width: 100%;
+  }
+  table thead {
+    display: none; /* ocultamos los encabezados */
+  }
+
+  table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #fff;
+  }
+
+  table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
   }
 }
 

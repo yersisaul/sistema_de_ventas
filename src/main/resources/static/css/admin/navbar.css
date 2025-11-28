@@ -86,3 +86,46 @@ main {
   opacity: 1;
   margin-left: 12px;
 }
+
+@media (max-width: 991px) {
+  .sidebar {
+    width: 200px;
+    left: -220px;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .main-content {
+    margin-left: 0; /* Evita el espacio del sidebar en móvil */
+    padding: 15px;
+  }
+
+  .toggle-btn {
+    display: block;
+  }
+
+  .sidebar a::after {
+    display: none; /* Sin tooltips en móvil */
+  }
+
+  /* Ajustes de tabla para pantallas pequeñas */
+  table {
+    font-size: 0.85rem;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .filtros-bar, .search-box {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .busqueda input {
+    width: 100%;
+  }
+}
