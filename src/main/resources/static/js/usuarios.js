@@ -1,12 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Formulario de registro de vendedor
-  const formCliente = document.getElementById("formCliente")
-  if (formCliente) {
-    formCliente.addEventListener("submit", async (e) => {
-      e.preventDefault()
-      await registrarVendedor()
-    })
-  }
 
   // Toggle password
   const togglePassword = document.getElementById("togglePassword")
@@ -42,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 // Función para registrar vendedor
+/*
 async function registrarVendedor() {
   console.log("[v0] Iniciando registro de usuario")
 
@@ -110,5 +104,5 @@ async function registrarVendedor() {
   }
 }
 
-
+*/
 

@@ -32,7 +32,7 @@ public class SecurityConfig {
                     "/", 
                     "/productos/**", 
                     "/css/**", 
-                    "/img/**", 
+                    "/Img/**", 
                     "/js/**", 
                     "/static/**",
                     "/templates/**",
@@ -55,14 +55,14 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/vista/admin/login")
+                .loginPage("/admin/login")
                 .loginProcessingUrl("/login")
                 .successHandler(customSuccessHandler)
-                .failureUrl("/vista/admin/login?error=true")
+                .failureUrl("/admin/login?error=true")
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/vista/admin/login?logout=true")
+                .logoutSuccessUrl("/admin/login?logout=true")
                 .permitAll()
             )
             .authenticationProvider(authenticationProvider())

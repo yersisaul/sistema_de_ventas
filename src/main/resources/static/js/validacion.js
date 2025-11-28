@@ -22,7 +22,7 @@ const togglePassword = document.getElementById('togglePassword');
   apellidoM.addEventListener('input', () => {
     apellidoM.value = apellidoM.value.replace(/[^a-zA-Z\s]/g, '');
   })
-  const number = document.getElementById('number');
+  const number = document.getElementById('nIdentificacion');
   number.addEventListener('input', () =>{
     number.value = number.value.replace(/[^0-9]/g, '');
   })

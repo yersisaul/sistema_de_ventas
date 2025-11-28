@@ -82,43 +82,33 @@
           </thead>
 
           <tbody>
-            <tr>
-              <td>DNI</td>
-              <td>72957500</td>
-              <td>Isabel Crisrhina</td>
-              <td>Lopez Huamani</td>
-              <td>912799689</td>
-              <td>IsabelCrsthina@gmail.com</td>
-              <td>UVC 1555 CALLE 13 ZONA R - HUAYCAN</td>
+            <tr th:each="cliente : ${listaClientes}">
+              
+              <td th:text="${cliente.tipoIdentificacion}">DNI</td> 
+              
+              <td th:text="${cliente.nIdentificacion}">72957500</td> 
+              
+              <td th:text="${cliente.nombres}">Isabel Crisrhina</td> 
+              
+              <td th:text="${cliente.apellidos}">Lopez Huamani</td> 
+              
+              <td th:text="${cliente.telefono}">912799689</td> 
+              
+              <td th:text="${cliente.correo}">IsabelCrsthina@gmail.com</td> 
+              
+              <td th:text="${cliente.direccion}">UVC 1555 CALLE 13 ZONA R - HUAYCAN</td>
 
               <td>
-                <a href="#" class="text-dark fw-semibold text-decoration-none me-3 editar-btn">
+                <a 
+                   class="text-dark fw-semibold text-decoration-none me-3 editar-btn">
                   <i class="bi bi-pencil-square me-1"></i>Editar
                 </a>
-                <a href="#" class="text-danger fw-semibold text-decoration-none eliminar-btn">
+                
+                <a
+                   class="text-danger fw-semibold text-decoration-none eliminar-btn">
                   <i class="bi bi-trash3 me-1"></i>Eliminar
                 </a>
               </td>
-
-            </tr>
-            <tr>
-              <td>DNI</td>
-              <td>73957500</td>
-              <td>Isabel Crisrhina</td>
-              <td>Lopez Huamani</td>
-              <td>912799689</td>
-              <td>IsabelCrsthina@gmail.com</td>
-              <td>UVC 1555 CALLE 13 ZONA R - HUAYCAN</td>
-
-              <td>
-                <a href="#" class="text-dark fw-semibold text-decoration-none me-3 editar-btn">
-                  <i class="bi bi-pencil-square me-1"></i>Editar
-                </a>
-                <a href="#" class="text-danger fw-semibold text-decoration-none eliminar-btn">
-                  <i class="bi bi-trash3 me-1"></i>Eliminar
-                </a>
-              </td>
-
             </tr>
           </tbody>
         </table>
@@ -145,13 +135,13 @@
           <div class="modal-body px-5 MB-2">
             <p class="text-center m-0">¡Registremos a nuestro cliente!</p>
 
-            <form id="formCliente" enctype="multipart/form-data">
+            <form th:action="@{/admin/clientes/guardar}" method="post" th:object="${nuevoCliente}" id="formCliente" enctype="multipart/form-data">
 
               <!-- Tipo de Identificación -->
               <!-- Added id="tipoIdentificacion" to match JavaScript expectations -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Tipo Documento:</label>
-                <select class="form-select" id="tipoIdentificacion" required>
+                <select class="form-select" id="tipoIdentificacion" th:field="*{tipoIdentificacion}" required>
                   <option value="DNI">DNI</option>
                   <option value="RUC">RUC</option>
                   <option value="PASAPORTE">PASAPORTE</option>
@@ -162,49 +152,42 @@
               <!-- Changed id from "number" to "nIdentificacion" to match JavaScript -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Número Documento:</label>
-                <input type="text" class="form-control" id="nIdentificacion" required placeholder="Ingrese número">
+                <input type="text" class="form-control" th:field="*{nIdentificacion}" id="nIdentificacion" required placeholder="Ingrese número">
               </div>
 
               <!-- Nombre -->
               <!-- Changed id from "nombre" to "nombres" to match JavaScript -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Nombre completo:</label>
-                <input type="text" class="form-control" id="nombres" required placeholder="Ej: Juan Carlos">
+                <input type="text" class="form-control" th:field="*{nombres}" id="nombres" required placeholder="Ej: Juan Carlos">
               </div>
 
               <!-- Apellido paterno -->
               <!-- Changed id from "nomp" to "apellidoPaterno" to match JavaScript -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
-                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellido paterno:</label>
-                <input type="text" class="form-control" id="apellidoPaterno" required placeholder="Ej: Pérez">
-              </div>
-
-              <!-- Apellido materno -->
-              <!-- Changed id from "nomm" to "apellidoMaterno" to match JavaScript -->
-              <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
-                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellido materno:</label>
-                <input type="text" class="form-control" id="apellidoMaterno" required placeholder="Ej: García">
+                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellidos</label>
+                <input type="text" class="form-control" th:field="*{apellidos}" id="apellidoPaterno" required placeholder="Ej: Pérez">
               </div>
 
               <!-- Teléfono -->
               <!-- Changed id from "cel" to "telefono" to match JavaScript -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Teléfono:</label>
-                <input type="tel" class="form-control" id="telefono" required placeholder="Ej: 987654321">
+                <input type="tel" class="form-control" id="telefono" th:field="*{telefono}" required placeholder="Ej: 987654321">
               </div>
 
               <!-- Correo -->
               <!-- Added id="correo" which was missing -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Correo:</label>
-                <input type="email" class="form-control" id="correo" required placeholder="Ej: ejemplo@gmail.com">
+                <input type="email" class="form-control" id="correo" th:field="*{correo}" required placeholder="Ej: ejemplo@gmail.com">
               </div>
 
               <!-- Dirección -->
               <!-- Added id="direccion" which was missing -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Dirección:</label>
-                <input type="text" class="form-control" id="direccion" required placeholder="Ej: Av. Los Olivos 123">
+                <input type="text" class="form-control" id="direccion" th:field="*{direccion}" required placeholder="Ej: Av. Los Olivos 123">
               </div>
 
               <!-- Contraseña -->
@@ -212,7 +195,7 @@
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2 position-relative">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Contraseña:</label>
                 <div class="w-100 position-relative">
-                  <input type="password" class="form-control pe-5" id="contrasena" required
+                  <input  th:field="*{contrasena}" type="password" class="form-control pe-5" id="contrasena" required
                     placeholder="Ingrese una contraseña segura">
                   <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3 text-secondary"
                     id="togglePassword" style="cursor: pointer;"></i>
