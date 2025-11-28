@@ -28,9 +28,8 @@ public class SecurityConfig {
                 // URLs públicas - INCLUYENDO EL PREFIJO /vista
                 .requestMatchers(
                     "/api/**",  // ← PERMITIR TODAS LAS RUTAS API
-                    "/vista/**",
+                    "/client/**",
                     "/", 
-                    "/vista/**", 
                     "/productos/**", 
                     "/css/**", 
                     "/img/**", 
@@ -39,7 +38,6 @@ public class SecurityConfig {
                     "/templates/**",
                     "/admin/login",
                     "/api/admin/auth/**",
-                    "/client/**",
                     "/api/client/**", 
                     "/api/client/auth/**",
                     "/v3/api-docs/**",
@@ -51,8 +49,8 @@ public class SecurityConfig {
                     "/configuration/security"
                 ).permitAll()
                 // Rutas administrativas ACTUALIZADAS
-                .requestMatchers("/vista/admin/clientes", "/vista/admin/dashboard", "/vista/admin/inventario", "/vista/admin/usuarios").hasRole("ADMIN")
-                .requestMatchers("/vista/admin/pedidos").hasAnyRole("ADMIN", "CLIENTE")
+                .requestMatchers("/admin/clientes", "/admin/dashboard", "/admin/inventario", "/admin/usuarios").hasRole("ADMIN")
+                .requestMatchers("/admin/pedidos").hasAnyRole("ADMIN", "CLIENTE")
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
