@@ -45,8 +45,7 @@ public class Producto {
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VarianteProducto> variantes;
     
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ImagenProducto> imagenes;
+    private String imagen;
     
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
     private List<Reseña> reseñas;

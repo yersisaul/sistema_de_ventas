@@ -9,5 +9,6 @@ import java.util.Optional;
 public interface CategoriaService {
     Categoria crearCategoria(CategoriaResponseDTO categoriaResponseDTO);
     List<Categoria> obtenerTodasLasCategorias();
-
+    Categoria editarCategoria(Long id, CategoriaResponseDTO categoriaResponseDTO);
+    void eliminarCategoria(Long id);
 }

@@ -1,0 +1,73 @@
+<div th:fragment="nuevaCategoria">
+  <div class="modal fade" id="modalCategoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
+      <div class="modal-content shadow-lg border-0 rounded-4">
+
+        <!-- HEADER -->
+        <div class="modal-header bg-dark text-white rounded-top-4">
+          <h5 class="modal-title w-100 text-center fw-bold">GESTIONAR CATEGORÍAS</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- BODY -->
+        <div class="modal-body p-4">
+
+          <!-- FORM CREAR -->
+          <form th:action="@{/admin/inventario/categoria}" method="post" th:object="${nuevaCategoria}">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Nueva Categoría:</label>
+              <input type="text" th:field="*{nombre}" class="form-control" required placeholder="Ej: Pantalones">
+            </div>
+            <button type="submit" class="btn btn-dark w-100 fw-bold mb-3">AGREGAR</button>
+          </form>
+
+          <hr>
+
+          <!-- LISTA DE CATEGORÍAS -->
+          <div style="max-height: 250px; overflow-y: auto;">
+            <ul class="list-group">
+
+              <li class="list-group-item d-flex justify-content-between align-items-center"
+                  th:each="cat : ${listaCategorias}" th:id="'cat-'+${cat.id}">
+
+                <!-- Texto editable -->
+                <input type="text"
+                       class="form-control me-2 border-0 fw-semibold"
+                       style="background: transparent;"
+                       th:value="${cat.nombre}"
+                       th:id="'cat-nombre-'+${cat.id}"
+                       disabled>
+
+                <!-- Botones -->
+                <div class="btn-group">
+
+                  <!-- Editar -->
+                  <button class="btn btn-sm btn-outline-primary"
+                          th:onclick="'editarCategoria('+${cat.id}+');'">
+                    ✏️
+                  </button>
+
+                  <!-- Guardar -->
+                  <button class="btn btn-sm btn-outline-success d-none"
+                          th:id="'guardar-'+${cat.id}"
+                          th:onclick="'guardarCategoria('+${cat.id}+');'">
+                    ✔️
+                  </button>
+
+                  <!-- Eliminar -->
+                  <form th:action="@{/admin/inventario/categoria/eliminar/{id}(id=${cat.id})}" method="post">
+                    <button class="btn btn-sm btn-outline-danger">🗑️</button>
+                  </form>
+
+                </div>
+
+              </li>
+
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

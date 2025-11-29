@@ -29,6 +29,7 @@ public class ProductosAdminController {
     @Autowired
     private VarianteProductoService varianteService;
     
+    /*  He agregado imagen como Multipartfile por eso no funciona estas dos
     @PostMapping
     public ResponseEntity<?> crearProducto(@RequestBody @Valid ProductoCreateDTO productoDTO) {
         try {
@@ -39,7 +40,19 @@ public class ProductosAdminController {
                 .body("Error al crear producto: " + e.getMessage());
         }
     }
-    
+
+        
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarProducto(@PathVariable Long id, @RequestBody ProductoUpdateDTO producto) {
+        try {
+            Producto productoActualizado = productoService.actualizarProducto(id, producto);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(ProductoResponseDTO.fromProducto(productoActualizado));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + e.getMessage());
+        }
+    }
+    */
     @GetMapping
     public ResponseEntity<?> obtenerTodosLosProductos() {
         try {
@@ -67,17 +80,7 @@ public class ProductosAdminController {
                 .body("Error: " + e.getMessage());
         }
     }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<?> actualizarProducto(@PathVariable Long id, @RequestBody ProductoUpdateDTO producto) {
-        try {
-            Producto productoActualizado = productoService.actualizarProducto(id, producto);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(ProductoResponseDTO.fromProducto(productoActualizado));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + e.getMessage());
-        }
-    }
+
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> desactivarProducto(@PathVariable Long id) {

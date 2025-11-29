@@ -30,6 +30,7 @@ public class SecurityConfig {
                     "/api/**",  // ← PERMITIR TODAS LAS RUTAS API
                     "/client/**",
                     "/", 
+                    "/uploads/**",
                     "/productos/**", 
                     "/css/**", 
                     "/Img/**", 

@@ -7,6 +7,8 @@ import com.integrador.sistema_de_ventas.springboot_app.dto.ProductoUpdateDTO;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public interface ProductoService {
     Producto crearProducto(ProductoCreateDTO productoCreateDTO);
     Optional<Producto> obtenerProductoPorId(Long id);

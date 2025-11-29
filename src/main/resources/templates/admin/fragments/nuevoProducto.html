@@ -1,0 +1,81 @@
+<div th:fragment="nuevoProducto">
+  <div class="modal fade" id="modalProducto" tabindex="-1" aria-labelledby="modalProductoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content shadow-lg border-0" style="border-radius: 15px; overflow: hidden;">
+
+        <!-- Encabezado -->
+        <div class="modal-header border-0 py-3" style="background-color: #1a1a1a;">
+          <h5 class="modal-title w-100 text-center fw-bold py-2 text-white">
+            REGISTRO DE PRODUCTO
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <!-- Cuerpo -->
+        <div class="modal-body p-0">
+          <form th:action="@{/admin/inventario/nuevo_producto}" method="post" th:object="${nuevoProducto}" id="formProducto" enctype="multipart/form-data">
+            <div class="row g-0">
+              <!-- Panel de imagen -->
+              <div class="col-md-5 d-flex flex-column align-items-center justify-content-center p-4" style="background-color: #f8f9fa; border-right: 1px solid #e9ecef;">
+                <div class="image-upload-container text-center mb-4">
+                  <div class="image-preview mb-3" id="imagePreview" style="width: 200px; height: 200px; border: 2px dashed #dee2e6; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; background-color: #fff;">
+                    <span class="text-muted">Vista previa</span>
+                  </div>
+                  <div class="upload-controls">
+                    <input type="file" class="d-none" name="imagen" th:field="*{imagen}" accept="image/*" id="imagenInput">
+                    <label for="imagenInput" class="btn btn-outline-dark d-inline-flex align-items-center">
+                      <i class="bi bi-cloud-upload me-2"></i> Subir imagen
+                    </label>
+                  </div>
+                  <small class="text-muted d-block mt-2">Formatos: JPG, PNG, GIF</small>
+                </div>
+              </div>
+
+              <!-- Panel de formulario -->
+              <div class="col-md-7 p-4">
+                <p class="text-center mb-4 fw-semibold" style="color: #6c757d;">¡Agrega un nuevo producto a la tienda!</p>
+
+                <!-- Nombre -->
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Nombre del Producto:</label>
+                  <input type="text" id="nombre" class="form-control" th:field="*{nombre}" placeholder="Ingresa el nombre del producto" required>
+                </div>
+
+                <!-- Categoría -->
+                <div class="mb-3">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <div class="w-75">
+                      <label class="form-label fw-semibold">Categoría:</label>
+                      <select id="categoriaSelect" th:field="*{categoriaId}" class="form-select">
+                        <option value="">Seleccione una categoría...</option>
+                        <option th:each="cat : ${listaCategorias}" th:value="${cat.id}" th:text="${cat.nombre}">
+                        </option>
+                      </select>
+                    </div>
+                    <button type="button" class="btn btn-outline-dark ms-2" data-bs-toggle="modal" data-bs-target="#modalCategoria">
+                      <i class="bi bi-plus-circle me-1"></i> Nueva
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Descripción -->
+                <div class="mb-4">
+                  <label class="form-label fw-semibold">Descripción:</label>
+                  <textarea class="form-control" th:field="*{descripcion}" rows="3" placeholder="Describe las características del producto..."></textarea>
+                </div>
+
+                <!-- Botón de envío -->
+                <div class="text-center mt-4">
+                  <button type="submit" class="btn btn-dark px-4 py-2 fw-bold w-100" style="border-radius: 8px;">
+                    <i class="bi bi-plus-circle me-2"></i> AGREGAR PRODUCTO
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
