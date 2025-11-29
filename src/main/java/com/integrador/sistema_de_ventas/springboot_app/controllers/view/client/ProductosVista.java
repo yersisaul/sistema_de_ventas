@@ -15,7 +15,7 @@ public class ProductosVista {
 
     @GetMapping
     public String productos(Model model) {
-        model.addAttribute("listaProductos", productoServiceImpl.obtenerTodosLosProductos());
+        model.addAttribute("listaProductos", productoServiceImpl.obtenerProductosActivos());
         return "client/Produtos";
     }
 

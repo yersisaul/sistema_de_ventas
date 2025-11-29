@@ -5,9 +5,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos</title>
+    <title>Productos - MAMBO</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/client/base.css}">
     <link rel="stylesheet" th:href="@{/css/client/productos.css}">
 
@@ -15,141 +16,185 @@
 <body>
     <header th:replace="client/fragments/navbar :: navbar"></header>
 
-    <section class="catalogo-section py-5 bg-dark text-white">
-        <div class="banner-top text-center py-5 text-white fw-bold"> ¡ENCUENTRA TU ESTILO CON NUESTRAS NOVEDADES!
+    <section class="catalogo-section py-5">
+        <div class="banner-top text-center py-5 fw-bold"> 
+            ¡ENCUENTRA TU ESTILO CON NUESTRAS NOVEDADES!
         </div>
+        
         <div class="container mt-4 mb-4">
             <div class="row align-items-center">
-                <div class="col-lg-6 col-md-12">
-                    <h2 class="text-uppercase fw-bold catalogo-title text-white">Catalogo</h2>
+                <div class="col-lg-6 col-md-12 mb-3">
+                    <h2 class="text-uppercase fw-bold catalogo-title">Catálogo MAMBO</h2>
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="input-group custom-search-bar">
-                        <input type="text" class="form-control custom-search-input" placeholder="BUSCAR PRODUCTOS">
+                        <input type="text" class="form-control custom-search-input" placeholder="Buscar productos...">
                         <button class="btn custom-search-btn" type="button">
-                            <span class="material-symbols-outlined">search</span>
+                            <i class="bi bi-search"></i>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+        
         <div class="container">
             <div class="row">
-                
+                <!-- Productos -->
                 <div class="col-lg-9 col-md-12">
                     <div class="row">
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card custom-product-card bg-black text-white">
-                                <img th:src="@{/Img/P1.png}" class="card-img-top">
-                                <div class="card-body">
-                                    <h6 class="card-title fw-bold">Casaca de cuero</h6>
-                                    <p class="card-price fw-bold">S/.100.00</p>
-                                    <button class="btn w-100 product-add-btn">AGREGAR AL CARRITO</button>
+                        <!-- Card de Producto -->
+                        <div th:each="producto : ${listaProductos}" class="col-lg-4 col-md-6 mb-4">
+                            <div class="card custom-product-card h-100">
+                                
+                                <!-- Imagen del Producto -->
+                                <div class="card-img-container">
+                                    <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" 
+                                         th:src="@{${producto.imagen}}"
+                                         class="card-img-top"
+                                         th:alt="${producto.nombre}">
+                                    <img th:unless="${producto.imagen != null and !producto.imagen.isEmpty()}"
+                                         src="https://placehold.co/300x300/1a1a1a/666666?text=Sin+Imagen"
+                                         class="card-img-top"
+                                         th:alt="${producto.nombre}">
+                                    
+                                    <!-- Badge de Stock Global -->
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        <th:block th:with="totalStock=${producto.variantes != null ? #aggregates.sum(producto.variantes.![stock]) : 0}">
+                                            <span th:if="${totalStock > 0}" 
+                                                  class="badge badge-stock">
+                                                <i class="bi bi-check-circle me-1"></i>
+                                                Stock: <span th:text="${totalStock}"></span>
+                                            </span>
+                                            <span th:unless="${totalStock > 0}" 
+                                                  class="badge badge-out">
+                                                <i class="bi bi-x-circle me-1"></i>
+                                                Agotado
+                                            </span>
+                                        </th:block>
+                                    </div>
+                                    
+                                    <!-- Badge de Categoría -->
+                                    <div class="position-absolute top-0 start-0 m-2">
+                                        <span th:if="${producto.categoria != null}"
+                                              class="badge badge-category">
+                                            <i class="bi bi-tag me-1"></i>
+                                            <span th:text="${producto.categoria.nombre}"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="card-body d-flex flex-column">
+                                    <!-- Nombre del Producto -->
+                                    <h6 class="card-title fw-bold" th:text="${producto.nombre}"></h6>
+                                    
+                                    <!-- Descripción -->
+                                    <p class="card-text flex-grow-1" 
+                                       th:text="${#strings.abbreviate(producto.descripcion, 80)}">
+                                    </p>
+                                    
+                                    <!-- Precio Mínimo -->
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <p class="card-price fw-bold mb-0">
+                                            S/. 
+                                            <span th:if="${producto.variantes != null and !producto.variantes.empty}">
+                                                <span th:text="${#numbers.formatDecimal(#aggregates.min(producto.variantes.![precio]), 1, 2)}"></span>
+                                            </span>
+                                            <span th:unless="${producto.variantes != null and !producto.variantes.empty}">
+                                                0.00
+                                            </span>
+                                        </p>
+                                        <small class="text-muted" th:text="${producto.sku}"></small>
+                                    </div>
+                                    
+                                    <!-- Botón para abrir modal de detalle -->
+                                    <button class="btn product-add-btn fw-bold mt-auto"
+                                            th:attr="data-bs-target='#modalDetalleProducto' + ${producto.id}"
+                                            data-bs-toggle="modal">
+                                        <i class="bi bi-cart-plus me-2"></i>
+                                        AGREGAR AL CARRITO
+                                    </button>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card custom-product-card bg-black text-white">
-                                <img th:src="@{/Img/P2.png}" class="card-img-top">
-                                <div class="card-body">
-                                    <h6 class="card-title fw-bold">Overside de new york</h6>
-                                    <p class="card-price fw-bold">S/.70.00</p>
-                                    <button class="btn w-100 product-add-btn">AGREGAR AL CARRITO</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card custom-product-card bg-black text-white">
-                                <img th:src="@{/Img/P3.png}" class="card-img-top">
-                                <div class="card-body">
-                                    <h6 class="card-title fw-bold">Chaqueta</h6>
-                                    <p class="card-price fw-bold">S/.250.00</p>
-                                    <button class="btn w-100 product-add-btn">AGREGAR AL CARRITO</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card custom-product-card bg-black text-white">
-                                <img th:src="@{/Img/P4.png}" class="card-img-top">
-                                <div class="card-body">
-                                    <h6 class="card-title fw-bold">Polera</h6>
-                                    <p class="card-price fw-bold">S/.150.00</p>
-                                    <button class="btn w-100 product-add-btn">AGREGAR AL CARRITO</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card custom-product-card bg-black text-white">
-                                <img th:src="@{/Img/P5.png}" class="card-img-top">
-                                <div class="card-body">
-                                    <h6 class="card-title fw-bold">Jogger</h6>
-                                    <p class="card-price fw-bold">S/.90.00</p>
-                                    <button class="btn w-100 product-add-btn">AGREGAR AL CARRITO</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card custom-product-card bg-black text-white">
-                                <img th:src="@{/Img/P6.png}" class="card-img-top" alt="Producto 6">
-                                <div class="card-body">
-                                    <h6 class="card-title fw-bold">Top</h6>
-                                    <p class="card-price fw-bold">S/.60.00</p>
-                                    <button class="btn w-100 product-add-btn">AGREGAR AL CARRITO</button>
-                                </div>
+                        <!-- Mensaje si no hay productos -->
+                        <div th:if="${listaProductos == null or listaProductos.empty}" class="col-12 text-center py-5">
+                            <div class="text-muted">
+                                <i class="bi bi-inbox display-1 d-block mb-3"></i>
+                                <h4>No hay productos disponibles</h4>
+                                <p>Pronto agregaremos nuevos productos al catálogo.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Sidebar de Filtros -->
                 <div class="col-lg-3 d-none d-lg-block">
-                    <div class="filter-sidebar p-3">
-                        <h5 class="fw-bold mb-4 filter-title-prueba">PRUEBATE TU PRENDA FAVORITA AQUI</h5>
+                    <div class="filter-sidebar p-4">
+                        <h5 class="fw-bold mb-4 filter-title-prueba">
+                            <i class="bi bi-stars me-2"></i>PRUEBATE TU PRENDA
+                        </h5>
                         
-                        <h5 class="fw-bold mb-3 filter-subtitle">FILTRADO</h5>
-                        <button class="btn btn-sm filter-limpiar-btn mb-4">LIMPIAR</button>
+                        <h5 class="fw-bold mb-3 filter-subtitle">
+                            <i class="bi bi-funnel me-2"></i>FILTRADO
+                        </h5>
+                        <button class="btn btn-sm filter-limpiar-btn mb-4 w-100">
+                            <i class="bi bi-arrow-clockwise me-1"></i>LIMPIAR FILTROS
+                        </button>
 
+                        <!-- Filtro por Precio -->
                         <div class="filter-group mb-4">
-                            <h6 class="text-uppercase fw-bold mb-2 filter-subtitle-small">PRECIO</h6>
-                            <div class="d-flex justify-content-between">
-                                <input type="number" class="form-control custom-filter-input" placeholder="MINIMO">
-                                <input type="number" class="form-control custom-filter-input" placeholder="MAXIMO">
+                            <h6 class="fw-bold mb-2 filter-subtitle-small">
+                                <i class="bi bi-currency-dollar me-1"></i>PRECIO
+                            </h6>
+                            <div class="d-flex gap-2">
+                                <input type="number" class="form-control custom-filter-input" 
+                                       placeholder="Mín" min="0">
+                                <input type="number" class="form-control custom-filter-input" 
+                                       placeholder="Máx" min="0">
                             </div>
                         </div>
 
+                        <!-- Filtro por Tallas -->
                         <div class="filter-group mb-4">
-                            <h6 class="text-uppercase fw-bold mb-2 filter-subtitle-small">TALLAS</h6>
-                            <p class="mb-0 filter-label-tallas">S M L</p> 
+                            <h6 class="fw-bold mb-2 filter-subtitle-small">
+                                <i class="bi bi-grid-3x3 me-1"></i>TALLAS
+                            </h6>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <span class="talla-badge">S</span>
+                                <span class="talla-badge">M</span>
+                                <span class="talla-badge">L</span>
+                                <span class="talla-badge">XL</span>
+                            </div>
                         </div>
 
+                        <!-- Filtro por Categorías -->
                         <div class="filter-group mb-4">
-                            <h6 class="text-uppercase fw-bold mb-2 filter-subtitle-small">CANTIDAD</h6>
-                            <div class="d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="filter-label">S</span>
-                                    <input type="checkbox" class="form-check-input custom-checkbox">
+                            <h6 class="fw-bold mb-2 filter-subtitle-small">
+                                <i class="bi bi-tags me-1"></i>CATEGORÍAS
+                            </h6>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="cat-ropa">
+                                    <label class="form-check-label small" for="cat-ropa">Ropa</label>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="filter-label">M</span>
-                                    <input type="checkbox" class="form-check-input custom-checkbox">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="cat-accesorios">
+                                    <label class="form-check-label small" for="cat-accesorios">Accesorios</label>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="filter-label">L</span>
-                                    <input type="checkbox" class="form-check-input custom-checkbox">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="cat-calzado">
+                                    <label class="form-check-label small" for="cat-calzado">Calzado</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
             </div>
         </div>
     </section>
-    
+
+    <!-- Los modales de detalle se mantienen igual que antes -->
     <div th:replace="client/fragments/navbar :: loginModal"></div>
     <div th:replace="client/fragments/navbar :: registerModal"></div>
     <div th:replace="client/fragments/navbar :: carritoOffcanvas"></div>
@@ -157,13 +202,20 @@
     <footer th:replace="client/fragments/footer :: footer"></footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
-        document.getElementById("logoutBtn").addEventListener("click", async (e) => {
-  e.preventDefault();
-  await fetch("/logout", { method: "POST" });
-  window.location.reload(); // recarga la página actual
-});
+        document.getElementById("logoutBtn")?.addEventListener("click", async (e) => {
+            e.preventDefault();
+            await fetch("/logout", { method: "POST" });
+            window.location.reload();
+        });
 
+        // Efectos para los badges de tallas
+        document.querySelectorAll('.talla-badge').forEach(badge => {
+            badge.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
     </script>
 </body>
 </html>
