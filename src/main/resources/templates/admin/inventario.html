@@ -56,10 +56,10 @@
             <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
           </div>
 
-          <button class="btn btn-outline-dark rounded-2 px-4" style="font-size: 12px" type="button"
-            data-bs-toggle="modal" data-bs-target="#modalProducto">
-            NUEVO PRODUCTO
+          <button class="btn btn-dark" id="btnNuevoProducto" data-bs-toggle="modal" data-bs-target="#modalProducto">
+            Agregar producto
           </button>
+
         </div>
       </div>
 
@@ -73,7 +73,7 @@
         <table class="table align-middle mb-0 inventory-table">
           <thead class="table-light">
             <tr class="text-uppercase small text-secondary">
-              
+
               <th>IMAGEN</th>
               <th>SKU</th>
               <th>PRODUCTO</th>
@@ -89,9 +89,6 @@
 
           <tbody>
             <tr th:each="producto : ${listaProductos}" class="align-middle">
-
-              
-
               <td>
                 <div style="width: 50px; height: 50px; overflow: hidden; border-radius: 8px;" class="border">
 
@@ -150,9 +147,35 @@
               </td>
 
               <td>
-                <a href="#" class="text-dark fw-semibold text-decoration-none">
-                  <i class="bi bi-pencil-square me-1"></i>Editar
-                </a>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditarProducto" th:attr="data-id=${producto.id},
+                 data-nombre=${producto.nombre},
+                 data-descripcion=${producto.descripcion},
+                 data-categoria=${producto.categoria.id},
+                 data-imagen=${producto.imagen}">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+
+
+
+
+
+
+                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarProducto"
+                  th:attr="data-id=${producto.id}">
+                  <i class="bi bi-trash-fill text-white"></i>
+                </button>
+
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAgregarStock"
+                  th:attr="data-id=${producto.id},
+                 data-nombre=${producto.nombre},
+                 data-categoria=${producto.categoria.id},
+                 data-imagen=${producto.imagen}">
+                  <i class="bi bi-plus-square-fill me-1"></i> Stock
+                </button>
+
+
+
+
               </td>
             </tr>
             <!----
@@ -208,10 +231,46 @@
 
     </div>
 
+    <div class="modal fade" id="modalEliminarProducto" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title">Confirmar Eliminación</h5>
+            <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+
+          <form id="formEliminarProducto" method="post">
+
+            <div class="modal-body text-center">
+              ¿Seguro que deseas eliminar?
+              <strong>Esta acción no se puede deshacer.</strong>
+            </div>
+
+            <input type="hidden" name="id" id="inputIdEliminar">
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
 
     <!-- MODAL REGISTRO PRODUCTO -->
     <div th:replace="admin/fragments/nuevoProducto :: nuevoProducto"></div>
+    <div th:replace="admin/fragments/nuevoProducto :: editarProducto"></div>
     <div th:replace="admin/fragments/nuevaCategoria :: nuevaCategoria"></div>
+    <div th:replace="admin/fragments/nuevoProducto :: stock"></div>
     <!--  MODAL REGISTRO DE TALLAS -->
     <div class="modal fade" id="modalTal" tabindex="-1" aria-labelledby="modal" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" style=" max-width: 600px">

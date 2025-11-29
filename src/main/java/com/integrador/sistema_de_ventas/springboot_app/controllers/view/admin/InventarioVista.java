@@ -35,7 +35,7 @@ public class InventarioVista {
     public String inventario(Model model) {
         model.addAttribute("nuevoProducto", new ProductoCreateDTO());
         model.addAttribute("nuevaCategoria", new Categoria());
-        model.addAttribute("listaProductos", productoServiceImpl.obtenerTodosLosProductos());
+        model.addAttribute("listaProductos", productoServiceImpl.obtenerProductosActivos());
         model.addAttribute("listaCategorias", categoriaServiceImpl.obtenerTodasLasCategorias());
         model.addAttribute("activePage", "inventario");
         return "admin/inventario";
@@ -50,7 +50,7 @@ public class InventarioVista {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("activePage", "inventario");
             model.addAttribute("listaCategorias", categoriaServiceImpl.obtenerTodasLasCategorias());
-            model.addAttribute("listaProductos", productoServiceImpl.obtenerTodosLosProductos());
+            model.addAttribute("listaProductos", productoServiceImpl.obtenerProductosActivos());
             return "redirect:/admin/inventario";
         }
     }
@@ -75,7 +75,7 @@ public class InventarioVista {
             return "redirect:/admin/inventario";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("listaProductos", productoServiceImpl.obtenerTodosLosProductos());
+            model.addAttribute("listaProductos", productoServiceImpl.obtenerProductosActivos());
             model.addAttribute("listaCategorias", categoriaServiceImpl.obtenerTodasLasCategorias());
             model.addAttribute("nuevoProducto", producto);
             return "redirect:admin/inventario";
@@ -112,6 +112,6 @@ public class InventarioVista {
         productoServiceImpl.eliminarProducto(id);
         return "redirect:/admin/inventario";
     }
-    
+
 
 }

@@ -24,6 +24,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 // URLs públicas - INCLUYENDO EL PREFIJO /vista
                 .requestMatchers(
@@ -66,8 +67,8 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/admin/login?logout=true")
                 .permitAll()
             )
-            .authenticationProvider(authenticationProvider())
-            .csrf(csrf -> csrf.disable());
+            .authenticationProvider(authenticationProvider());
+
 
         return http.build();
     }
