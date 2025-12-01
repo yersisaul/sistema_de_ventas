@@ -60,7 +60,7 @@ CREATE TABLE talla_producto (
     precio_talla_producto DECIMAL(7,2) NOT NULL,
     FOREIGN KEY (id_producto) REFERENCES producto(id),
     FOREIGN KEY (id_talla) REFERENCES talla(id)
-)
+);
 
 CREATE TABLE pedido (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -87,7 +87,7 @@ CREATE TABLE pago (
     metodo_pago ENUM('TARJETA','TRANSFERENCIA','YAPE') NOT NULL,
     monto DECIMAL(10,2) NOT NULL,
     estado_pago ENUM('PENDIENTE','APROBADO','RECHAZADO') NOT NULL,
-    transaction_id VARCHAR(100.0),
+    transaction_id VARCHAR(100),
     fecha_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_pedido) REFERENCES pedido(id)
 );
