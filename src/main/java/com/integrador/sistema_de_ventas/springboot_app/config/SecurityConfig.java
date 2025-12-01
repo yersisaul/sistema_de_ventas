@@ -24,22 +24,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 // URLs públicas - INCLUYENDO EL PREFIJO /vista
                 .requestMatchers(
                     "/api/**",  // ← PERMITIR TODAS LAS RUTAS API
-                    "/vista/**",
+                    "/client/**",
                     "/", 
-                    "/vista/**", 
+                    "/uploads/**",
                     "/productos/**", 
                     "/css/**", 
-                    "/img/**", 
+                    "/Img/**", 
                     "/js/**", 
                     "/static/**",
                     "/templates/**",
                     "/admin/login",
                     "/api/admin/auth/**",
-                    "/client/**",
                     "/api/client/**", 
                     "/api/client/auth/**",
                     "/v3/api-docs/**",
@@ -51,24 +51,24 @@ public class SecurityConfig {
                     "/configuration/security"
                 ).permitAll()
                 // Rutas administrativas ACTUALIZADAS
-                .requestMatchers("/vista/admin/clientes", "/vista/admin/dashboard", "/vista/admin/inventario", "/vista/admin/usuarios").hasRole("ADMIN")
-                .requestMatchers("/vista/admin/pedidos").hasAnyRole("ADMIN", "CLIENTE")
+                .requestMatchers("/admin/clientes", "/admin/dashboard", "/admin/inventario", "/admin/usuarios").hasRole("ADMIN")
+                .requestMatchers("/admin/pedidos").hasAnyRole("ADMIN", "CLIENTE")
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/vista/admin/login")
+                .loginPage("/admin/login")
                 .loginProcessingUrl("/login")
                 .successHandler(customSuccessHandler)
-                .failureUrl("/vista/admin/login?error=true")
+                .failureUrl("/admin/login?error=true")
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/vista/admin/login?logout=true")
+                .logoutSuccessUrl("/admin/login?logout=true")
                 .permitAll()
             )
-            .authenticationProvider(authenticationProvider())
-            .csrf(csrf -> csrf.disable());
+            .authenticationProvider(authenticationProvider());
+
 
         return http.build();
     }

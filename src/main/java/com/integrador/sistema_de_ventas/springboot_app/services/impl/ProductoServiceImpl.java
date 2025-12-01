@@ -6,10 +6,13 @@ import com.integrador.sistema_de_ventas.springboot_app.dto.ProductoCreateDTO;
 import com.integrador.sistema_de_ventas.springboot_app.dto.ProductoUpdateDTO;
 import com.integrador.sistema_de_ventas.springboot_app.repository.ProductoRepository;
 import com.integrador.sistema_de_ventas.springboot_app.repository.CategoriaRepository;
+import com.integrador.sistema_de_ventas.springboot_app.services.GuardadoImgService;
 import com.integrador.sistema_de_ventas.springboot_app.services.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -23,22 +26,32 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private GuardadoImgService guardadoImgService;
     
     @Override
     public Producto crearProducto(ProductoCreateDTO productoDTO) {
         Producto producto = new Producto();
         producto.setNombre(productoDTO.getNombre());
         producto.setDescripcion(productoDTO.getDescripcion());
-        producto.setUrl_imagen(productoDTO.getUrl_imagen());
+        producto.setImagen(productoDTO.getImagen() != null ? productoDTO.getImagen().getOriginalFilename() : null);
         producto.setFechaCreacion(LocalDateTime.now());
         producto.setFechaActualizacion(LocalDateTime.now());
         producto.setActivo(true);
         producto.setEliminado(false);
-        
+
+        MultipartFile imagen = productoDTO.getImagen();
         if (productoDTO.getCategoriaId() != null) {
             Categoria categoria = categoriaRepository.findById(productoDTO.getCategoriaId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada con ID: " + productoDTO.getCategoriaId()));
             producto.setCategoria(categoria);
+        }
+        if (imagen != null && !imagen.isEmpty()) {
+            // Usamos tu servicio para guardar el archivo en el disco
+            String rutaImagen = guardadoImgService.guardarImagen(imagen);
+            // Guardamos la ruta (ej: /uploads/productos/foto.jpg) en la base de datos
+            producto.setImagen(rutaImagen); 
         }
         
         Producto savedProducto = productoRepository.save(producto);
@@ -91,6 +104,13 @@ public class ProductoServiceImpl implements ProductoService {
         producto.setNombre(productoActualizado.getNombre());
         producto.setDescripcion(productoActualizado.getDescripcion());
         producto.setFechaActualizacion(LocalDateTime.now());
+        MultipartFile nuevaImagen = productoActualizado.getImagen();
+
+
+        if (nuevaImagen != null && !nuevaImagen.isEmpty()) {
+            String rutaImagen = guardadoImgService.guardarImagen(nuevaImagen);
+            producto.setImagen(rutaImagen);
+        }
 
         if (productoActualizado.getCategoriaId() != null) {
             Categoria categoria = categoriaRepository.findById(productoActualizado.getCategoriaId())

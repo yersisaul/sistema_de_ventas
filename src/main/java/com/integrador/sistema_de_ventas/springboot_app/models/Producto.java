@@ -31,7 +31,7 @@ public class Producto {
     private Categoria categoria;
 
     @Column(nullable = false, length = 500)
-    private String url_imagen;
+    private String imagen;
     
     @Column
     private Boolean activo = true;

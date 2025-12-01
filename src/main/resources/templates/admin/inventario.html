@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
   <meta charset="UTF-8" />
@@ -33,9 +31,9 @@
               <p class="text-secondary m-0 text-center d-md-block">Lista de clientes de la tienda MAMBO</p>
 
             </div>
-           
+
           </div>
-           <hr class="p-2 d-md-none">
+          <hr class="p-2 d-md-none">
 
           <!-- 🔽 EN PANTALLAS PEQUEÑAS: BUSCADOR Y BOTÓN DEBAJO -->
           <div class="d-flex flex-column flex-sm-row gap-2 d-md-none">
@@ -58,16 +56,16 @@
             <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
           </div>
 
-          <button class="btn btn-outline-dark rounded-2 px-4" style="font-size: 12px" type="button"
-            data-bs-toggle="modal" data-bs-target="#modalProducto">
-            NUEVO PRODUCTO
+          <button class="btn btn-dark" id="btnNuevoProducto" data-bs-toggle="modal" data-bs-target="#modalProducto">
+            Agregar producto
           </button>
+
         </div>
       </div>
 
 
 
-  
+
 
       <!-- Tabla principal: columnas generales + columnas de tallas -->
       <!-- EJEMPLO ESTÁTICO (más abajo incluyo ejemplo dinámico con th:each) -->
@@ -75,38 +73,128 @@
         <table class="table align-middle mb-0 inventory-table">
           <thead class="table-light">
             <tr class="text-uppercase small text-secondary">
+
+              <th>IMAGEN</th>
               <th>SKU</th>
-              <th>Producto</th>
-              <th>Descripción</th>
-              <th>Categoría</th>
-              <th>Precio</th>
-              <th>XS</th>
+              <th>PRODUCTO</th>
+              <th>DESCRIPCION</th>
+              <th>CATEGORIA</th>
+              <th>PRECIO</th>
               <th>S</th>
               <th>M</th>
               <th>L</th>
-              <th>XL</th>
               <th>Acciones</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr>
-              <td>0001</td>
-              <td class="fw-semibold">Polo Básico</td>
-              <td>Algodón slim fit</td>
-              <td>Ropa</td>
+            <tr th:each="producto : ${listaProductos}" class="align-middle">
+              <td>
+                <div style="width: 50px; height: 50px; overflow: hidden; border-radius: 8px;" class="border">
+
+                  <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" th:src="@{${producto.imagen}}"
+                    alt="Producto" class="w-100 h-100 object-fit-cover">
+
+                  <img th:unless="${producto.imagen != null and !producto.imagen.isEmpty()}"
+                    src="https://placehold.co/50x50?text=IMG" alt="Sin imagen"
+                    class="w-100 h-100 object-fit-cover opacity-50">
+                </div>
+              </td>
+              <td th:text="${producto.sku}">PRD-001</td>
+
+              <td th:text="${producto.nombre}" class="fw-semibold">Nombre Producto</td>
+
+              <td th:text="${#strings.abbreviate(producto.descripcion, 30)}" class="text-muted small">Desc...</td>
+
+              <td th:text="${producto.categoria?.nombre}">Cat</td>
+
               <td>S/. 39.90</td>
 
-              <!-- Ejemplo de stock por talla -->
+              <td class="text-center"
+                th:with="variantS=${producto.variantes != null ? (producto.variantes.?[talla == 'S'].isEmpty() ? null : producto.variantes.?[talla == 'S'][0]) : null}">
+
+                <div class="stock-cell" th:if="${variantS != null}">
+                  <span class="stock-num" th:text="${variantS.stock}">0</span>
+                  <span class="stock-tag" th:classappend="${variantS.stock > 0 ? 'complet' : 'danger'}"
+                    th:text="${variantS.stock > 0 ? 'Stock' : 'Agotado'}">
+                  </span>
+                </div>
+                <div th:unless="${variantS != null}" class="text-muted opacity-25">-</div>
+              </td>
+
+              <td class="text-center"
+                th:with="variantM=${producto.variantes != null ? (producto.variantes.?[talla == 'M'].isEmpty() ? null : producto.variantes.?[talla == 'M'][0]) : null}">
+
+                <div class="stock-cell" th:if="${variantM != null}">
+                  <span class="stock-num" th:text="${variantM.stock}">0</span>
+                  <span class="stock-tag" th:classappend="${variantM.stock > 0 ? 'complet' : 'danger'}"
+                    th:text="${variantM.stock > 0 ? 'Stock' : 'Agotado'}">
+                  </span>
+                </div>
+                <div th:unless="${variantM != null}" class="text-muted opacity-25">-</div>
+              </td>
+
+              <td class="text-center"
+                th:with="variantL=${producto.variantes != null ? (producto.variantes.?[talla == 'L'].isEmpty() ? null : producto.variantes.?[talla == 'L'][0]) : null}">
+
+                <div class="stock-cell" th:if="${variantL != null}">
+                  <span class="stock-num" th:text="${variantL.stock}">0</span>
+                  <span class="stock-tag" th:classappend="${variantL.stock > 0 ? 'complet' : 'danger'}"
+                    th:text="${variantL.stock > 0 ? 'Stock' : 'Agotado'}">
+                  </span>
+                </div>
+                <div th:unless="${variantL != null}" class="text-muted opacity-25">-</div>
+              </td>
+
+              <td>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditarProducto" th:attr="data-id=${producto.id},
+                 data-nombre=${producto.nombre},
+                 data-descripcion=${producto.descripcion},
+                 data-categoria=${producto.categoria.id},
+                 data-imagen=${producto.imagen}">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+
+
+
+
+
+
+                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarProducto"
+                  th:attr="data-id=${producto.id}">
+                  <i class="bi bi-trash-fill text-white"></i>
+                </button>
+
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAgregarStock"
+                  th:attr="data-id=${producto.id},
+                 data-nombre=${producto.nombre},
+                 data-categoria=${producto.categoria.id},
+                 data-imagen=${producto.imagen}">
+                  <i class="bi bi-plus-square-fill me-1"></i> Stock
+                </button>
+
+
+
+
+              </td>
+            </tr>
+            <!----
+            <tr>
+              <td>0004</td>
+              <td class="fw-semibold">Gorra Deportiva</td>
+              <td>Con malla trasera y logo bordado</td>
+              <td>Accesorios</td>
+              <td>S/. 29.90</td>
+
               <td class="text-center">
                 <div class="stock-cell">
-                  <span class="stock-num">5</span>
+                  <span class="stock-num">15</span>
                   <span class="stock-tag complet">Stock</span>
                 </div>
               </td>
               <td class="text-center">
                 <div class="stock-cell">
-                  <span class="stock-num">12</span>
+                  <span class="stock-num">11</span>
                   <span class="stock-tag complet">Stock</span>
                 </div>
               </td>
@@ -118,14 +206,14 @@
               </td>
               <td class="text-center">
                 <div class="stock-cell">
-                  <span class="stock-num low">3</span>
-                  <span class="stock-tag warning">Bajo</span>
+                  <span class="stock-num">5</span>
+                  <span class="stock-tag complet">Stock</span>
                 </div>
               </td>
               <td class="text-center">
                 <div class="stock-cell">
-                  <span class="stock-num zero">0</span>
-                  <span class="stock-tag danger">Agotado</span>
+                  <span class="stock-num low">2</span>
+                  <span class="stock-tag warning">Bajo</span>
                 </div>
               </td>
 
@@ -135,141 +223,7 @@
                 </a>
               </td>
             </tr>
-            <tr>
-  <td>0002</td>
-  <td class="fw-semibold">Zapatillas Urbanas</td>
-  <td>Modelo ligero con suela antideslizante</td>
-  <td>Calzado</td>
-  <td>S/. 149.90</td>
-
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num">10</span>
-      <span class="stock-tag complet">Stock</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num">7</span>
-      <span class="stock-tag complet">Stock</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num low">2</span>
-      <span class="stock-tag warning">Bajo</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num zero">0</span>
-      <span class="stock-tag danger">Agotado</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num zero">0</span>
-      <span class="stock-tag danger">Agotado</span>
-    </div>
-  </td>
-
-  <td>
-    <a href="#" class="text-dark fw-semibold text-decoration-none">
-      <i class="bi bi-pencil-square me-1"></i>Editar
-    </a>
-  </td>
-</tr>
-
-<tr>
-  <td>0003</td>
-  <td class="fw-semibold">Chompa de Lana</td>
-  <td>Tejido grueso ideal para invierno</td>
-  <td>Ropa</td>
-  <td>S/. 89.90</td>
-
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num low">3</span>
-      <span class="stock-tag warning">Bajo</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num">9</span>
-      <span class="stock-tag complet">Stock</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num">6</span>
-      <span class="stock-tag complet">Stock</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num zero">0</span>
-      <span class="stock-tag danger">Agotado</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num">4</span>
-      <span class="stock-tag complet">Stock</span>
-    </div>
-  </td>
-
-  <td>
-    <a href="#" class="text-dark fw-semibold text-decoration-none">
-      <i class="bi bi-pencil-square me-1"></i>Editar
-    </a>
-  </td>
-</tr>
-
-<tr>
-  <td>0004</td>
-  <td class="fw-semibold">Gorra Deportiva</td>
-  <td>Con malla trasera y logo bordado</td>
-  <td>Accesorios</td>
-  <td>S/. 29.90</td>
-
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num">15</span>
-      <span class="stock-tag complet">Stock</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num">11</span>
-      <span class="stock-tag complet">Stock</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num">8</span>
-      <span class="stock-tag complet">Stock</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num">5</span>
-      <span class="stock-tag complet">Stock</span>
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="stock-cell">
-      <span class="stock-num low">2</span>
-      <span class="stock-tag warning">Bajo</span>
-    </div>
-  </td>
-
-  <td>
-    <a href="#" class="text-dark fw-semibold text-decoration-none">
-      <i class="bi bi-pencil-square me-1"></i>Editar
-    </a>
-  </td>
-</tr>
-
+            -->
           </tbody>
         </table>
       </div>
@@ -277,8 +231,48 @@
 
     </div>
 
+    <div class="modal fade" id="modalEliminarProducto" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title">Confirmar Eliminación</h5>
+            <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+
+          <form id="formEliminarProducto" method="post">
+
+            <div class="modal-body text-center">
+              ¿Seguro que deseas eliminar?
+              <strong>Esta acción no se puede deshacer.</strong>
+            </div>
+
+            <input type="hidden" name="id" id="inputIdEliminar">
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+
     <!-- MODAL REGISTRO PRODUCTO -->
-    <div class="modal fade" id="modalProducto" tabindex="-1" aria-labelledby="modalProductoLabel" aria-hidden="true">
+    <div th:replace="admin/fragments/nuevoProducto :: nuevoProducto"></div>
+    <div th:replace="admin/fragments/nuevoProducto :: editarProducto"></div>
+    <div th:replace="admin/fragments/nuevaCategoria :: nuevaCategoria"></div>
+    <div th:replace="admin/fragments/nuevoProducto :: stock"></div>
+    <!--  MODAL REGISTRO DE TALLAS -->
+    <div class="modal fade" id="modalTal" tabindex="-1" aria-labelledby="modal" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" style=" max-width: 600px">
         <div class="modal-content shadow-lg border-0" style="border-radius: 10px;">
 
@@ -286,43 +280,16 @@
           <div class="modal-header border-0">
             <h5 class="modal-title w-100 text-center fw-bold py-2 text-white"
               style="background-color: black; border-radius: 10px;">
-              REGISTRO PRODUCTO
+              REGISTRO TALLAS
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
 
           <!-- Cuerpo -->
           <div class="modal-body px-5">
-            <p class="text-center mb-4">¡Nuevo Producto a la tienda!</p>
+            <p class="text-center mb-4">¡Nuevos stocks!</p>
 
             <form enctype="multipart/form-data">
-
-              <!-- Nombre -->
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Nombre:</label>
-                <input type="text" id="nombre" class="form-control" required>
-              </div>
-
-              <div class="mb-3 d-flex flex-column flex-md-column align-items-md-center gap-2">
-                <div class="dni d-flex gap-1 w-100">
-                  <div class="flex-row">
-                    <label class="form-label fw-semibold m-0" style="min-width: 160px;">Categoria:</label>
-                    <select class="form-select" style="max-width: 130px;">
-                      <option value="categoria">Polo</option>
-                    </select>
-                  </div>
-                  <div class="flex-row w-100">
-                    <label class="form-label fw-semibold m-0" style="min-width: 160px;">Precio:</label>
-                    <input type="number" class="form-control" step="0.01" min="0" required>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Categoría -->
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Stock:</label>
-                <input type="number" class="form-control" required>
-              </div>
 
               <!-- Tallas y Stock -->
               <div class="row mb-3">
@@ -333,11 +300,17 @@
                     <div class="d-flex align-items-center gap-3">
                       <div class="form-check m-0">
                         <input class="form-check-input" type="checkbox" id="tallaS" name="tallaS" value="S"
-                          onclick="toggleStockInput('tallaS', 'stockS')">
+                          onclick="toggleStockInput('tallaS', 'stockS', 'precioS')">
                         <label class="form-check-label" for="tallaS">S</label>
                       </div>
                       <input type="number" class="form-control w-100" placeholder="Stock S" name="stockS" id="stockS"
                         disabled>
+                      <div class="flex-row w-100">
+                        <label class="form-label fw-semibold m-0" for="precioS"
+                          style="min-width: 160px;">Precio:</label>
+                        <input type="number" class="form-control" name="precioS" id="precioS" step="0.01" min="0"
+                          disabled>
+                      </div>
                     </div>
 
                     <!-- Talla M -->
@@ -349,6 +322,10 @@
                       </div>
                       <input type="number" class="form-control w-100" placeholder="Stock M" name="stockM" id="stockM"
                         disabled>
+                      <div class="flex-row w-100">
+                        <label class="form-label fw-semibold m-0" style="min-width: 160px;">Precio:</label>
+                        <input type="number" class="form-control" step="0.01" min="0" required>
+                      </div>
                     </div>
 
                     <!-- Talla L -->
@@ -360,26 +337,11 @@
                       </div>
                       <input type="number" class="form-control w-100" placeholder="Stock L" name="stockL" id="stockL"
                         disabled>
+                      <div class="flex-row w-100">
+                        <label class="form-label fw-semibold m-0" style="min-width: 160px;">Precio:</label>
+                        <input type="number" class="form-control" step="0.01" min="0" required>
+                      </div>
                     </div>
-                  </div>
-                </div>
-
-
-
-                <!-- Descripción -->
-                <div class="mb-3">
-                  <label class="form-label fw-semibold">Descripción:</label>
-                  <textarea class="form-control" placeholder="Escribe una breve descripción..."></textarea>
-                </div>
-
-                <!-- Imagen -->
-                <div class="mb-3">
-                  <label class="form-label fw-semibold">Agregar Imagen:</label>
-                  <div class="input-group">
-                    <input type="file" class="form-control" name="imagen" accept="image/*" id="imagenInput">
-                    <label class="input-group-text" for="imagenInput">
-                      <i class="bi bi-upload"></i> Subir imagen
-                    </label>
                   </div>
                 </div>
 
@@ -409,35 +371,35 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        // Selecciona TODOS los inputs con clase .buscador (tanto móvil como escritorio)
-        const buscadores = document.querySelectorAll(".buscador");
+      // Selecciona TODOS los inputs con clase .buscador (tanto móvil como escritorio)
+      const buscadores = document.querySelectorAll(".buscador");
 
-        buscadores.forEach(buscador => {
-          buscador.addEventListener("input", function () {
-            const filtro = buscador.value.trim().toLowerCase();
-            const filas = document.querySelectorAll("tbody tr");
+      buscadores.forEach(buscador => {
+        buscador.addEventListener("input", function () {
+          const filtro = buscador.value.trim().toLowerCase();
+          const filas = document.querySelectorAll("tbody tr");
 
-            filas.forEach(fila => {
-              // Seleccionamos todas las columnas de esa fila
-              const columnas = fila.querySelectorAll("td");
+          filas.forEach(fila => {
+            // Seleccionamos todas las columnas de esa fila
+            const columnas = fila.querySelectorAll("td");
 
-              // Unimos el texto de todas las celdas en un solo string
-              const textoFila = Array.from(columnas)
-                .map(td => td.textContent.toLowerCase())
-                .join(" ");
+            // Unimos el texto de todas las celdas en un solo string
+            const textoFila = Array.from(columnas)
+              .map(td => td.textContent.toLowerCase())
+              .join(" ");
 
-              // Mostrar u ocultar según si el texto contiene el filtro
-              if (textoFila.includes(filtro)) {
-                fila.style.display = "";
-              } else {
-                fila.style.display = "none";
-              }
-            });
+            // Mostrar u ocultar según si el texto contiene el filtro
+            if (textoFila.includes(filtro)) {
+              fila.style.display = "";
+            } else {
+              fila.style.display = "none";
+            }
           });
         });
       });
+    });
   </script>
-      <script th:src="@{/js/inventario.js}" defer></script>
+  <script th:src="@{/js/inventario.js}" defer></script>
 </body>
 
 </html>

@@ -1,4 +1,6 @@
 package com.integrador.sistema_de_ventas.springboot_app.dto;
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +14,6 @@ public class ProductoCreateDTO {
     private String descripcion;
     private Long categoriaId; // Solo el ID de la categoría
     private Boolean activo = true;
-    private String url_imagen;
+    private MultipartFile imagen; 
 
 }

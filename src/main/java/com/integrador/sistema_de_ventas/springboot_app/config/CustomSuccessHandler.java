@@ -17,10 +17,10 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException, ServletException {
         if (authentication.getAuthorities().stream()
             .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-            response.sendRedirect("vista/admin/dashboard");
+            response.sendRedirect("/admin/dashboard");
         } else if (authentication.getAuthorities().stream()
             .anyMatch(auth -> auth.getAuthority().equals("ROLE_CLIENTE"))) {
-            response.sendRedirect("vista/admin/pedidos");
+            response.sendRedirect("/admin/pedidos");
         } else {
             response.sendRedirect("/");
         }

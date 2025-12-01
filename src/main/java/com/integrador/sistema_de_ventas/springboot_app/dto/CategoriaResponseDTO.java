@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 public class CategoriaResponseDTO {
     private String nombre;
-    private String descripcion;
     
     public static CategoriaResponseDTO fromCategoria(Categoria categoria) {
         if (categoria == null) {
@@ -15,7 +14,6 @@ public class CategoriaResponseDTO {
         
         CategoriaResponseDTO dto = new CategoriaResponseDTO();
         dto.setNombre(categoria.getNombre());
-        dto.setDescripcion(categoria.getDescripcion());
         return dto;
     }
 }
