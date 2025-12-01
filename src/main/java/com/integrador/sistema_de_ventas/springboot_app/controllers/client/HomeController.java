@@ -1,6 +1,5 @@
 package com.integrador.sistema_de_ventas.springboot_app.controllers.client;
 
-import com.integrador.sistema_de_ventas.springboot_app.models.Categoria;
 import com.integrador.sistema_de_ventas.springboot_app.models.Producto;
 import com.integrador.sistema_de_ventas.springboot_app.services.CategoriaService;
 import com.integrador.sistema_de_ventas.springboot_app.services.ProductoService;
