@@ -15,9 +15,6 @@ import java.util.List;
 public class HomeController {
     
     @Autowired
-    private CategoriaService categoriaService;
-    
-    @Autowired
     private ProductoService productoService;
     
     @GetMapping("/productos-destacados")
