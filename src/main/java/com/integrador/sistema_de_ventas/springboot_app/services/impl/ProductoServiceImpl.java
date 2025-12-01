@@ -29,6 +29,7 @@ public class ProductoServiceImpl implements ProductoService {
         Producto producto = new Producto();
         producto.setNombre(productoDTO.getNombre());
         producto.setDescripcion(productoDTO.getDescripcion());
+        producto.setUrl_imagen(productoDTO.getUrl_imagen());
         producto.setFechaCreacion(LocalDateTime.now());
         producto.setFechaActualizacion(LocalDateTime.now());
         producto.setActivo(true);

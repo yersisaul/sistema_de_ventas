@@ -12,5 +12,6 @@ public class ProductoCreateDTO {
     private String descripcion;
     private Long categoriaId; // Solo el ID de la categoría
     private Boolean activo = true;
+    private String url_imagen;
 
 }

@@ -26,9 +26,12 @@ public class Producto {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
     
-    @ManyToOne
+    @ManyToOne // Una categoria puede tener muchos productos
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
+
+    @Column(nullable = false, length = 500)
+    private String url_imagen;
     
     @Column
     private Boolean activo = true;
@@ -42,12 +45,9 @@ public class Producto {
     @Column(nullable = false)
     private LocalDateTime fechaActualizacion = LocalDateTime.now();
     
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // Una lista de variantes asociadas al producto
     private List<VarianteProducto> variantes;
     
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ImagenProducto> imagenes;
-    
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL) // Una lista de reseñas asociadas al producto
     private List<Reseña> reseñas;
 }
