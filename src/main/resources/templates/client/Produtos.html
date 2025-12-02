@@ -8,652 +8,13 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
   <link rel="stylesheet" th:href="@{/css/client/base.css}" />
-  <style>
-    /* 🔥 ESTILOS MODERNOS PARA PRODUCTOS MAMBO */
-    
-    :root {
-      --color-primario: #000000;
-      --color-secundario: #FFD700;
-      --color-terciario: #FFFFFF;
-      --color-fondo: #0A0A0A;
-      --color-texto: #E0E0E0;
-      --color-borde: #333333;
-      --color-hover: #1A1A1A;
-    }
-    
-    body {
-      background-color: var(--color-fondo);
-      color: var(--color-texto);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      overflow-x: hidden;
-    }
-    
-    /* 🌟 BANNER SUPERIOR MODERNO */
-    .banner-top {
-      background: linear-gradient(135deg, var(--color-primario) 0%, #222222 100%);
-      color: var(--color-terciario);
-      font-size: 2.5rem;
-      font-weight: 900;
-      letter-spacing: 3px;
-      padding: 80px 20px;
-      position: relative;
-      overflow: hidden;
-      text-transform: uppercase;
-      margin-bottom: 40px;
-      border-bottom: 5px solid var(--color-secundario);
-    }
-    
-    .banner-top::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: 
-        radial-gradient(circle at 20% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255,215,0,0.05) 0%, transparent 50%);
-      animation: float 8s ease-in-out infinite;
-    }
-    
-    .banner-top::after {
-      content: '✨';
-      position: absolute;
-      right: 10%;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 3rem;
-      opacity: 0.5;
-      animation: sparkle 2s infinite;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    
-    @keyframes sparkle {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 0.8; }
-    }
-    
-    /* 🎴 TÍTULO PRINCIPAL */
-    .catalogo-title {
-      font-size: 3rem;
-      font-weight: 900;
-      background: linear-gradient(90deg, var(--color-terciario), var(--color-secundario));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      position: relative;
-      display: inline-block;
-      letter-spacing: 2px;
-      margin-bottom: 10px;
-    }
-    
-    .catalogo-title::after {
-      content: '';
-      position: absolute;
-      bottom: -15px;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: linear-gradient(90deg, var(--color-secundario), transparent);
-      border-radius: 2px;
-    }
-    
-    /* 🔍 BARRA DE BÚSQUEDA PREMIUM */
-    .custom-search-bar {
-      max-width: 500px;
-      margin-left: auto;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border: 2px solid var(--color-borde);
-      border-radius: 50px;
-      padding: 5px;
-      transition: all 0.3s ease;
-    }
-    
-    .custom-search-bar:focus-within {
-      border-color: var(--color-secundario);
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
-      transform: translateY(-2px);
-    }
-    
-    .custom-search-input {
-      background: transparent;
-      border: none;
-      color: var(--color-terciario);
-      padding: 12px 25px;
-      font-size: 1rem;
-      width: 100%;
-    }
-    
-    .custom-search-input:focus {
-      outline: none;
-      box-shadow: none;
-    }
-    
-    .custom-search-input::placeholder {
-      color: rgba(255, 255, 255, 0.4);
-    }
-    
-    .custom-search-btn {
-      background: linear-gradient(135deg, var(--color-secundario), #FFC107);
-      color: var(--color-primario);
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      transition: all 0.3s ease;
-      flex-shrink: 0;
-    }
-    
-    .custom-search-btn:hover {
-      transform: scale(1.1) rotate(10deg);
-      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-    }
-    
-    /* 🎴 TARJETAS DE PRODUCTO PREMIUM */
-    .custom-product-card {
-      background: rgba(20, 20, 20, 0.8);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--color-borde);
-      border-radius: 20px;
-      overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      height: 100%;
-      position: relative;
-    }
-    
-    .custom-product-card:hover {
-      transform: translateY(-15px) scale(1.02);
-      border-color: var(--color-secundario);
-      box-shadow: 
-        0 25px 50px rgba(0, 0, 0, 0.5),
-        0 0 30px rgba(255, 215, 0, 0.1);
-    }
-    
-    .custom-product-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, var(--color-secundario), #FFC107);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 2;
-    }
-    
-    .custom-product-card:hover::before {
-      opacity: 1;
-    }
-    
-    /* 🖼️ CONTENEDOR DE IMAGEN */
-    .card-img-container {
-      position: relative;
-      overflow: hidden;
-      height: 280px;
-      background: linear-gradient(45deg, #111111, #222222);
-    }
-    
-    .card-img-top {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s ease;
-      filter: brightness(0.95);
-    }
-    
-    .custom-product-card:hover .card-img-top {
-      transform: scale(1.1);
-      filter: brightness(1.1);
-    }
-    
-    /* 🏷️ BADGES PREMIUM */
-    .badge {
-      padding: 8px 15px;
-      border-radius: 25px;
-      font-weight: 700;
-      font-size: 0.8rem;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      backdrop-filter: blur(10px);
-      border: 2px solid transparent;
-    }
-    
-    .badge-stock {
-      background: linear-gradient(135deg, rgba(25, 135, 84, 0.9), rgba(32, 201, 151, 0.9));
-      color: white;
-      border-color: #198754;
-      box-shadow: 0 4px 15px rgba(25, 135, 84, 0.2);
-    }
-    
-    .badge-out {
-      background: linear-gradient(135deg, rgba(220, 53, 69, 0.9), rgba(255, 107, 107, 0.9));
-      color: white;
-      border-color: #dc3545;
-      box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
-    }
-    
-    .badge-category {
-      background: rgba(255, 215, 0, 0.2);
-      backdrop-filter: blur(10px);
-      color: var(--color-secundario);
-      border: 2px solid var(--color-secundario);
-      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.1);
-    }
-    
-    /* 🎯 BOTÓN DE VISTA RÁPIDA */
-    .btn-vista-rapida {
-      position: absolute;
-      bottom: 15px;
-      left: 15px;
-      background: rgba(0, 0, 0, 0.8);
-      color: var(--color-secundario);
-      border: 2px solid var(--color-secundario);
-      border-radius: 10px;
-      padding: 8px 15px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s ease;
-      z-index: 3;
-      backdrop-filter: blur(5px);
-    }
-    
-    .custom-product-card:hover .btn-vista-rapida {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    .btn-vista-rapida:hover {
-      background: var(--color-secundario);
-      color: var(--color-primario);
-      transform: translateY(-2px) scale(1.05);
-    }
-    
-    /* 📝 CONTENIDO DE LA TARJETA */
-    .card-body {
-      padding: 25px;
-      display: flex;
-      flex-direction: column;
-      height: calc(100% - 280px);
-      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.3));
-    }
-    
-    .card-title {
-      color: var(--color-terciario);
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-      min-height: 3.5rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      line-height: 1.4;
-    }
-    
-    .card-text {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 0.95rem;
-      line-height: 1.6;
-      flex-grow: 1;
-      margin-bottom: 20px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    
-    /* 💰 PRECIO Y SKU */
-    .card-price {
-      color: var(--color-secundario);
-      font-size: 1.8rem;
-      font-weight: 900;
-      margin: 0;
-      text-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
-    }
-    
-    .sku-badge {
-      background: rgba(255, 255, 255, 0.05);
-      color: rgba(255, 255, 255, 0.6);
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-family: 'Courier New', monospace;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    /* 🎯 BOTÓN AGREGAR AL CARRITO */
-    .product-add-btn {
-      background: linear-gradient(135deg, var(--color-secundario), #FFC107);
-      color: var(--color-primario);
-      border: none;
-      border-radius: 15px;
-      padding: 15px 25px;
-      font-weight: 900;
-      font-size: 0.95rem;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-      width: 100%;
-      margin-top: auto;
-      text-transform: uppercase;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .product-add-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-      transition: 0.5s;
-    }
-    
-    .product-add-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
-    }
-    
-    .product-add-btn:hover::before {
-      left: 100%;
-    }
-    
-    .product-add-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none !important;
-      background: linear-gradient(135deg, #666, #888);
-    }
-    
-    .product-add-btn i {
-      font-size: 1.1rem;
-      margin-right: 8px;
-    }
-    
-    /* 📱 SIDEBAR DE FILTROS PREMIUM */
-    .filter-sidebar {
-      background: rgba(20, 20, 20, 0.9);
-      backdrop-filter: blur(15px);
-      border: 1px solid var(--color-borde);
-      border-radius: 20px;
-      position: sticky;
-      top: 30px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      border-left: 5px solid var(--color-secundario);
-    }
-    
-    .filter-title-prueba {
-      color: var(--color-secundario);
-      font-size: 1.3rem;
-      padding-bottom: 15px;
-      border-bottom: 2px solid var(--color-secundario);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    
-    .filter-subtitle {
-      color: var(--color-terciario);
-      font-size: 1.2rem;
-      margin-top: 25px;
-      position: relative;
-      padding-left: 15px;
-    }
-    
-    .filter-subtitle::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 5px;
-      height: 20px;
-      background: var(--color-secundario);
-      border-radius: 2px;
-    }
-    
-    .filter-limpiar-btn {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--color-texto);
-      border: 2px solid var(--color-borde);
-      border-radius: 12px;
-      padding: 10px 20px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      width: 100%;
-    }
-    
-    .filter-limpiar-btn:hover {
-      background: rgba(255, 215, 0, 0.1);
-      border-color: var(--color-secundario);
-      color: var(--color-secundario);
-      transform: translateY(-2px);
-    }
-    
-    .filter-group {
-      padding: 20px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .filter-group:last-child {
-      border-bottom: none;
-    }
-    
-    .filter-subtitle-small {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 1rem;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-    }
-    
-    .filter-subtitle-small i {
-      color: var(--color-secundario);
-      margin-right: 10px;
-      font-size: 1.1rem;
-    }
-    
-    /* 🎯 INPUTS DE FILTRO */
-    .custom-filter-input {
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px solid var(--color-borde);
-      border-radius: 10px;
-      color: var(--color-terciario);
-      text-align: center;
-      padding: 10px;
-      transition: all 0.3s ease;
-    }
-    
-    .custom-filter-input:focus {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--color-secundario);
-      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
-      color: var(--color-terciario);
-    }
-    
-    /* 🏷️ BADGES DE TALLA */
-    .talla-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 15px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px solid var(--color-borde);
-      border-radius: 10px;
-      color: var(--color-texto);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 700;
-      min-width: 45px;
-      height: 45px;
-      text-align: center;
-    }
-    
-    .talla-badge:hover {
-      border-color: var(--color-secundario);
-      color: var(--color-terciario);
-      transform: translateY(-2px);
-    }
-    
-    .talla-badge.active {
-      background: linear-gradient(135deg, var(--color-secundario), #FFC107);
-      border-color: var(--color-secundario);
-      color: var(--color-primario);
-      transform: translateY(-2px) scale(1.1);
-      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
-    }
-    
-    /* ☑️ CHECKBOXES PREMIUM */
-    .form-check-input {
-      background-color: rgba(255, 255, 255, 0.1);
-      border: 2px solid var(--color-borde);
-      width: 1.3em;
-      height: 1.3em;
-      margin-top: 0.2em;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .form-check-input:checked {
-      background-color: var(--color-secundario);
-      border-color: var(--color-secundario);
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-    }
-    
-    .form-check-input:focus {
-      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
-      border-color: var(--color-secundario);
-    }
-    
-    .form-check-label {
-      color: var(--color-texto);
-      cursor: pointer;
-      margin-left: 10px;
-      transition: all 0.3s ease;
-      font-size: 0.95rem;
-    }
-    
-    .form-check-label:hover {
-      color: var(--color-terciario);
-    }
-    
-    /* 📱 RESPONSIVE */
-    @media (max-width: 992px) {
-      .filter-sidebar {
-        margin-top: 40px;
-        position: static;
-      }
-      
-      .banner-top {
-        font-size: 2rem;
-        padding: 60px 15px;
-      }
-      
-      .catalogo-title {
-        font-size: 2.2rem;
-      }
-      
-      .card-img-container {
-        height: 240px;
-      }
-    }
-    
-    @media (max-width: 768px) {
-      .custom-search-bar {
-        max-width: 100%;
-        margin-top: 20px;
-      }
-      
-      .banner-top {
-        font-size: 1.6rem;
-        padding: 40px 15px;
-      }
-      
-      .catalogo-title {
-        font-size: 1.8rem;
-      }
-      
-      .card-body {
-        padding: 20px;
-      }
-      
-      .card-price {
-        font-size: 1.6rem;
-      }
-    }
-    
-    /* 🎨 MENSAJE DE PRODUCTOS VACÍOS */
-    .empty-products {
-      min-height: 500px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      background: rgba(20, 20, 20, 0.5);
-      border-radius: 20px;
-      border: 2px dashed var(--color-borde);
-    }
-    
-    .empty-products i {
-      font-size: 6rem;
-      color: rgba(255, 215, 0, 0.1);
-      margin-bottom: 25px;
-    }
-    
-    .empty-products h4 {
-      color: var(--color-terciario);
-      margin-bottom: 15px;
-    }
-    
-    .empty-products p {
-      color: rgba(255, 255, 255, 0.6);
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    
-    /* ✨ EFECTOS DE ENTRADA */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .custom-product-card {
-      animation: fadeInUp 0.6s ease-out forwards;
-      opacity: 0;
-    }
-    
-    /* Animación escalonada para las tarjetas */
-    .custom-product-card:nth-child(1) { animation-delay: 0.1s; }
-    .custom-product-card:nth-child(2) { animation-delay: 0.2s; }
-    .custom-product-card:nth-child(3) { animation-delay: 0.3s; }
-    .custom-product-card:nth-child(4) { animation-delay: 0.4s; }
-    .custom-product-card:nth-child(5) { animation-delay: 0.5s; }
-    .custom-product-card:nth-child(6) { animation-delay: 0.6s; }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/client/productos.css}" /> 
+
 </head>
 
 <body>
   <header th:replace="client/fragments/navbar :: navbar"></header>
 
-  <!-- 🌟 BANNER SUPERIOR -->
   <section class="catalogo-section">
     <div class="banner-top text-center fw-bold">
       ¡ENCUENTRA TU ESTILO CON NUESTRAS NOVEDADES!
@@ -670,7 +31,7 @@
           </p>
         </div>
         <div class="col-lg-6 col-md-12">
-          <div class="input-group custom-search-bar shadow-lg">
+          <div class="input-group custom-search-bar">
             <input type="text" class="form-control custom-search-input" 
                    placeholder="Buscar productos por nombre, categoría..." 
                    id="buscadorProductos" />
@@ -684,13 +45,10 @@
 
     <div class="container">
       <div class="row">
-        <!-- Productos -->
         <div class="col-lg-9 col-md-12">
           <div class="row" id="gridProductos">
-            <!-- Card de Producto -->
             <div th:each="producto : ${listaProductos}" class="col-lg-4 col-md-6 mb-5">
               <div class="card custom-product-card h-100">
-                <!-- Imagen del Producto -->
                 <div class="card-img-container">
                   <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" th:src="@{${producto.imagen}}"
                     class="card-img-top" th:alt="${producto.nombre}" />
@@ -698,7 +56,6 @@
                     src="https://placehold.co/600x600/1a1a1a/FFD700?text=MAMBO&font=montserrat" class="card-img-top"
                     th:alt="${producto.nombre}" />
 
-                  <!-- Badge de Stock Global -->
                   <div class="position-absolute top-0 end-0 m-3">
                     <th:block
                       th:with="totalStock=${producto.variantes != null ? #aggregates.sum(producto.variantes.![stock]) : 0}">
@@ -713,7 +70,6 @@
                     </th:block>
                   </div>
 
-                  <!-- Badge de Categoría -->
                   <div class="position-absolute top-0 start-0 m-3">
                     <span th:if="${producto.categoria != null}" class="badge badge-category">
                       <i class="bi bi-tag me-1"></i>
@@ -721,7 +77,6 @@
                     </span>
                   </div>
                   
-                  <!-- Botón de Vista Rápida -->
                   <button class="btn btn-vista-rapida"
                           th:attr="data-id=${producto.id}"
                           data-bs-toggle="modal" data-bs-target="#modalDetalleProducto"
@@ -731,13 +86,10 @@
                 </div>
 
                 <div class="card-body d-flex flex-column">
-                  <!-- Nombre del Producto -->
                   <h6 class="card-title fw-bold" th:text="${producto.nombre}"></h6>
 
-                  <!-- Descripción -->
                   <p class="card-text flex-grow-1" th:text="${#strings.abbreviate(producto.descripcion, 120)}"></p>
 
-                  <!-- Precio y SKU -->
                   <div class="d-flex justify-content-between align-items-center mb-4">
                     <p class="card-price fw-bold mb-0">
                       S/.
@@ -752,9 +104,8 @@
                     <span class="sku-badge" th:text="${producto.sku}"></span>
                   </div>
 
-                  <!-- Botón para agregar al carrito -->
                   <button class="btn product-add-btn fw-bold mt-auto btn-agregar-carrito"
-
+                          th:disabled="${producto.variantes == null or producto.variantes.empty}">
                     <span th:if="${producto.variantes != null and !producto.variantes.empty}">AGREGAR AL CARRITO</span>
                     <span th:unless="${producto.variantes != null and !producto.variantes.empty}">NO DISPONIBLE</span>
                   </button>
@@ -762,11 +113,9 @@
               </div>
             </div>
 
-            <!-- Mensaje si no hay productos -->
-          </div>
+            </div>
         </div>
 
-        <!-- Sidebar de Filtros -->
         <div class="col-lg-3 d-none d-lg-block">
           <div class="filter-sidebar p-4">
             <h5 class="fw-bold mb-4 filter-title-prueba">
@@ -780,20 +129,18 @@
               <i class="bi bi-arrow-clockwise me-1"></i>LIMPIAR FILTROS
             </button>
 
-            <!-- Filtro por Precio -->
             <div class="filter-group">
               <h6 class="fw-bold mb-2 filter-subtitle-small">
                 <i class="bi bi-currency-dollar"></i>PRECIO
               </h6>
               <div class="d-flex gap-2">
-                <input type="number" class="form-control custom-filter-input" placeholder="Mín" min="0" 
+                <input type="number" class="form-control text-white custom-filter-input" placeholder="Mín" min="0" 
                        id="precioMin" />
-                <input type="number" class="form-control custom-filter-input" placeholder="Máx" min="0" 
+                <input type="number" class="form-control text-white  custom-filter-input" placeholder="Máx" min="0" 
                        id="precioMax" />
               </div>
             </div>
 
-            <!-- Filtro por Tallas -->
             <div class="filter-group">
               <h6 class="fw-bold mb-2 filter-subtitle-small">
                 <i class="bi bi-grid-3x3"></i>TALLAS
@@ -808,7 +155,6 @@
               </div>
             </div>
 
-            <!-- Filtro por Categorías -->
             <div class="filter-group">
               <h6 class="fw-bold mb-2 filter-subtitle-small">
                 <i class="bi bi-tags"></i>CATEGORÍAS
@@ -827,7 +173,6 @@
               </div>
             </div>
             
-            <!-- Filtro por Stock -->
             <div class="filter-group">
               <h6 class="fw-bold mb-2 filter-subtitle-small">
                 <i class="bi bi-box-seam"></i>DISPONIBILIDAD
@@ -842,9 +187,8 @@
               </div>
             </div>
             
-            <!-- Banner Promocional en Sidebar -->
             <div class="mt-4 p-3 text-center rounded"
-                 style="background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,193,7,0.05)); border: 1px solid rgba(255,215,0,0.3);">
+                 style="background-color: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3);">
               <i class="bi bi-truck text-warning fs-4 mb-2 d-block"></i>
               <p class="small mb-0" style="color: var(--color-secundario);">
                 <strong>Envío gratis</strong><br>
@@ -857,10 +201,6 @@
     </div>
   </section>
 
-  <!-- 🔍 MODAL DE DETALLE DEL PRODUCTO (Deberás crear este modal) -->
-  <!-- Incluye aquí tu modal de detalle con Thymeleaf -->
-
-  <!-- 🛒 OFFCANVAS DEL CARRITO -->
   <div th:replace="client/fragments/carrito :: carrito-offcanvas"></div>
 
   <div th:replace="client/fragments/navbar :: loginModal"></div>
@@ -879,12 +219,12 @@
       // 🔍 CONFIGURAR BÚSQUEDA Y FILTROS
       configurarFiltros();
       
-      // 🛒 CONFIGURAR BOTONES DEL CARRITO
-      configurarCarrito();
+      // 🛒 CONFIGURAR BOTONES DEL CARRITO (Mantener si existe la función)
+      // configurarCarrito(); 
       
-      // 🎨 EFECTOS VISUALES
+      // 🎨 EFECTOS VISUALES SIMPLES
       function inicializarEfectos() {
-        // Efecto hover en tarjetas
+        // Se mantiene el efecto para que la tarjeta en hover quede por encima
         const cards = document.querySelectorAll('.custom-product-card');
         cards.forEach(card => {
           card.addEventListener('mouseenter', function() {
@@ -905,7 +245,7 @@
         });
       }
       
-      // 🔍 CONFIGURAR FILTROS
+      // 🔍 CONFIGURAR FILTROS (Mantenemos la lógica de filtrado)
       function configurarFiltros() {
         const btnBuscar = document.getElementById('btnBuscar');
         const buscador = document.getElementById('buscadorProductos');
@@ -927,7 +267,7 @@
       }
       
       
-      // 🔍 FUNCIÓN DE FILTRADO
+      // 🔍 FUNCIÓN DE FILTRADO (Se mantiene la lógica original)
       function filtrarProductos() {
         const busqueda = document.getElementById('buscadorProductos')?.value.toLowerCase() || '';
         const precioMin = parseFloat(document.getElementById('precioMin')?.value) || 0;
@@ -941,10 +281,18 @@
         // Filtrar productos
         const cards = document.querySelectorAll('.custom-product-card');
         cards.forEach(card => {
+          // Buscamos el div contenedor del producto, que tiene la clase col-lg-4, para ocultar/mostrar
+          const contenedorProducto = card.closest('.col-lg-4');
+          if (!contenedorProducto) return;
+
           const nombre = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
-          const precioText = card.querySelector('.card-price')?.textContent || '0';
-          const precio = parseFloat(precioText.replace('S/.', '').trim()) || 0;
-          const tieneStock = !card.querySelector('.btn-agregar-carrito')?.disabled;
+          const precioText = card.querySelector('.card-price')?.textContent || 'S/. 0.00';
+          // Se ajusta la regex para limpiar el precio
+          const precio = parseFloat(precioText.replace(/S\/\.|[^\d.]/g, '').trim()) || 0; 
+          
+          // La lógica de stock se basa en si el botón de agregar al carrito está deshabilitado.
+          // En Thymeleaf, si está deshabilitado, el botón tiene el atributo 'disabled'.
+          const tieneStock = !card.querySelector('.product-add-btn')?.disabled; 
           const categoria = card.querySelector('.badge-category span')?.textContent || '';
           
           let mostrar = true;
@@ -964,8 +312,13 @@
             mostrar = false;
           }
           
+          // NOTA: La lógica para filtrar por **talla** y **categoría** usando los datos del DOM 
+          // requiere que los datos de las variantes (tallas disponibles, IDs de categorías) 
+          // estén incrustados en la tarjeta, lo que no sucede en el código original. 
+          // De momento, mantendremos la simplificación y se enfocará en nombre, precio y stock.
+          
           // Mostrar/ocultar tarjeta
-          card.closest('.col-lg-4').style.display = mostrar ? 'block' : 'none';
+          contenedorProducto.style.display = mostrar ? 'block' : 'none';
         });
       }
       
@@ -974,7 +327,8 @@
         document.getElementById('buscadorProductos').value = '';
         document.getElementById('precioMin').value = '';
         document.getElementById('precioMax').value = '';
-        document.getElementById('filtroStock').checked = true;
+        // Se asume que el filtro de stock debe mostrar solo disponibles por defecto
+        document.getElementById('filtroStock').checked = true; 
         
         document.querySelectorAll('.talla-badge.active').forEach(badge => {
           badge.classList.remove('active');
