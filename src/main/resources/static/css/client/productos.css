@@ -1,150 +1,318 @@
-.catalogo-section, .hero-section {
-    padding-top: 70px !important;
-}
-.banner-top {
-    background-image: url("/Img/ropa-urbana.PNG");
 
-    background-size: cover;
-    background-position: center;
-    color: var(--text-white-color) ¡important;
-    font-size: 2.2rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-}
-
-.catalogo-title {
-    font-size: 1.8rem;
-    letter-spacing: 2px;
-    margin: 0;
-}
-.custom-search-bar {
-    border: 1px solid var(--text-white-color); 
-    border-radius: 5px;
-    overflow: hidden; 
-}
-
-.custom-search-input {
-    background-color: transparent !important;
-    border: none !important;
-    color: var(--text-white-color) !important;
-    padding: 10px 15px;
-    height: 40px;
-}
-.custom-search-input::placeholder {
-    color: rgba(255, 255, 255, 0.4) !important;
-}
-
-.custom-search-btn {
-    background-color: var(--text-white-color) !important;
-    color: var(--bg-dark-color) !important;
-    border: none !important;
-    padding: 0 15px;
-    height: 40px;
-    border-radius: 0;
-}
-.filter-title-prueba {
-    font-size: 1rem;
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-.filter-subtitle {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 10px !important;
-}
-
-.filter-subtitle-small {
-    font-size: 0.9rem;
-    opacity: 0.9;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 5px;
-}
-
-.filter-limpiar-btn {
-    background-color: transparent !important;
-    color: var(--text-white-color) !important;
-    border: 1px solid var(--text-white-color) !important;
-    border-radius: 0; 
-    padding: 5px 15px;
-    font-size: 0.8rem;
-}
-
-/* Inputs de Precio (Mínimo / Máximo) */
-.custom-filter-input {
-    background-color: transparent !important;
-    border: 1px solid var(--text-white-color) !important;
-    color: var(--text-white-color) !important;
-    width: 48%;
-    font-size: 0.9rem;
-    border-radius: 0; 
-    padding: 5px 10px;
-}
-
-.filter-label-tallas {
-    font-size: 1.1rem;
-    letter-spacing: 5px;
-    font-weight: normal;
-}
-
-/* Checkboxes (Cantidad) */
-.custom-checkbox {
-    background-color: transparent;
-    border: 1px solid var(--text-white-color);
-    border-radius: 0; 
-    width: 18px;
-    height: 18px;
-}
-.custom-checkbox:checked {
-    background-color: var(--text-white-color) !important; 
-    border-color: var(--text-white-color) !important;
-}
-
-/* --- Estilos de las Tarjetas de Producto --- */
-.custom-product-card {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    background-color: var(--bg-dark-color) !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.custom-product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.05);
-}
-
-.card-img-top {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    height: 300px;
-    object-fit: cover;
-}
-
-.card-body {
-    padding: 15px;
-    text-align: center;
-}
-
-.card-title {
-    font-size: 1rem;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.card-price {
-    color: var(--accent-color); 
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.product-add-btn {
-    background-color: var(--text-white-color);
-    color: var(--bg-dark-color);
-    font-weight: bold;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.product-add-btn:hover {
-    background-color: var(--accent-color);
-}
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #1a1a1a;
+            --bg-hover: #2a2a2a;
+            --primary: #ff4444;
+            --secondary: #ff6b35;
+            --accent: #00d9ff;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #666666;
+            --border-color: #333333;
+            --success: #00cc66;
+            --warning: #ffaa00;
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        .catalogo-section {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            padding-top: 80px !important;
+        }
+        
+        .banner-top {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url("/Img/ropa-urbana.PNG");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-primary);
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+        
+        .catalogo-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        .custom-search-bar {
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            overflow: hidden;
+            background: var(--bg-card);
+            transition: all 0.3s ease;
+        }
+        
+        .custom-search-bar:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
+        }
+        
+        .custom-search-input {
+            background: transparent !important;
+            border: none !important;
+            color: var(--text-primary) !important;
+            padding: 12px 20px;
+            font-size: 0.95rem;
+        }
+        
+        .custom-search-input::placeholder {
+            color: var(--text-muted) !important;
+        }
+        
+        .custom-search-input:focus {
+            box-shadow: none !important;
+        }
+        
+        .custom-search-btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary)) !important;
+            border: none !important;
+            color: white !important;
+            padding: 0 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .custom-search-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3);
+        }
+        
+        /* Cards de Producto - Estilo Temu */
+        .custom-product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .custom-product-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 30px rgba(255, 68, 68, 0.15);
+        }
+        
+        .card-img-container {
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+            background: var(--bg-dark);
+        }
+        
+        .card-img-top {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .custom-product-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        
+        .card-body {
+            padding: 1.25rem;
+            background: var(--bg-card);
+        }
+        
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .card-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+        
+        .card-price {
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .product-add-btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .product-add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 68, 68, 0.3);
+        }
+        
+        /* Badges */
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+        }
+        
+        .badge-category {
+            background: linear-gradient(45deg, var(--warning), #ffcc00);
+            color: #000;
+        }
+        
+        .badge-stock {
+            background: var(--success);
+            color: white;
+        }
+        
+        .badge-out {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Sidebar de Filtros */
+        .filter-sidebar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .filter-title-prueba {
+            color: var(--accent);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        
+        .filter-subtitle {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .filter-subtitle-small {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-limpiar-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-limpiar-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .custom-filter-input {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+        
+        .custom-filter-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.1);
+        }
+        
+        .talla-badge {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .talla-badge:hover, .talla-badge.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Modal de Detalle */
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-title {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+        
+        .btn-close-white {
+            filter: invert(1);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .banner-top {
+                font-size: 1.8rem;
+                padding: 3rem 1rem;
+            }
+            
+            .catalogo-title {
+                font-size: 1.5rem;
+            }
+            
+            .card-img-container {
+                height: 200px;
+            }
+        }
+        
+        /* Efectos de carga */
+        .product-card-skeleton {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.6; }
+        }

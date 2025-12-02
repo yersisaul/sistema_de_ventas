@@ -4,6 +4,7 @@ import com.integrador.sistema_de_ventas.springboot_app.models.Producto;
 import com.integrador.sistema_de_ventas.springboot_app.dto.ProductoCreateDTO;
 import com.integrador.sistema_de_ventas.springboot_app.dto.ProductoResponseDTO;
 import com.integrador.sistema_de_ventas.springboot_app.dto.ProductoUpdateDTO;
+import com.integrador.sistema_de_ventas.springboot_app.dto.VarianteDTO;
 import com.integrador.sistema_de_ventas.springboot_app.models.VarianteProducto;
 import com.integrador.sistema_de_ventas.springboot_app.services.ProductoService;
 import com.integrador.sistema_de_ventas.springboot_app.services.VarianteProductoService;
@@ -27,9 +28,8 @@ public class ProductosAdminController {
     private ProductoService productoService;
     
     @Autowired
-    private VarianteProductoService varianteService;
-    
-    /*  He agregado imagen como Multipartfile por eso no funciona estas dos
+    private VarianteProductoService varianteService;  
+
     @PostMapping
     public ResponseEntity<?> crearProducto(@RequestBody @Valid ProductoCreateDTO productoDTO) {
         try {
@@ -41,7 +41,6 @@ public class ProductosAdminController {
         }
     }
 
-        
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarProducto(@PathVariable Long id, @RequestBody ProductoUpdateDTO producto) {
         try {
@@ -52,7 +51,7 @@ public class ProductosAdminController {
                 .body("Error: " + e.getMessage());
         }
     }
-    */
+
     @GetMapping
     public ResponseEntity<?> obtenerTodosLosProductos() {
         try {
@@ -80,7 +79,6 @@ public class ProductosAdminController {
                 .body("Error: " + e.getMessage());
         }
     }
-
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> desactivarProducto(@PathVariable Long id) {
@@ -94,13 +92,18 @@ public class ProductosAdminController {
     }
     
     @PostMapping("/{productoId}/variantes")
-    public ResponseEntity<?> crearVariante(@PathVariable Long productoId, @RequestBody VarianteProducto variante) {
+    public ResponseEntity<?> crearVariante(@PathVariable Long productoId, @RequestBody VarianteDTO varianteDTO) {
         try {
             Optional<Producto> producto = productoService.obtenerProductoPorId(productoId);
+            VarianteProducto nuevo_variante = new VarianteProducto();
             if (producto.isPresent()) {
-                variante.setProducto(producto.get());
-                VarianteProducto nuevaVariante = varianteService.crearVariante(variante);
-                return ResponseEntity.status(HttpStatus.CREATED).body(nuevaVariante);
+                nuevo_variante.setProducto(producto.get());
+                nuevo_variante.setTalla(varianteDTO.getTalla());
+                nuevo_variante.setStock(varianteDTO.getStock());
+                nuevo_variante.setPrecio(varianteDTO.getPrecio());
+                nuevo_variante.setActivo(true);
+                VarianteProducto nuevaVariante = varianteService.crearVariante(nuevo_variante);
+                return ResponseEntity.status(HttpStatus.CREATED).body(VarianteDTO.fromVariante(nuevaVariante));
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Producto no encontrado");

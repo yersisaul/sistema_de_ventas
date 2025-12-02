@@ -12,11 +12,13 @@ import java.util.Optional;
 public interface VarianteProductoRepository extends JpaRepository<VarianteProducto, Long> {
     List<VarianteProducto> findByProductoId(Long productoId);
     List<VarianteProducto> findByProductoIdAndActivo(Long productoId, Boolean activo);
-    Optional<VarianteProducto> findByProductoIdAndTallaAndColor(Long productoId, String talla, String color);
+    Optional<VarianteProducto> findByProductoIdAndTalla(Long productoId, String talla);
+
     
     @Query("SELECT v FROM VarianteProducto v WHERE v.producto.id = :productoId AND v.stock > 0 AND v.activo = true")
     List<VarianteProducto> findVariantesConStock(@Param("productoId") Long productoId);
     
     @Query("SELECT v FROM VarianteProducto v WHERE v.stock < 10 AND v.activo = true")
     List<VarianteProducto> findVariantesStockBajo();
+
 }
