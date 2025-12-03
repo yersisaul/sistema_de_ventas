@@ -26,10 +26,10 @@ public class Pedido {
     @Column(nullable = false, updatable = false)
     private LocalDateTime fecha = LocalDateTime.now();
     
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(precision = 10, scale = 2)
     private BigDecimal total;
     
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(precision = 10, scale = 2)
     private BigDecimal subtotal;
     
     @Column(precision = 10, scale = 2)

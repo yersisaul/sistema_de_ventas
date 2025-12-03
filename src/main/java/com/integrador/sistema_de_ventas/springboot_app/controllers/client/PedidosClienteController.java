@@ -1,6 +1,7 @@
 package com.integrador.sistema_de_ventas.springboot_app.controllers.client;
 
 import com.integrador.sistema_de_ventas.springboot_app.dto.CrearPedidoRequest;
+import com.integrador.sistema_de_ventas.springboot_app.dto.PedidoCreateDTO;
 import com.integrador.sistema_de_ventas.springboot_app.models.Pedido;
 import com.integrador.sistema_de_ventas.springboot_app.models.Usuario;
 import com.integrador.sistema_de_ventas.springboot_app.services.PedidoService;
@@ -24,29 +25,13 @@ public class PedidosClienteController {
     private UsuarioService usuarioService;
     
     @PostMapping
-    public ResponseEntity<?> crearPedido(@RequestBody CrearPedidoRequest request) {
+    public ResponseEntity<?> registrarPedido(@RequestBody PedidoCreateDTO pedidoDTO) {
         try {
-            Optional<Usuario> cliente = usuarioService.obtenerUsuarioPorId(request.getClienteId());
-            if (cliente.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Cliente no encontrado");
-            }
-            
-            Pedido pedido = new Pedido();
-            pedido.setCliente(cliente.get());
-            pedido.setDireccionEnvio(request.getDireccionEnvio());
-            pedido.setTelefonoContacto(request.getTelefonoContacto());
-            pedido.setNotas(request.getNotas());
-            pedido.setSubtotal(request.getSubtotal());
-            pedido.setImpuestos(request.getImpuestos());
-            pedido.setCostoEnvio(request.getCostoEnvio());
-            pedido.setTotal(request.getTotal());
-            
-            Pedido nuevoPedido = pedidoService.crearPedido(pedido);
-            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPedido);
+            Pedido nuevoPedido = pedidoService.crearPedido(pedidoDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Pedido creado con ID: " + nuevoPedido.getId());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + e.getMessage());
+                .body("Error al crear pedido: " + e.getMessage());
         }
     }
     
