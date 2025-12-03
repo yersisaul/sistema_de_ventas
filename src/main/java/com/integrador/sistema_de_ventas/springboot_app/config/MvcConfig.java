@@ -8,8 +8,10 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Esto expone la carpeta "uploads" al navegador
+
+        String ruta = System.getProperty("user.dir") + "/uploads/";
+
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/");
+                .addResourceLocations("file:" + ruta);
     }
 }

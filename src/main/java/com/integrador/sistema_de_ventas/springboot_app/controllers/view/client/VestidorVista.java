@@ -23,4 +23,6 @@ public class VestidorVista {
         model.addAttribute("listaCategorias", categoriaServiceImpl.obtenerTodasLasCategorias());
         return "client/Vestidor";
     }
+
+    
 }
