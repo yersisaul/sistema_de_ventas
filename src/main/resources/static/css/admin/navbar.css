@@ -129,3 +129,56 @@ main {
     width: 100%;
   }
 }
+
+
+
+/* Estilos para el offcanvas del carrito */
+.offcanvas {
+  width: 400px !important;
+  max-width: 95vw;
+}
+
+.carrito-item {
+  transition: background-color 0.2s;
+}
+
+.carrito-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Scroll personalizado para el carrito */
+#carritoContenido::-webkit-scrollbar {
+  width: 6px;
+}
+
+#carritoContenido::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+#carritoContenido::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+#carritoContenido::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .offcanvas {
+    width: 100% !important;
+  }
+}
+
+/* Animación para agregar al carrito */
+@keyframes agregarAlCarrito {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.producto-agregado {
+  animation: agregarAlCarrito 0.3s ease;
+}

@@ -1,0 +1,177 @@
+
+    /* Estilos específicos para ventas manteniendo tu diseño */
+    .main-content {
+      padding: 20px;
+    }
+    
+    .tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .tag.boleta {
+      background-color: #e3f2fd;
+      color: #1565c0;
+    }
+    
+    .tag.factura {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    .tag.completado {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    .tag.pendiente {
+      background-color: #fff3e0;
+      color: #ef6c00;
+    }
+    
+    .tag.anulado {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+    
+    .filtros-bar {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    
+    .search-box {
+      position: relative;
+    }
+    
+    .buscador {
+      padding-left: 40px;
+    }
+    
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+    }
+    
+    .custom-select {
+      position: relative;
+    }
+    
+    .custom-select i {
+      pointer-events: none;
+    }
+    
+    .filtro-select {
+      padding-right: 40px;
+    }
+    
+    .btn-nueva-venta {
+      background: #000;
+      color: white;
+      padding: 10px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    
+    .btn-nueva-venta:hover {
+      background: #333;
+      color: white;
+    }
+    
+    .table th {
+      font-weight: 600;
+      color: #495057;
+      background: #f8f9fa;
+      border-bottom: 2px solid #dee2e6;
+    }
+    
+    .table td {
+      vertical-align: middle;
+    }
+    
+    .acciones-venta {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .btn-accion {
+      width: 35px;
+      height: 35px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+      background: white;
+      color: #495057;
+    }
+    
+    .btn-accion:hover {
+      background: #f8f9fa;
+      border-color: #adb5bd;
+    }
+    
+    .btn-accion.ver:hover {
+      color: #0d6efd;
+      border-color: #0d6efd;
+    }
+    
+    .btn-accion.imprimir:hover {
+      color: #198754;
+      border-color: #198754;
+    }
+    
+    .btn-accion.anular:hover {
+      color: #dc3545;
+      border-color: #dc3545;
+    }
+    
+    .resumen-ventas {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .resumen-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .resumen-total {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #000;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 15px;
+      }
+      
+      .filtros-bar {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .filtros {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+  

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ventas - MAMBO</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/admin/ventas.css}" />
+  <link rel="stylesheet" th:href="@{/css/admin/navbar.css}" />
+  
+
+</head>
+
+<body>
+  <!-- 🔹 NAVBAR LATERAL -->
+  <div th:replace="admin/fragments/navbar :: navbar"></div>
+
+  <!-- 🔹 CONTENIDO PRINCIPAL -->
+  <main class="main-content">
+    <div class="container-fluid">
+      <!-- 🔸 Título y botón nueva venta -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-1">
+        <div>
+          <div class="d-flex flex-row align-content-center mb-3 align">
+            <!-- BOTÓN TOGGLE SOLO EN PANTALLAS PEQUEÑAS -->
+            <button class="btn btn-dark d-md-none top-0 start-0 me-3 z-3" type="button" data-bs-toggle="offcanvas"
+              data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
+              <i class="bi bi-list fs-4"></i>
+            </button>
+            <div class="flex-column">
+              <h4 style="font-weight:800">VENTAS MAMBO</h4>
+              <p class="text-secondary m-0 text-center">Registro de boletas y facturas</p>
+            </div>
+          </div>
+          <hr class="p-2 d-md-none">
+          
+          <!-- 🔽 EN PANTALLAS PEQUEÑAS: BUSCADOR DEBAJO -->
+          <div class="d-flex flex-column flex-sm-row gap-2 d-md-none mb-3">
+            <div class="busqueda search-box position-relative w-100">
+              <input type="text" class="buscador form-control rounded-2 ps-4" placeholder="Buscar por cliente o número..." />
+              <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
+            </div>
+            <a th:href="@{/admin/ventas/nueva}" class="btn-nueva-venta">
+              <i class="bi bi-plus-circle"></i> Nueva Venta
+            </a>
+          </div>
+        </div>
+
+        <!-- 💻 EN PANTALLAS GRANDES: BUSCADOR Y BOTÓN EN FILA -->
+        <div class="d-none d-md-flex align-items-center gap-3">
+          <div class="search-box position-relative">
+            <input type="text" class="buscador form-control rounded-2 ps-4" placeholder="Buscar por cliente o número..." />
+            <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
+          </div>
+          <a th:href="@{/admin/ventas/nueva}" class="btn-nueva-venta">
+            <i class="bi bi-plus-circle"></i> Nueva Venta
+          </a>
+        </div>
+      </div>
+
+      <!-- 🔸 Filtros -->
+      <div class="d-flex align-items-center justify-content-start gap-3 flex-wrap filtros-bar">
+        <!-- Filtro: Tipo de comprobante -->
+        <div>
+          <label class="fw-semibold small mb-1">Tipo de comprobante</label>
+          <div class="custom-select position-relative">
+            <select class="form-select rounded-2 filtro-select">
+              <option value="">Todos</option>
+              <option value="boleta">Boleta</option>
+              <option value="factura">Factura</option>
+            </select>
+            <i class="bi bi-caret-down-fill position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
+          </div>
+        </div>
+
+        <!-- Filtro: Estado -->
+        <div>
+          <label class="fw-semibold small mb-1">Estado</label>
+          <div class="custom-select position-relative">
+            <select class="form-select rounded-2 filtro-select">
+              <option value="">Todos</option>
+              <option value="completado">Completado</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="anulado">Anulado</option>
+            </select>
+            <i class="bi bi-caret-down-fill position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
+          </div>
+        </div>
+
+        <!-- Filtro: Fecha -->
+        <div>
+          <label class="fw-semibold small mb-1">Fecha</label>
+          <div class="custom-select position-relative">
+            <select class="form-select rounded-2 filtro-select">
+              <option value="">Todos</option>
+              <option value="hoy">Hoy</option>
+              <option value="semana">Esta semana</option>
+              <option value="mes">Este mes</option>
+              <option value="personalizado">Personalizado</option>
+            </select>
+            <i class="bi bi-caret-down-fill position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
+          </div>
+        </div>
+
+        <!-- Filtro: Fecha personalizada (se muestra solo si se selecciona) -->
+        <div id="fechaPersonalizada" style="display: none;">
+          <label class="fw-semibold small mb-1">Rango de fechas</label>
+          <div class="d-flex gap-2">
+            <input type="date" class="form-control rounded-2" style="width: 150px;">
+            <span class="align-self-center">a</span>
+            <input type="date" class="form-control rounded-2" style="width: 150px;">
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="ms-auto d-flex gap-2 filtros">
+          <button class="btn btn-outline-dark rounded-2 px-4">FILTRAR</button>
+          <button class="btn btn-outline-dark rounded-2 px-4">LIMPIAR</button>
+        </div>
+      </div>
+
+      <!-- 🔸 Tabla principal de ventas -->
+      <div class="row">
+        <div class="col-lg-9">
+          <div class="table-responsive rounded-4 mt-2">
+            <table class="table align-middle mb-0">
+              <thead>
+                <tr class="text-uppercase small text-secondary">
+                  <th>N° COMPROBANTE</th>
+                  <th>FECHA/HORA</th>
+                  <th>CLIENTE</th>
+                  <th>TIPO</th>
+                  <th>TOTAL</th>
+                  <th>ESTADO</th>
+                  <th>ACCIÓN</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Ejemplo de ventas -->
+                <tr>
+                  <td data-label="N° Comprobante">
+                    <strong>B001-00001238</strong>
+                  </td>
+                  <td data-label="Fecha/Hora">
+                    25/12/2024<br>
+                    <small class="text-muted">14:30</small>
+                  </td>
+                  <td data-label="Cliente">
+                    <strong>Juan Pérez</strong><br>
+                    <small class="text-muted">DNI: 70123456</small>
+                  </td>
+                  <td data-label="Tipo">
+                    <span class="tag boleta">BOLETA</span>
+                  </td>
+                  <td data-label="Total">
+                    <strong>S/. 145.50</strong>
+                  </td>
+                  <td data-label="Estado">
+                    <span class="tag completado">COMPLETADO</span>
+                  </td>
+                  <td data-label="Acción">
+                    <div class="acciones-venta">
+                      <button class="btn-accion ver" title="Ver comprobante">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                      <button class="btn-accion imprimir" title="Imprimir">
+                        <i class="bi bi-printer"></i>
+                      </button>
+                      <button class="btn-accion anular" title="Anular" disabled>
+                        <i class="bi bi-x-circle"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td data-label="N° Comprobante">
+                    <strong>F001-00001239</strong>
+                  </td>
+                  <td data-label="Fecha/Hora">
+                    25/12/2024<br>
+                    <small class="text-muted">11:15</small>
+                  </td>
+                  <td data-label="Cliente">
+                    <strong>Empresa S.A.C.</strong><br>
+                    <small class="text-muted">RUC: 20123456789</small>
+                  </td>
+                  <td data-label="Tipo">
+                    <span class="tag factura">FACTURA</span>
+                  </td>
+                  <td data-label="Total">
+                    <strong>S/. 850.00</strong>
+                  </td>
+                  <td data-label="Estado">
+                    <span class="tag completado">COMPLETADO</span>
+                  </td>
+                  <td data-label="Acción">
+                    <div class="acciones-venta">
+                      <button class="btn-accion ver" title="Ver comprobante">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                      <button class="btn-accion imprimir" title="Imprimir">
+                        <i class="bi bi-printer"></i>
+                      </button>
+                      <button class="btn-accion anular" title="Anular" disabled>
+                        <i class="bi bi-x-circle"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td data-label="N° Comprobante">
+                    <strong>B001-00001240</strong>
+                  </td>
+                  <td data-label="Fecha/Hora">
+                    24/12/2024<br>
+                    <small class="text-muted">16:45</small>
+                  </td>
+                  <td data-label="Cliente">
+                    <strong>María López</strong><br>
+                    <small class="text-muted">DNI: 71234567</small>
+                  </td>
+                  <td data-label="Tipo">
+                    <span class="tag boleta">BOLETA</span>
+                  </td>
+                  <td data-label="Total">
+                    <strong>S/. 320.75</strong>
+                  </td>
+                  <td data-label="Estado">
+                    <span class="tag pendiente">PENDIENTE</span>
+                  </td>
+                  <td data-label="Acción">
+                    <div class="acciones-venta">
+                      <button class="btn-accion ver" title="Ver comprobante">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                      <button class="btn-accion imprimir" title="Imprimir">
+                        <i class="bi bi-printer"></i>
+                      </button>
+                      <button class="btn-accion anular" title="Anular">
+                        <i class="bi bi-x-circle"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td data-label="N° Comprobante">
+                    <strong>B001-00001237</strong>
+                  </td>
+                  <td data-label="Fecha/Hora">
+                    24/12/2024<br>
+                    <small class="text-muted">10:20</small>
+                  </td>
+                  <td data-label="Cliente">
+                    <strong>Carlos Rodríguez</strong><br>
+                    <small class="text-muted">DNI: 72345678</small>
+                  </td>
+                  <td data-label="Tipo">
+                    <span class="tag boleta">BOLETA</span>
+                  </td>
+                  <td data-label="Total">
+                    <strong>S/. 89.99</strong>
+                  </td>
+                  <td data-label="Estado">
+                    <span class="tag anulado">ANULADO</span>
+                  </td>
+                  <td data-label="Acción">
+                    <div class="acciones-venta">
+                      <button class="btn-accion ver" title="Ver comprobante">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                      <button class="btn-accion imprimir" title="Imprimir">
+                        <i class="bi bi-printer"></i>
+                      </button>
+                      <button class="btn-accion anular" title="Anular" disabled>
+                        <i class="bi bi-ban"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Paginación -->
+          <nav aria-label="Paginación de ventas" class="mt-4">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">
+                  <i class="bi bi-chevron-left"></i>
+                </a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">
+                  <i class="bi bi-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <!-- 🔸 Panel lateral con estadísticas -->
+        <div class="col-lg-3 mt-4 mt-lg-0">
+          <div class="resumen-ventas">
+            <h6 class="mb-3" style="font-weight: 700">RESUMEN DEL DÍA</h6>
+            
+            <div class="resumen-item">
+              <span>Ventas totales:</span>
+              <strong>S/. 1,305.25</strong>
+            </div>
+            <div class="resumen-item">
+              <span>Boletas emitidas:</span>
+              <strong>8</strong>
+            </div>
+            <div class="resumen-item">
+              <span>Facturas emitidas:</span>
+              <strong>3</strong>
+            </div>
+            <div class="resumen-item">
+              <span>IGV recaudado:</span>
+              <strong>S/. 199.11</strong>
+            </div>
+            <div class="resumen-item">
+              <span>Venta promedio:</span>
+              <strong>S/. 118.66</strong>
+            </div>
+            
+            <hr>
+            
+            <h6 class="mb-3" style="font-weight: 700">ESTADÍSTICAS</h6>
+            
+            <div class="resumen-item">
+              <span>Completadas:</span>
+              <strong>9</strong>
+            </div>
+            <div class="resumen-item">
+              <span>Pendientes:</span>
+              <strong>2</strong>
+            </div>
+            <div class="resumen-item">
+              <span>Anuladas:</span>
+              <strong>1</strong>
+            </div>
+            
+            <hr>
+            
+            <div class="resumen-total">
+              <span>Total del mes:</span>
+              <span>S/. 28,450.25</span>
+            </div>
+            
+            <div class="mt-4">
+              <a href="#" class="btn btn-outline-dark w-100">
+                <i class="bi bi-graph-up me-2"></i>Ver Reporte
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal Ver Comprobante -->
+  <div class="modal fade" id="verComprobanteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title">Comprobante: <span id="modalNumero"></span></h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Aquí iría el contenido del comprobante -->
+          <div id="comprobanteContent"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-dark">
+            <i class="bi bi-printer me-2"></i>Imprimir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Mostrar/ocultar filtro de fecha personalizada
+      const filtroFecha = document.querySelectorAll('.filtro-select')[2];
+      const fechaPersonalizada = document.getElementById('fechaPersonalizada');
+      
+      filtroFecha.addEventListener('change', function() {
+        if (this.value === 'personalizado') {
+          fechaPersonalizada.style.display = 'block';
+        } else {
+          fechaPersonalizada.style.display = 'none';
+        }
+      });
+      
+      // Filtrado de tabla
+      const buscador = document.querySelector('.buscador');
+      const filas = document.querySelectorAll('tbody tr');
+      const btnFiltrar = document.querySelector('.filtros .btn-outline-dark:nth-child(1)');
+      const btnLimpiar = document.querySelector('.filtros .btn-outline-dark:nth-child(2)');
+      
+      function filtrarVentas() {
+        const texto = buscador.value.toLowerCase().trim();
+        const tipoComprobante = document.querySelectorAll('.filtro-select')[0].value;
+        const estado = document.querySelectorAll('.filtro-select')[1].value;
+        
+        filas.forEach(fila => {
+          const numero = fila.querySelector('td:nth-child(1)').textContent.toLowerCase();
+          const cliente = fila.querySelector('td:nth-child(3)').textContent.toLowerCase();
+          const tipo = fila.querySelector('td:nth-child(4) .tag').textContent.toLowerCase();
+          const estadoFila = fila.querySelector('td:nth-child(6) .tag').textContent.toLowerCase();
+          
+          const coincideBusqueda = numero.includes(texto) || cliente.includes(texto);
+          const coincideTipo = !tipoComprobante || tipo.includes(tipoComprobante);
+          const coincideEstado = !estado || estadoFila.includes(estado);
+          
+          if (coincideBusqueda && coincideTipo && coincideEstado) {
+            fila.style.display = '';
+          } else {
+            fila.style.display = 'none';
+          }
+        });
+      }
+      
+      function limpiarFiltros() {
+        buscador.value = '';
+        document.querySelectorAll('.filtro-select').forEach(select => {
+          select.value = '';
+        });
+        fechaPersonalizada.style.display = 'none';
+        filtrarVentas();
+      }
+      
+      buscador.addEventListener('input', filtrarVentas);
+      document.querySelectorAll('.filtro-select').forEach(select => {
+        select.addEventListener('change', filtrarVentas);
+      });
+      btnFiltrar.addEventListener('click', filtrarVentas);
+      btnLimpiar.addEventListener('click', limpiarFiltros);
+      
+      // Botones de acción
+      document.querySelectorAll('.btn-accion.ver').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const fila = this.closest('tr');
+          const numero = fila.querySelector('td:nth-child(1) strong').textContent;
+          document.getElementById('modalNumero').textContent = numero;
+          
+          const modal = new bootstrap.Modal(document.getElementById('verComprobanteModal'));
+          modal.show();
+        });
+      });
+      
+      document.querySelectorAll('.btn-accion.imprimir').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const fila = this.closest('tr');
+          const numero = fila.querySelector('td:nth-child(1) strong').textContent;
+          alert(`Imprimir comprobante: ${numero}`);
+        });
+      });
+      
+      document.querySelectorAll('.btn-accion.anular:not([disabled])').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (confirm('¿Está seguro de anular esta venta?')) {
+            alert('Venta anulada correctamente');
+            // Aquí iría la lógica para anular la venta
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
