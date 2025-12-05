@@ -16,10 +16,18 @@
             th:href="@{/admin/pedidos}">HISTORIAL</a></li>
       </ul>
       <div class="nav-icons d-flex align-items-center">
-        <button sec:authorize="!isAuthenticated()" class="btn btn-dark fw-bold boton" id="login" data-bs-toggle="modal" data-bs-target="#loginModal">
+        <button sec:authorize="!isAuthenticated()" class="btn btn-dark fw-bold boton" th:href="@{/admin/login}">
           Iniciar Sesión</button>
-        <a href="#" class="nav-icon mx-2" data-bs-toggle="offcanvas" data-bs-target="#resumenCarritoModal">
-          <span class="material-symbols-outlined text-white">shopping_cart</span>
+        <a class="nav-link position-relative btn-cart-trigger" href="#" onclick="abrirCarritoUI(); return false;" 
+           style="color: white; transition: 0.3s;">
+            
+            <i class="bi bi-handbag-fill" style="font-size: 1.3rem;"></i>
+            
+            <span id="navbar-cart-count" 
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-circle"
+                  style="background-color: #FFD700; color: black; font-weight: 800; font-size: 0.7rem; padding: 5px 7px;">
+                0
+            </span>
         </a>
       </div>
 
@@ -28,7 +36,7 @@
         <span th:text="'Hola, ' + ${#authentication.name}"></span>
 
         <!-- Botón de cerrar sesión -->
-        <button id="logoutBtn" class="btn btn-outline-light btn-sm fw-bold">Cerrar Sesión</button>
+        <button id="logoutBtn" class="btn btn-outline-light btn-sm fw-bold" th:href="@{/logout}">Cerrar Sesión</button>
 
       </div>
 

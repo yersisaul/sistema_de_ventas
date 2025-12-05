@@ -1,339 +1,213 @@
-<!-- client/fragments/carrito-offcanvas.html -->
 <div th:fragment="carrito-offcanvas">
-  <div
-    class="offcanvas offcanvas-end"
-    tabindex="-1"
-    id="carritoOffcanvas"
-    aria-labelledby="carritoOffcanvasLabel"
-  >
-    <div class="offcanvas-header bg-dark text-white">
-      <h5 class="offcanvas-title" id="carritoOffcanvasLabel">
-        <i class="bi bi-cart3 me-2"></i>Mi Carrito
+  
+  <style>
+    /* Estilos para los botones de cantidad (+ / -) */
+    .btn-qty {
+        background-color: #222;
+        border: 1px solid #444;
+        color: white;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-weight: bold;
+    }
+    .btn-qty:hover {
+        border-color: #FFD700;
+        color: #FFD700;
+    }
+    .qty-display {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: white;
+        min-width: 20px;
+        text-align: center;
+    }
+  </style>
+
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCarrito" aria-labelledby="offcanvasLabel" 
+       style="background-color: #000; border-left: 1px solid #333; color: white;">
+    
+    <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
+      <h5 class="offcanvas-title fw-bold text-uppercase" id="offcanvasLabel" style="color: #FFD700;">
+        <i class="bi bi-cart-fill me-2"></i> TU CESTA
       </h5>
-      <button
-        type="button"
-        class="btn-close btn-close-white"
-        data-bs-dismiss="offcanvas"
-        aria-label="Cerrar"
-      ></button>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
     </div>
-    <div class="offcanvas-body p-0">
-      <!-- 🛒 LISTA DE PRODUCTOS -->
-      <div id="carritoItems" class="h-100 d-flex flex-column">
-        <!-- Items del carrito -->
-        <div
-          class="flex-grow-1 overflow-auto"
-          style="max-height: 60vh"
-          id="carritoContenido"
-        >
-          <!-- Los items se cargarán dinámicamente aquí -->
-          <div class="text-center py-5" id="carritoVacio">
-            <i class="bi bi-cart-x display-4 text-muted mb-3"></i>
-            <p class="text-muted">Tu carrito está vacío</p>
-            <a
-              th:href="@{/productos}"
-              class="btn btn-outline-dark btn-sm"
-              data-bs-dismiss="offcanvas"
-            >
-              <i class="bi bi-arrow-left me-1"></i>Ir a productos
-            </a>
-          </div>
+
+    <div class="offcanvas-body p-0 d-flex flex-column">
+      
+      <div id="carrito-items-container" class="flex-grow-1 overflow-auto p-3">
+         <p class="text-center text-muted mt-5">Tu carrito está vacío.</p>
+      </div>
+
+      <div class="p-3 bg-dark border-top border-secondary border-opacity-25">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-white small text-uppercase fw-bold">Total Estimado</span>
+          <span class="fs-4 fw-bold" id="carrito-total-monto" style="color: #FFD700;">S/. 0.00</span>
         </div>
-
-        <!-- 📋 RESUMEN DEL CARRITO -->
-        <div
-          class="border-top p-3 bg-light"
-          id="carritoResumen"
-          style="display: none"
-        >
-          <div class="d-flex justify-content-between mb-2">
-            <span>Subtotal:</span>
-            <strong id="carritoSubtotal">S/. 0.00</strong>
-          </div>
-          <div class="d-flex justify-content-between mb-2">
-            <span>Envío:</span>
-            <strong id="carritoEnvio">S/. 0.00</strong>
-          </div>
-          <div class="d-flex justify-content-between mb-3">
-            <span>Total:</span>
-            <strong class="fs-5 text-dark" id="carritoTotal">S/. 0.00</strong>
-          </div>
-
-          <!-- BOTONES DE ACCIÓN -->
-          <div class="d-grid gap-2">
-            <a
-              th:href="@{/carrito}"
-              class="btn btn-dark"
-              data-bs-dismiss="offcanvas"
-            >
-              <i class="bi bi-eye me-1"></i>Ver carrito completo
-            </a>
-            <button class="btn btn-outline-dark" data-bs-dismiss="offcanvas">
-              <i class="bi bi-arrow-left me-1"></i>Seguir comprando
-            </button>
-          </div>
+        
+        <div class="d-grid gap-2">
+          <button onclick="irAPagar()" class="btn fw-bold text-uppercase" 
+                  style="background-color: #FFD700; color: black; border: none; padding: 12px;">
+             PROCESAR COMPRA <i class="bi bi-arrow-right-short"></i>
+          </button>
+          
+          <button onclick="limpiarCarrito()" class="btn btn-outline-secondary btn-sm text-uppercase">
+             Vaciar Carrito
+          </button>
         </div>
       </div>
+
     </div>
   </div>
 
-  <!-- Script para manejar el carrito -->
   <script>
-    // 🛒 SISTEMA DE CARRITO GLOBAL
-    class CarritoManager {
-      constructor() {
-        this.carrito = JSON.parse(localStorage.getItem("carritoMambo")) || [];
-        this.actualizarContador();
-        this.cargarCarritoOffcanvas();
-      }
 
-      // 🔄 AGREGAR PRODUCTO AL CARRITO
-      agregarProducto(producto, variante, cantidad = 1) {
-        const itemExistente = this.carrito.find(
-          (item) =>
-            item.productoId === producto.id && item.varianteId === variante.id
-        );
+    const CART_KEY = 'mambo_carrito_temporal';
 
-        if (itemExistente) {
-          itemExistente.cantidad += cantidad;
+    // 1. Agregar Producto
+    function agregarAlCarritoTemporal(producto) {
+        let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        
+        const existente = carrito.find(item => item.varianteId === producto.varianteId);
+        
+        if (existente) {
+            existente.cantidad += 1;
         } else {
-          this.carrito.push({
-            productoId: producto.id,
-            varianteId: variante.id,
-            nombre: producto.nombre,
-            imagen: producto.imagen,
-            precio: variante.precio,
-            talla: variante.talla,
-            color: variante.color,
-            cantidad: cantidad,
-            sku: producto.sku,
-            variante: variante,
-          });
+            carrito.push(producto);
         }
-
-        this.guardarCarrito();
-        this.actualizarContador();
-        this.cargarCarritoOffcanvas();
-        this.mostrarNotificacion(`${producto.nombre} agregado al carrito`);
-      }
-
-      // 🔄 ELIMINAR PRODUCTO DEL CARRITO
-      eliminarProducto(index) {
-        if (confirm("¿Eliminar este producto del carrito?")) {
-          this.carrito.splice(index, 1);
-          this.guardarCarrito();
-          this.actualizarContador();
-          this.cargarCarritoOffcanvas();
-        }
-      }
-
-      // 🔄 ACTUALIZAR CANTIDAD
-      actualizarCantidad(index, nuevaCantidad) {
-        nuevaCantidad = parseInt(nuevaCantidad);
-
-        if (isNaN(nuevaCantidad) || nuevaCantidad < 1 || nuevaCantidad > 10) {
-          nuevaCantidad = 1;
-        }
-
-        this.carrito[index].cantidad = nuevaCantidad;
-        this.guardarCarrito();
-        this.actualizarContador();
-        this.cargarCarritoOffcanvas();
-      }
-
-      // 🔄 CAMBIAR CANTIDAD (incremento/decremento)
-      cambiarCantidad(index, delta) {
-        const nuevoValor = this.carrito[index].cantidad + delta;
-
-        if (nuevoValor < 1 || nuevoValor > 10) return;
-
-        this.carrito[index].cantidad = nuevoValor;
-        this.guardarCarrito();
-        this.actualizarContador();
-        this.cargarCarritoOffcanvas();
-      }
-
-      // 💾 GUARDAR EN LOCALSTORAGE
-      guardarCarrito() {
-        localStorage.setItem("carritoMambo", JSON.stringify(this.carrito));
-      }
-
-      // 🔢 ACTUALIZAR CONTADOR EN NAVBAR
-      actualizarContador() {
-        const totalItems = this.carrito.reduce(
-          (total, item) => total + item.cantidad,
-          0
-        );
-        const contadores = document.querySelectorAll(".carrito-contador");
-
-        contadores.forEach((contador) => {
-          contador.textContent = totalItems;
-          contador.style.display = totalItems > 0 ? "block" : "none";
-        });
-      }
-
-      // 🎴 CARGAR CARRITO EN OFFCANVAS
-      cargarCarritoOffcanvas() {
-        const carritoContenido = document.getElementById("carritoContenido");
-        const carritoVacio = document.getElementById("carritoVacio");
-        const carritoResumen = document.getElementById("carritoResumen");
-
-        if (this.carrito.length === 0) {
-          carritoVacio.style.display = "block";
-          carritoResumen.style.display = "none";
-          carritoContenido.innerHTML = "";
-          return;
-        }
-
-        carritoVacio.style.display = "none";
-        carritoResumen.style.display = "block";
-
-        let html = "";
-        this.carrito.forEach((item, index) => {
-          const subtotal = item.precio * item.cantidad;
-
-          html += `
-          <div class="carrito-item p-3 border-bottom">
-            <div class="d-flex gap-3">
-              <!-- Imagen -->
-              <div style="width: 80px; height: 80px; flex-shrink: 0;">
-                <img src="${item.imagen}" alt="${item.nombre}" 
-                     class="w-100 h-100 object-fit-cover rounded" 
-                     style="border: 1px solid #dee2e6;">
-              </div>
-              
-              <!-- Información -->
-              <div class="flex-grow-1">
-                <div class="d-flex justify-content-between">
-                  <h6 class="mb-1" style="font-size: 0.9rem;">${
-                    item.nombre
-                  }</h6>
-                  <button class="btn btn-link text-danger p-0" onclick="carritoManager.eliminarProducto(${index})">
-                    <i class="bi bi-trash" style="font-size: 0.8rem;"></i>
-                  </button>
-                </div>
-                
-                <div class="d-flex align-items-center gap-2 mb-2">
-                  <span class="badge bg-secondary" style="font-size: 0.7rem;">${
-                    item.talla
-                  }</span>
-                  <span class="badge bg-light text-dark" style="font-size: 0.7rem;">${
-                    item.color
-                  }</span>
-                </div>
-                
-                <!-- Cantidad y Precio -->
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-sm btn-outline-secondary p-1" 
-                            onclick="carritoManager.cambiarCantidad(${index}, -1)" 
-                            style="width: 25px; height: 25px; line-height: 1;">
-                      <i class="bi bi-dash"></i>
-                    </button>
-                    <span style="width: 30px; text-align: center;">${
-                      item.cantidad
-                    }</span>
-                    <button class="btn btn-sm btn-outline-secondary p-1" 
-                            onclick="carritoManager.cambiarCantidad(${index}, 1)" 
-                            style="width: 25px; height: 25px; line-height: 1;">
-                      <i class="bi bi-plus"></i>
-                    </button>
-                  </div>
-                  <div>
-                    <strong class="text-dark">S/. ${subtotal.toFixed(
-                      2
-                    )}</strong>
-                    <small class="text-muted d-block" style="font-size: 0.75rem;">S/. ${item.precio.toFixed(
-                      2
-                    )} c/u</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-        });
-
-        carritoContenido.innerHTML = html;
-        this.actualizarResumen();
-      }
-
-      // 📋 ACTUALIZAR RESUMEN DEL CARRITO
-      actualizarResumen() {
-        const subtotal = this.carrito.reduce(
-          (sum, item) => sum + item.precio * item.cantidad,
-          0
-        );
-        const envio = subtotal > 100 ? 0 : 15;
-        const total = subtotal + envio;
-
-        document.getElementById(
-          "carritoSubtotal"
-        ).textContent = `S/. ${subtotal.toFixed(2)}`;
-        document.getElementById(
-          "carritoEnvio"
-        ).textContent = `S/. ${envio.toFixed(2)}`;
-        document.getElementById(
-          "carritoTotal"
-        ).textContent = `S/. ${total.toFixed(2)}`;
-      }
-
-      // 🔔 MOSTRAR NOTIFICACIÓN
-      mostrarNotificacion(mensaje) {
-        // Crear notificación
-        const notificacion = document.createElement("div");
-        notificacion.className =
-          "position-fixed bottom-0 end-0 m-3 p-3 bg-success text-white rounded shadow-lg";
-        notificacion.style.zIndex = "1060";
-        notificacion.style.maxWidth = "300px";
-        notificacion.innerHTML = `
-        <div class="d-flex align-items-center">
-          <i class="bi bi-check-circle-fill me-2"></i>
-          <span>${mensaje}</span>
-        </div>
-      `;
-
-        document.body.appendChild(notificacion);
-
-        // Remover después de 3 segundos
-        setTimeout(() => {
-          notificacion.remove();
-        }, 3000);
-      }
-
-      // 🆓 VACIAR CARRITO
-      vaciarCarrito() {
-        if (confirm("¿Estás seguro de vaciar el carrito?")) {
-          this.carrito = [];
-          this.guardarCarrito();
-          this.actualizarContador();
-          this.cargarCarritoOffcanvas();
-        }
-      }
-
-      // 📄 OBTENER RESUMEN PARA CHECKOUT
-      obtenerResumen() {
-        const subtotal = this.carrito.reduce(
-          (sum, item) => sum + item.precio * item.cantidad,
-          0
-        );
-        const envio = subtotal > 100 ? 0 : 15;
-        const total = subtotal + envio;
-
-        return {
-          items: this.carrito,
-          subtotal: subtotal,
-          envio: envio,
-          total: total,
-          cantidadTotal: this.carrito.reduce(
-            (sum, item) => sum + item.cantidad,
-            0
-          ),
-        };
-      }
+        
+        localStorage.setItem(CART_KEY, JSON.stringify(carrito));
+        
+        if(typeof mostrarNotificacion === 'function') mostrarNotificacion("¡Agregado a la cesta!", "success");
+        if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+        abrirCarritoUI();
     }
 
-    // 🌍 INSTANCIA GLOBAL DEL CARRITO
-    window.carritoManager = new CarritoManager();
+    // 2. Renderizar (Dibujar) el Carrito CON BOTONES +/-
+    // 2. Renderizar (Dibujar) el Carrito con PRECIO UNITARIO y SUBTOTAL
+    function renderizarCarrito() {
+        const container = document.getElementById('carrito-items-container');
+        const totalSpan = document.getElementById('carrito-total-monto');
+        const carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        
+        container.innerHTML = '';
+        let totalGeneral = 0;
+
+        if (carrito.length === 0) {
+            container.innerHTML = `
+                <div class="text-center mt-5" style="opacity: 0.5;">
+                    <i class="bi bi-cart-x" style="font-size: 3rem; color: #555;"></i>
+                    <p class="mt-3 text-muted">No has agregado productos.</p>
+                </div>`;
+            totalSpan.innerText = 'S/. 0.00';
+            return;
+        }
+
+        carrito.forEach((item, index) => {
+            // Cálculos
+            const precioUnitario = parseFloat(item.precio);
+            const subtotalItem = precioUnitario * item.cantidad;
+            totalGeneral += subtotalItem;
+
+            container.innerHTML += `
+                <div class="d-flex align-items-center mb-3 p-2 border border-secondary border-opacity-25 rounded" style="background: #111;">
+                    <img src="${item.imagen || 'https://via.placeholder.com/60'}" 
+                         style="width: 60px; height: 75px; object-fit: cover; border-radius: 4px;">
+                    
+                    <div class="ms-3 flex-grow-1">
+                        <h6 class="mb-1 text-white text-uppercase" style="font-size: 0.85rem; font-weight: 700;">${item.nombre}</h6>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <div class="text-muted small">
+                                Talla: <span class="text-white fw-bold">${item.talla}</span>
+                            </div>
+                            
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn-qty" 
+                                        onclick="cambiarCantidad(${index}, -1)"
+                                        ${item.cantidad === 1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>-</button>
+                                <span class="qty-display">${item.cantidad}</span>
+                                <button class="btn-qty" onclick="cambiarCantidad(${index}, 1)">+</button>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 pt-2 border-top border-secondary border-opacity-10 d-flex justify-content-between align-items-end">
+                            <div class="text-muted" style="font-size: 0.75rem;">
+                                Unit: S/. ${precioUnitario.toFixed(2)}
+                            </div>
+                            <div style="color: #FFD700; font-weight: 800; font-size: 0.95rem;">
+                                Total: S/. ${subtotalItem.toFixed(2)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="eliminarItem(${index})" class="btn btn-link text-danger p-0 ms-2 align-self-start">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            `;
+        });
+
+        totalSpan.innerText = 'S/. ' + totalGeneral.toFixed(2);
+    }
+    function cambiarCantidad(index, cambio) {
+        let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        
+        if (carrito[index]) {
+            const nuevaCantidad = carrito[index].cantidad + cambio;
+
+            if (nuevaCantidad < 1) {
+                return;
+            }
+            carrito[index].cantidad = nuevaCantidad;
+        }
+
+        // Guardar y Refrescar
+        localStorage.setItem(CART_KEY, JSON.stringify(carrito));
+        renderizarCarrito();
+        
+        // Actualizar el numerito del navbar si existe esa función
+        if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+    }
+
+    // 4. Funciones Auxiliares
+    function abrirCarritoUI() {
+        renderizarCarrito();
+        const offcanvasEl = document.getElementById('offcanvasCarrito');
+        // Verificar si bootstrap está definido
+        if (typeof bootstrap !== 'undefined') {
+            const offcanvas = new bootstrap.Offcanvas(offcanvasEl);
+            offcanvas.show();
+        }
+    }
+
+    function eliminarItem(index) {
+        let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        carrito.splice(index, 1);
+        localStorage.setItem(CART_KEY, JSON.stringify(carrito));
+        renderizarCarrito();
+        if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+    }
+
+    function limpiarCarrito() {
+        localStorage.removeItem(CART_KEY);
+        renderizarCarrito();
+        if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+    }
+
+    function irAPagar() {
+        let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        if(carrito.length === 0) {
+            alert("El carrito está vacío");
+            return;
+        }
+        window.location.href = "/checkout"; 
+    }
   </script>
 </div>
