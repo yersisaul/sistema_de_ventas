@@ -92,6 +92,17 @@ CREATE TABLE pago (
     FOREIGN KEY (id_pedido) REFERENCES pedido(id)
 );
 
+CREATE TABLE comprobante_pago (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    pago_id BIGINT NOT NULL,
+    nombre_archivo VARCHAR(255) NOT NULL,
+    ruta_archivo VARCHAR(255) NOT NULL,
+    fecha_subida DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (pago_id) REFERENCES pago(id)
+);
+
+
+
 
 
 
