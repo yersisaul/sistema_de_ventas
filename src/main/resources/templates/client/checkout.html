@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finalizar Compra - MAMBO</title>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+  <link rel="stylesheet" th:href="@{/css/client/base.css}" />
+  
+  <style>
+    /* === ESTILOS CHECKOUT BLACK & YELLOW === */
+    body { background-color: #000; color: white; font-family: 'Segoe UI', sans-serif; }
+    
+    .checkout-section { padding: 60px 0; }
+    
+    /* Cajas/Contenedores */
+    .checkout-card {
+        background-color: #111;
+        border: 1px solid #222;
+        padding: 30px;
+        border-radius: 8px;
+        height: 100%;
+    }
+    
+    h3 {
+        color: #FFD700;
+        font-weight: 800;
+        text-transform: uppercase;
+        border-bottom: 1px solid #333;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+    }
+
+    /* Formularios */
+    .form-label { color: #aaa; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
+    .form-control {
+        background-color: #050505; border: 1px solid #333; color: white; padding: 12px; border-radius: 4px;
+    }
+    .form-control:focus {
+        background-color: #0a0a0a; border-color: #FFD700; color: white; box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.1);
+    }
+    
+    /* Lista de Items (Derecha) */
+    .checkout-item {
+        display: flex; gap: 15px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #222;
+    }
+    .checkout-item img { width: 60px; height: 80px; object-fit: cover; border-radius: 4px; }
+    .item-info h6 { color: white; font-weight: 700; font-size: 0.9rem; margin: 0; text-transform: uppercase; }
+    .item-info small { color: #888; font-size: 0.8rem; }
+    .item-price { color: #FFD700; font-weight: 700; margin-left: auto; }
+
+    /* Totales */
+    .resumen-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: #aaa; }
+    .resumen-total { 
+        display: flex; justify-content: space-between; margin-top: 20px; pt: 20px; 
+        border-top: 1px solid #333; color: white; font-size: 1.3rem; font-weight: 900; 
+    }
+    .resumen-total span:last-child { color: #FFD700; }
+
+    /* Botón Final */
+    .btn-confirmar {
+        background-color: #FFD700; color: black; width: 100%; padding: 15px;
+        font-weight: 900; text-transform: uppercase; border: none; letter-spacing: 1px; margin-top: 20px;
+        transition: 0.3s;
+    }
+    .btn-confirmar:hover:not(:disabled) {
+        background-color: white; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+    }
+    .btn-confirmar:disabled { background-color: #333; color: #666; cursor: not-allowed; }
+  </style>
+</head>
+
+<body>
+  <header th:replace="~{client/fragments/navbar :: navbar}"></header>
+
+  <section class="checkout-section">
+    <div class="container">
+      
+      <form id="formCheckout" onsubmit="procesarCompra(event)">
+        <div class="row g-5">
+          
+          <div class="col-lg-7">
+            <div class="checkout-card">
+              <h3><i class="bi bi-truck me-2"></i> Datos de Envío</h3>
+              
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Cliente</label>
+                  <input type="text" class="form-control" th:value="${#authentication.name}" readonly style="opacity: 0.6;">
+                </div>
+
+                <div class="col-12">
+                  <label for="direccionEnvio" class="form-label">Dirección de Entrega *</label>
+                  <input type="text" class="form-control" id="direccionEnvio" required placeholder="Av. Principal 123, Dpto 401...">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="telefonoContacto" class="form-label">Teléfono de Contacto *</label>
+                  <input type="tel" class="form-control" id="telefonoContacto" required placeholder="999 000 000">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Ciudad</label>
+                  <input type="text" class="form-control" value="Lima" readonly style="opacity: 0.6;">
+                </div>
+
+                <div class="col-12">
+                  <label for="notas" class="form-label">Notas Adicionales (Opcional)</label>
+                  <textarea class="form-control" id="notas" rows="3" placeholder="Referencia: Frente al parque..."></textarea>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="checkout-card position-sticky" style="top: 100px;">
+              <h3><i class="bi bi-bag-check me-2"></i> Tu Pedido</h3>
+              
+              <div id="lista-items-checkout" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;">
+                 <div class="text-center py-4"><div class="spinner-border text-warning"></div></div>
+              </div>
+
+              <div class="mt-4">
+                <div class="resumen-row">
+                  <span>Subtotal</span>
+                  <span id="txt-subtotal">S/. 0.00</span>
+                </div>
+                <div class="resumen-row">
+                  <span>Costo de Envío</span>
+                  <span id="txt-envio">S/. 15.00</span> </div>
+                <div class="resumen-total">
+                  <span>TOTAL A PAGAR</span>
+                  <span id="txt-total">S/. 0.00</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-confirmar" id="btnConfirmar">
+                CONFIRMAR COMPRA <i class="bi bi-check-lg"></i>
+              </button>
+              
+              <div class="text-center mt-3">
+                  <a href="/client/vestidor" class="text-muted text-decoration-none small">
+                      <i class="bi bi-arrow-left"></i> Volver a la tienda
+                  </a>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </form>
+
+    </div>
+  </section>
+
+<meta name="_csrf" th:content="${_csrf?.token}"/>
+<meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
+
+  <div th:replace="~{client/fragments/navbar :: loginModal}"></div>
+  <footer th:replace="~{client/fragments/footer :: footer}"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    const CART_KEY = 'mambo_carrito_temporal';
+    const COSTO_ENVIO = 15.00; // Puedes cambiar esto
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        cargarResumenCompra();
+    });
+
+    function cargarResumenCompra() {
+        const carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        const contenedor = document.getElementById('lista-items-checkout');
+        const txtSubtotal = document.getElementById('txt-subtotal');
+        const txtEnvio = document.getElementById('txt-envio');
+        const txtTotal = document.getElementById('txt-total');
+        const btnConfirmar = document.getElementById('btnConfirmar');
+
+        if(carrito.length === 0) {
+            contenedor.innerHTML = '<p class="text-center text-muted">No hay productos en el carrito.</p>';
+            btnConfirmar.disabled = true;
+            return;
+        }
+
+        let subtotal = 0;
+        let html = '';
+
+        carrito.forEach(item => {
+            const precio = parseFloat(item.precio);
+            const totalItem = precio * item.cantidad;
+            subtotal += totalItem;
+
+            html += `
+                <div class="checkout-item">
+                    <img src="${item.imagen || 'https://via.placeholder.com/60'}" alt="Img">
+                    <div class="item-info">
+                        <h6>${item.nombre}</h6>
+                        <small>Talla: ${item.talla} | Cant: ${item.cantidad}</small><br>
+                        <small class="text-muted">Unit: S/. ${precio.toFixed(2)}</small>
+                    </div>
+                    <div class="item-price">S/. ${totalItem.toFixed(2)}</div>
+                </div>
+            `;
+        });
+
+        contenedor.innerHTML = html;
+        
+        // Cálculos
+        const total = subtotal + COSTO_ENVIO;
+        
+        txtSubtotal.innerText = 'S/. ' + subtotal.toFixed(2);
+        txtEnvio.innerText = 'S/. ' + COSTO_ENVIO.toFixed(2);
+        txtTotal.innerText = 'S/. ' + total.toFixed(2);
+    }
+
+    async function procesarCompra(e) {
+        e.preventDefault(); // Evitar recarga
+        
+        const btn = document.getElementById('btnConfirmar');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> PROCESANDO...';
+
+        // 1. Obtener datos del carrito (LocalStorage)
+        const carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        
+        if(carrito.length === 0) {
+            alert("El carrito está vacío");
+            return;
+        }
+
+        // 2. Mapear items al formato DetalleCarritoDTO que espera Java
+        // Tu Java espera: { varianteProductoId, cantidad } dentro de la lista 'detalles'
+        const detallesDTO = carrito.map(item => ({
+            varianteProductoId: parseInt(item.varianteId), // Asegurar Long
+            cantidad: parseInt(item.cantidad)
+        }));
+
+        // 3. Construir el objeto PedidoCreateDTO
+        const pedidoDTO = {
+            detalles: detallesDTO,
+            // clienteId se pone en el backend por seguridad usando el token/session
+            costoEnvio: COSTO_ENVIO,
+            direccionEnvio: document.getElementById('direccionEnvio').value,
+            telefonoContacto: document.getElementById('telefonoContacto').value,
+            notas: document.getElementById('notas').value
+        };
+
+        // 4. Enviar al Backend
+        try {
+            const csrfTokenMeta = document.querySelector('meta[name="_csrf"]');
+    const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+    
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    // Solo agregamos el token si existe en el HTML
+    if (csrfTokenMeta && csrfHeaderMeta && csrfTokenMeta.content) {
+        headers[csrfHeaderMeta.content] = csrfTokenMeta.content;
+    }
+
+    const response = await fetch('/api/pedidos/crear', {
+        method: 'POST',
+        headers: headers, // Usamos el objeto headers seguro
+        body: JSON.stringify(pedidoDTO)
+    });
+        } catch (error) {
+            console.error(error);
+            alert("Error de conexión con el servidor.");
+            btn.disabled = false;
+            btn.innerText = "INTENTAR DE NUEVO";
+        }
+    }
+  </script>
+</body>
+</html>
