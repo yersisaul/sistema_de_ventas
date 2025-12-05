@@ -27,13 +27,13 @@
               <i class="bi bi-list fs-4"></i>
             </button>
             <div class="flex-column">
-              <h4 style="font-weight:800">INVENTARIO DE PRODUCTOS</h4>
-              <p class="text-secondary m-0 text-center d-md-block">Lista de clientes de la tienda MAMBO</p>
-
+              <h4 style="font-weight: 800">INVENTARIO DE PRODUCTOS</h4>
+              <p class="text-secondary m-0 text-center d-md-block">
+                Lista de clientes de la tienda MAMBO
+              </p>
             </div>
-
           </div>
-          <hr class="p-2 d-md-none">
+          <hr class="p-2 d-md-none" />
 
           <!-- 🔽 EN PANTALLAS PEQUEÑAS: BUSCADOR Y BOTÓN DEBAJO -->
           <div class="d-flex flex-column flex-sm-row gap-2 d-md-none">
@@ -59,141 +59,165 @@
           <button class="btn btn-dark" id="btnNuevoProducto" data-bs-toggle="modal" data-bs-target="#modalProducto">
             Agregar producto
           </button>
-
         </div>
       </div>
 
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-3">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="bg-light">
+                <tr class="text-uppercase small">
+                  <th class="ps-4 py-3 text-secondary fw-semibold" style="width: 60px;">Imagen</th>
+                  <th class="py-3 text-secondary fw-semibold" style="width: 120px;">SKU</th>
+                  <th class="py-3 text-secondary fw-semibold" style="min-width: 180px;">Producto</th>
+                  <th class="py-3 text-secondary fw-semibold" style="min-width: 200px;">Descripción</th>
+                  <th class="py-3 text-secondary fw-semibold" style="width: 140px;">Categoría</th>
+                  <th class="py-3 text-secondary fw-semibold text-center" style="width: 100px;">Talla S</th>
+                  <th class="py-3 text-secondary fw-semibold text-center" style="width: 100px;">Talla M</th>
+                  <th class="py-3 text-secondary fw-semibold text-center" style="width: 100px;">Talla L</th>
+                  <th class="py-3 text-secondary fw-semibold text-center" style="width: 100px;">Talla XL</th>
+                  <th class="py-3 text-secondary fw-semibold text-center" style="width: 180px;">Acciones</th>
+                </tr>
+              </thead>
 
+              <tbody>
+                <tr th:each="producto : ${listaProductos}" class="border-top">
+                  <!-- Imagen -->
+                  <td class="ps-4 py-3">
+                    <div
+                      style="width: 50px; height: 50px; overflow: hidden; border-radius: 8px; background-color: #f8f9fa;"
+                      class="border d-flex align-items-center justify-content-center">
+                      <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}"
+                        th:src="@{${producto.imagen}}" alt="Producto" class="w-100 h-100 object-fit-cover">
+                      <img th:unless="${producto.imagen != null and !producto.imagen.isEmpty()}"
+                        src="https://placehold.co/50x50?text=IMG" alt="Sin imagen"
+                        class="w-100 h-100 object-fit-cover opacity-50">
+                    </div>
+                  </td>
 
+                  <!-- SKU -->
+                  <td class="py-3">
+                    <span class="fw-bold text-dark" th:text="${producto.sku}">PRD-001</span>
+                  </td>
 
+                  <!-- Nombre del producto -->
+                  <td class="py-3">
+                    <span class="fw-semibold text-dark" th:text="${producto.nombre}">Nombre Producto</span>
+                  </td>
 
-      <!-- Tabla principal: columnas generales + columnas de tallas -->
-      <!-- EJEMPLO ESTÁTICO (más abajo incluyo ejemplo dinámico con th:each) -->
-      <div class="table-responsive rounded-4 p-2">
-        <table class="table align-middle mb-0 inventory-table">
-          <thead class="table-light">
-            <tr class="text-uppercase small text-secondary">
+                  <!-- Descripción -->
+                  <td class="py-3">
+                    <span class="text-muted small"
+                      th:text="${#strings.abbreviate(producto.descripcion, 30)}">Desc...</span>
+                  </td>
 
-              <th>IMAGEN</th>
-              <th>SKU</th>
-              <th>PRODUCTO</th>
-              <th>DESCRIPCION</th>
-              <th>CATEGORIA</th>
-              <th>PRECIO</th>
-              <th>S</th>
-              <th>M</th>
-              <th>L</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
+                  <!-- Categoría -->
+                  <td class="py-3">
+                    <span class="badge bg-light text-dark border" style="padding: 6px 12px;">
+                      <span th:text="${producto.categoria?.nombre}">Cat</span>
+                    </span>
+                  </td>
 
-          <tbody>
-            <tr th:each="producto : ${listaProductos}" class="align-middle">
-              <td>
-                <div style="width: 50px; height: 50px; overflow: hidden; border-radius: 8px;" class="border">
+                  <!-- Talla S -->
+                  <td class="py-3 text-center"
+                    th:with="v=${producto.variantes != null ? (producto.variantes.?[talla == 'S'].isEmpty() ? null : producto.variantes.?[talla == 'S'][0]) : null}">
+                    <div th:if="${v != null}" class="d-flex flex-column align-items-center gap-1">
+                      <span class="badge"
+                        th:classappend="${v.stock > 10 ? 'bg-success' : (v.stock > 0 ? 'bg-warning text-dark' : 'bg-danger')}"
+                        th:text="${v.stock + ' u.'}" style="font-size: 0.8rem; padding: 4px 8px;">0 u.</span>
+                      <span class="text-success fw-semibold small">S/. <span
+                          th:text="${#numbers.formatDecimal(v.precio, 1, 2)}">0.00</span></span>
+                    </div>
+                    <div th:unless="${v != null}" class="text-muted fw-bold">-</div>
+                  </td>
 
-                  <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" th:src="@{${producto.imagen}}"
-                    alt="Producto" class="w-100 h-100 object-fit-cover">
+                  <!-- Talla M -->
+                  <td class="py-3 text-center"
+                    th:with="v=${producto.variantes != null ? (producto.variantes.?[talla == 'M'].isEmpty() ? null : producto.variantes.?[talla == 'M'][0]) : null}">
+                    <div th:if="${v != null}" class="d-flex flex-column align-items-center gap-1">
+                      <span class="badge"
+                        th:classappend="${v.stock > 10 ? 'bg-success' : (v.stock > 0 ? 'bg-warning text-dark' : 'bg-danger')}"
+                        th:text="${v.stock + ' u.'}" style="font-size: 0.8rem; padding: 4px 8px;">0 u.</span>
+                      <span class="text-success fw-semibold small">S/. <span
+                          th:text="${#numbers.formatDecimal(v.precio, 1, 2)}">0.00</span></span>
+                    </div>
+                    <div th:unless="${v != null}" class="text-muted fw-bold">-</div>
+                  </td>
 
-                  <img th:unless="${producto.imagen != null and !producto.imagen.isEmpty()}"
-                    src="https://placehold.co/50x50?text=IMG" alt="Sin imagen"
-                    class="w-100 h-100 object-fit-cover opacity-50">
-                </div>
-              </td>
-              <td th:text="${producto.sku}">PRD-001</td>
+                  <!-- Talla L -->
+                  <td class="py-3 text-center"
+                    th:with="v=${producto.variantes != null ? (producto.variantes.?[talla == 'L'].isEmpty() ? null : producto.variantes.?[talla == 'L'][0]) : null}">
+                    <div th:if="${v != null}" class="d-flex flex-column align-items-center gap-1">
+                      <span class="badge"
+                        th:classappend="${v.stock > 10 ? 'bg-success' : (v.stock > 0 ? 'bg-warning text-dark' : 'bg-danger')}"
+                        th:text="${v.stock + ' u.'}" style="font-size: 0.8rem; padding: 4px 8px;">0 u.</span>
+                      <span class="text-success fw-semibold small">S/. <span
+                          th:text="${#numbers.formatDecimal(v.precio, 1, 2)}">0.00</span></span>
+                    </div>
+                    <div th:unless="${v != null}" class="text-muted fw-bold">-</div>
+                  </td>
 
-              <td th:text="${producto.nombre}" class="fw-semibold">Nombre Producto</td>
+                  <!-- Talla XL -->
+                  <td class="py-3 text-center"
+                    th:with="v=${producto.variantes != null ? (producto.variantes.?[talla == 'XL'].isEmpty() ? null : producto.variantes.?[talla == 'XL'][0]) : null}">
+                    <div th:if="${v != null}" class="d-flex flex-column align-items-center gap-1">
+                      <span class="badge"
+                        th:classappend="${v.stock > 10 ? 'bg-success' : (v.stock > 0 ? 'bg-warning text-dark' : 'bg-danger')}"
+                        th:text="${v.stock + ' u.'}" style="font-size: 0.8rem; padding: 4px 8px;">0 u.</span>
+                      <span class="text-success fw-semibold small">S/. <span
+                          th:text="${#numbers.formatDecimal(v.precio, 1, 2)}">0.00</span></span>
+                    </div>
+                    <div th:unless="${v != null}" class="text-muted fw-bold">-</div>
+                  </td>
 
-              <td th:text="${#strings.abbreviate(producto.descripcion, 30)}" class="text-muted small">Desc...</td>
+                  <!-- Acciones -->
+                  <td class="py-3 text-center">
+                    <div class="d-flex justify-content-center gap-2">
+                      <button class="btn btn-outline-warning btn-sm px-3 d-flex align-items-center gap-1"
+                        data-bs-toggle="modal" data-bs-target="#modalEditarProducto"
+                        th:attr="data-id=${producto.id}, data-nombre=${producto.nombre}, data-descripcion=${producto.descripcion}, data-categoria=${producto.categoria.id}, data-imagen=${producto.imagen}">
+                        <i class="bi bi-pencil-square"></i>
+                        <span class="d-none d-md-inline">Editar</span>
+                      </button>
 
-              <td th:text="${producto.categoria?.nombre}">Cat</td>
+                      <button class="btn btn-outline-danger btn-sm px-3 d-flex align-items-center gap-1"
+                        data-bs-toggle="modal" data-bs-target="#modalEliminarProducto" th:attr="data-id=${producto.id}">
+                        <i class="bi bi-trash-fill"></i>
+                        <span class="d-none d-md-inline">Eliminar</span>
+                      </button>
 
-              <td>S/. 39.90</td>
-
-              <td class="text-center"
-                th:with="variantS=${producto.variantes != null ? (producto.variantes.?[talla == 'S'].isEmpty() ? null : producto.variantes.?[talla == 'S'][0]) : null}">
-
-                <div class="stock-cell" th:if="${variantS != null}">
-                  <span class="stock-num" th:text="${variantS.stock}">0</span>
-                  <span class="stock-tag" th:classappend="${variantS.stock > 0 ? 'complet' : 'danger'}"
-                    th:text="${variantS.stock > 0 ? 'Stock' : 'Agotado'}">
-                  </span>
-                </div>
-                <div th:unless="${variantS != null}" class="text-muted opacity-25">-</div>
-              </td>
-
-              <td class="text-center"
-                th:with="variantM=${producto.variantes != null ? (producto.variantes.?[talla == 'M'].isEmpty() ? null : producto.variantes.?[talla == 'M'][0]) : null}">
-
-                <div class="stock-cell" th:if="${variantM != null}">
-                  <span class="stock-num" th:text="${variantM.stock}">0</span>
-                  <span class="stock-tag" th:classappend="${variantM.stock > 0 ? 'complet' : 'danger'}"
-                    th:text="${variantM.stock > 0 ? 'Stock' : 'Agotado'}">
-                  </span>
-                </div>
-                <div th:unless="${variantM != null}" class="text-muted opacity-25">-</div>
-              </td>
-
-              <td class="text-center"
-                th:with="variantL=${producto.variantes != null ? (producto.variantes.?[talla == 'L'].isEmpty() ? null : producto.variantes.?[talla == 'L'][0]) : null}">
-
-                <div class="stock-cell" th:if="${variantL != null}">
-                  <span class="stock-num" th:text="${variantL.stock}">0</span>
-                  <span class="stock-tag" th:classappend="${variantL.stock > 0 ? 'complet' : 'danger'}"
-                    th:text="${variantL.stock > 0 ? 'Stock' : 'Agotado'}">
-                  </span>
-                </div>
-                <div th:unless="${variantL != null}" class="text-muted opacity-25">-</div>
-              </td>
-
-              <td>
-                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditarProducto" th:attr="data-id=${producto.id},
-                 data-nombre=${producto.nombre},
-                 data-descripcion=${producto.descripcion},
-                 data-categoria=${producto.categoria.id},
-                 data-imagen=${producto.imagen}">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-
-                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarProducto"
-                  th:attr="data-id=${producto.id}">
-                  <i class="bi bi-trash-fill text-white"></i>
-                </button>
-
-                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAgregarStock"
-                  th:attr="data-id=${producto.id},
-                 data-nombre=${producto.nombre},
-                 data-categoria=${producto.categoria.id},
-                 data-imagen=${producto.imagen}">
-                  <i class="bi bi-plus-square-fill me-1"></i> Stock
-                </button>
-                
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                      <button class="btn btn-outline-success btn-sm px-3 d-flex align-items-center gap-1"
+                        data-bs-toggle="modal" data-bs-target="#modalAgregarStock"
+                        th:attr="data-id=${producto.id}, data-nombre=${producto.nombre}, data-categoria=${producto.categoria.id}, data-imagen=${producto.imagen}">
+                        <i class="bi bi-plus-square-fill"></i>
+                        <span class="d-none d-md-inline">Stock</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-
-
     </div>
 
     <div class="modal fade" id="modalEliminarProducto" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
           <div class="modal-header bg-danger text-white">
             <h5 class="modal-title">Confirmar Eliminación</h5>
             <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
 
           <form id="formEliminarProducto" method="post">
-
             <div class="modal-body text-center">
               ¿Seguro que deseas eliminar?
               <strong>Esta acción no se puede deshacer.</strong>
             </div>
 
-            <input type="hidden" name="id" id="inputIdEliminar">
+            <input type="hidden" name="id" id="inputIdEliminar" />
 
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -203,14 +227,9 @@
               <button type="submit" class="btn btn-danger">Eliminar</button>
             </div>
           </form>
-
         </div>
       </div>
     </div>
-
-
-
-
 
     <!-- MODAL REGISTRO PRODUCTO -->
     <div th:replace="admin/fragments/nuevoProducto :: nuevoProducto"></div>
@@ -224,9 +243,9 @@
     function toggleStockInput(checkboxId, inputId) {
       const checkbox = document.getElementById(checkboxId);
       const input = document.getElementById(inputId);
-      input.disabled = !checkbox.checked; // se activa solo si el checkbox está marcado
+      input.disabled = !checkbox.checked;
       if (!checkbox.checked) {
-        input.value = ""; // limpia el valor si se desactiva
+        input.value = "";
       }
     }
 
@@ -234,18 +253,18 @@
       // Selecciona TODOS los inputs con clase .buscador (tanto móvil como escritorio)
       const buscadores = document.querySelectorAll(".buscador");
 
-      buscadores.forEach(buscador => {
+      buscadores.forEach((buscador) => {
         buscador.addEventListener("input", function () {
           const filtro = buscador.value.trim().toLowerCase();
           const filas = document.querySelectorAll("tbody tr");
 
-          filas.forEach(fila => {
+          filas.forEach((fila) => {
             // Seleccionamos todas las columnas de esa fila
             const columnas = fila.querySelectorAll("td");
 
             // Unimos el texto de todas las celdas en un solo string
             const textoFila = Array.from(columnas)
-              .map(td => td.textContent.toLowerCase())
+              .map((td) => td.textContent.toLowerCase())
               .join(" ");
 
             // Mostrar u ocultar según si el texto contiene el filtro

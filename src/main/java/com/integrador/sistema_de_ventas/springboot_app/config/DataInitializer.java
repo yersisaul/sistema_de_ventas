@@ -13,7 +13,7 @@ import com.integrador.sistema_de_ventas.springboot_app.repository.UsuarioReposit
  * Inicializa datos por defecto al arrancar la aplicación
  * Crea un usuario administrador y un usuario cliente de prueba
  */
-@Component
+//@Component
 public class DataInitializer implements CommandLineRunner {
 
     @Autowired

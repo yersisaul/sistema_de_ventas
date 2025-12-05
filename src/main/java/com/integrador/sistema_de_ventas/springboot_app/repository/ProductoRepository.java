@@ -23,4 +23,5 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     @Query("SELECT p FROM Producto p WHERE p.categoria.id = :categoriaId AND p.activo = true AND p.eliminado = false")
     List<Producto> findByCategoriaActivos(@Param("categoriaId") Long categoriaId);
     long countByCategoriaId(Long categoriaId);
+
 }

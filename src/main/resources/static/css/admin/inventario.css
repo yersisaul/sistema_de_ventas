@@ -194,7 +194,18 @@ button.btn {
   border: 2px solid #d00042;/* rojo */
 }
 
+/* Agrega esto a tu CSS existente */
 
+.price-tag {
+  font-size: 0.75rem;     /* Letra pequeña pero legible */
+  font-weight: 700;       /* Negrita */
+  color: #495057;         /* Gris oscuro elegante */
+  letter-spacing: 0.5px;
+  background-color: #f8f9fa; /* Fondo muy sutil */
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-top: 2px;
+}
 
 
 

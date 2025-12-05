@@ -4,40 +4,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Productos - MAMBO</title>
+  <title>Catálogo - MAMBO</title>
+  
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
   <link rel="stylesheet" th:href="@{/css/client/base.css}" />
-  <link rel="stylesheet" th:href="@{/css/client/productos.css}" /> 
-
+  <link rel="stylesheet" th:href="@{/css/client/productos.css}" />
+  
+  <style>
+    .talla-selector input[type="radio"] { display: none; }
+    .talla-selector label { cursor: pointer; transition: 0.2s; user-select: none; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 50%; border: 1px solid #212529; }
+    .talla-selector input:checked + label { background-color: #212529; color: white; }
+    .talla-selector input:disabled + label { background-color: #f8f9fa; color: #dee2e6; border-color: #dee2e6; cursor: not-allowed; text-decoration: line-through; }
+    .talla-badge { cursor: pointer; user-select: none; width: 40px; text-align: center; }
+    .talla-badge.active { background-color: #212529 !important; color: white !important; border-color: #212529 !important; }
+    .card-clean { transition: transform 0.2s ease, box-shadow 0.2s ease; border: none; }
+    .card-clean:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+  </style>
 </head>
 
 <body>
-  <header th:replace="client/fragments/navbar :: navbar"></header>
+  <header th:replace="~{client/fragments/navbar :: navbar}"></header>
 
-  <section class="catalogo-section">
-    <div class="banner-top text-center fw-bold">
-      ¡ENCUENTRA TU ESTILO CON NUESTRAS NOVEDADES!
-    </div>
-
-    <div class="container mt-5 mb-5">
+  <section class="catalogo-section py-5">
+    
+    <div class="container mb-5">
       <div class="row align-items-center">
-        <div class="col-lg-6 col-md-12 mb-4">
-          <h2 class="text-uppercase fw-bold catalogo-title">
-            Catálogo MAMBO
-          </h2>
-          <p class="text-muted mt-3" style="color: rgba(255,255,255,0.7) !important;">
-            Descubre nuestra colección exclusiva diseñada para destacar tu estilo único
-          </p>
+        <div class="col-lg-6">
+          <h2 class="fw-bold display-6">NUESTRA COLECCIÓN</h2>
+          <p class="text-muted">Encuentra tu estilo con las mejores prendas.</p>
         </div>
-        <div class="col-lg-6 col-md-12">
-          <div class="input-group custom-search-bar">
-            <input type="text" class="form-control custom-search-input" 
-                   placeholder="Buscar productos por nombre, categoría..." 
-                   id="buscadorProductos" />
-            <button class="btn custom-search-btn" type="button" id="btnBuscar">
-              <i class="bi bi-search"></i>
-            </button>
+        <div class="col-lg-6">
+          <div class="input-group input-group-lg shadow-sm">
+            <input type="text" class="form-control border-0" placeholder="¿Qué estás buscando?" id="buscadorProductos" />
+            <span class="input-group-text bg-white border-0"><i class="bi bi-search"></i></span>
           </div>
         </div>
       </div>
@@ -45,308 +45,304 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-lg-9 col-md-12">
-          <div class="row" id="gridProductos">
-            <div th:each="producto : ${listaProductos}" class="col-lg-4 col-md-6 mb-5">
-              <div class="card custom-product-card h-100">
-                <div class="card-img-container">
-                  <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" th:src="@{${producto.imagen}}"
-                    class="card-img-top" th:alt="${producto.nombre}" />
-                  <img th:unless="${producto.imagen != null and !producto.imagen.isEmpty()}"
-                    src="https://placehold.co/600x600/1a1a1a/FFD700?text=MAMBO&font=montserrat" class="card-img-top"
-                    th:alt="${producto.nombre}" />
-
-                  <div class="position-absolute top-0 end-0 m-3">
-                    <th:block
-                      th:with="totalStock=${producto.variantes != null ? #aggregates.sum(producto.variantes.![stock]) : 0}">
-                      <span th:if="${totalStock > 0}" class="badge badge-stock">
-                        <i class="bi bi-check-circle me-1"></i>
-                        Stock: <span th:text="${totalStock}"></span>
-                      </span>
-                      <span th:unless="${totalStock > 0}" class="badge badge-out">
-                        <i class="bi bi-x-circle me-1"></i>
-                        Agotado
-                      </span>
-                    </th:block>
-                  </div>
-
-                  <div class="position-absolute top-0 start-0 m-3">
-                    <span th:if="${producto.categoria != null}" class="badge badge-category">
-                      <i class="bi bi-tag me-1"></i>
-                      <span th:text="${producto.categoria.nombre}"></span>
-                    </span>
-                  </div>
+        
+        <div class="col-lg-9 order-lg-2">
+          
+          <div class="row g-4" id="gridProductos">
+            
+            <div th:each="producto : ${listaProductos}" class="col-lg-4 col-md-6">
+              
+              <div class="card card-clean h-100 product-card-filter"
+                   data-bs-toggle="modal"
+                   th:data-bs-target="'#modalProducto-' + ${producto.id}"
+                   
+                   th:data-nombre="${producto.nombre != null ? #strings.toLowerCase(producto.nombre) : ''}"
+                   th:data-categoria="${producto.categoria != null ? producto.categoria.id : ''}"
+                   
+                   th:data-tallas="${producto.variantes != null ? #strings.listJoin(producto.variantes.![talla], ',') : ''}"
+                   
+                   th:data-precio="${producto.precioMinimo}"
+                   
+                   th:data-stock="${(producto.variantes != null and !producto.variantes.empty) ? #aggregates.sum(producto.variantes.![stock]) : 0}">
+                
+                <div class="position-relative overflow-hidden bg-light ratio ratio-3x4 rounded-top">
+                  <img th:if="${producto.url_imagen != null and !producto.url_imagen.isEmpty()}" 
+                       th:src="@{${producto.url_imagen}}" 
+                       class="card-img-top object-fit-cover" alt="Producto" />
                   
-                  <button class="btn btn-vista-rapida"
-                          th:attr="data-id=${producto.id}"
-                          data-bs-toggle="modal" data-bs-target="#modalDetalleProducto"
-                          th:onclick="mostrarDetalleProducto(${producto.id})">
-                    <i class="bi bi-eye me-1"></i> Vista Rápida
-                  </button>
+                  <img th:unless="${producto.url_imagen != null and !producto.url_imagen.isEmpty()}"
+                       src="https://placehold.co/600x800?text=SIN+FOTO" 
+                       class="card-img-top object-fit-cover" alt="Producto" />
+                       
+                   <div th:if="${(producto.variantes == null or producto.variantes.empty) or (#aggregates.sum(producto.variantes.![stock]) == 0)}" 
+                        class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50">
+                     <span class="badge bg-danger fs-5">AGOTADO</span>
+                   </div>
                 </div>
 
-                <div class="card-body d-flex flex-column">
-                  <h6 class="card-title fw-bold" th:text="${producto.nombre}"></h6>
-
-                  <p class="card-text flex-grow-1" th:text="${#strings.abbreviate(producto.descripcion, 120)}"></p>
-
-                  <div class="d-flex justify-content-between align-items-center mb-4">
-                    <p class="card-price fw-bold mb-0">
-                      S/.
+                <div class="card-body text-center d-flex flex-column">
+                  <h6 class="card-title fw-bold text-uppercase mb-1" th:text="${producto.nombre}">NOMBRE</h6>
+                  <p class="small text-muted mb-2" th:text="${producto.categoria?.nombre}">Categoría</p>
+                  
+                  <div class="mt-auto">
+                    <h5 class="fw-bold text-dark">
                       <span th:if="${producto.variantes != null and !producto.variantes.empty}">
-                        <span
-                          th:text="${#numbers.formatDecimal(#aggregates.min(producto.variantes.![precio]), 1, 2)}"></span>
+                        S/. <span th:text="${producto.precioMinimo}">0.00</span>
                       </span>
-                      <span th:unless="${producto.variantes != null and !producto.variantes.empty}">
-                        0.00
+                      <span th:unless="${producto.variantes != null and !producto.variantes.empty}" class="text-danger">
+                        --.--
                       </span>
-                    </p>
-                    <span class="sku-badge" th:text="${producto.sku}"></span>
+                    </h5>
+                    <button class="btn btn-outline-dark btn-sm w-100 rounded-pill mt-2">Ver Opciones</button>
                   </div>
-
-                  <button class="btn product-add-btn fw-bold mt-auto btn-agregar-carrito"
-                          th:disabled="${producto.variantes == null or producto.variantes.empty}">
-                    <span th:if="${producto.variantes != null and !producto.variantes.empty}">AGREGAR AL CARRITO</span>
-                    <span th:unless="${producto.variantes != null and !producto.variantes.empty}">NO DISPONIBLE</span>
-                  </button>
                 </div>
               </div>
+
+              <div class="modal fade" th:id="'modalProducto-' + ${producto.id}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                  <div class="modal-content border-0 rounded-4 overflow-hidden">
+                    <div class="row g-0">
+                      
+                      <div class="col-md-6 bg-light d-flex align-items-center justify-content-center p-3">
+                         <img th:if="${producto.url_imagen != null}" th:src="@{${producto.url_imagen}}" class="img-fluid rounded shadow-sm" style="max-height: 500px;" />
+                         <img th:unless="${producto.url_imagen != null}" src="https://placehold.co/600x800?text=SIN+FOTO" class="img-fluid rounded" />
+                      </div>
+
+                      <div class="col-md-6 p-4 p-lg-5 d-flex flex-column">
+                        <div class="d-flex justify-content-between">
+                           <span class="badge bg-secondary text-uppercase" th:text="${producto.categoria?.nombre}">Cat</span>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        
+                        <h2 class="fw-bold mt-2" th:text="${producto.nombre}">Nombre Producto</h2>
+                        <p class="text-muted" th:text="${producto.descripcion}">Descripción...</p>
+                        
+                        <hr>
+                        
+                        <h3 class="fw-bold text-success mb-3" th:id="'precioDisplay-' + ${producto.id}">
+                           <span th:if="${producto.variantes != null and !producto.variantes.empty}">
+                              Desde S/. <span th:text="${producto.precioMinimo}">0.00</span>
+                           </span>
+                           <span th:unless="${producto.variantes != null and !producto.variantes.empty}">No disponible</span>
+                        </h3>
+
+                        <div class="mb-4">
+                          <label class="fw-bold mb-2 small text-uppercase">Selecciona Talla:</label>
+                          <div class="talla-selector d-flex flex-wrap gap-2">
+                            
+                            <th:block th:if="${producto.variantes != null}" th:each="variante : ${producto.variantes}">
+                              <div class="position-relative">
+                                <input type="radio" 
+                                       class="btn-check"
+                                       th:name="'talla-grupo-' + ${producto.id}" 
+                                       th:id="'var-' + ${variante.id}" 
+                                       th:value="${variante.id}"
+                                       th:data-precio="${variante.precio}"
+                                       th:data-stock="${variante.stock}"
+                                       th:disabled="${variante.stock <= 0}"
+                                       th:onclick="'actualizarPrecioModal(' + ${producto.id} + ', this)'" 
+                                       autocomplete="off" />
+                                
+                                <label th:for="'var-' + ${variante.id}" th:text="${variante.talla}">S</label>
+                              </div>
+                            </th:block>
+                            
+                            <div th:if="${producto.variantes == null or producto.variantes.empty}" class="alert alert-warning py-2 small w-100">
+                               <i class="bi bi-cone-striped"></i> Producto sin stock configurado.
+                            </div>
+                          </div>
+                          <div class="mt-2 text-muted small" th:id="'stockDisplay-' + ${producto.id}"></div>
+                        </div>
+
+                        <div class="mt-auto">
+                           <form th:action="@{/carrito/agregar}" method="post">
+                             <input type="hidden" name="varianteId" th:id="'inputVarianteId-' + ${producto.id}" required />
+                             <input type="hidden" name="cantidad" value="1" />
+                             
+                             <button type="submit" class="btn btn-dark w-100 py-3 rounded-pill fw-bold" 
+                                     th:id="'btnAgregar-' + ${producto.id}" disabled>
+                               SELECCIONA UNA TALLA
+                             </button>
+                           </form>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> 
+
+            </div> 
+            
+            <div th:if="${#lists.isEmpty(listaProductos)}" class="col-12 text-center py-5">
+               <h4 class="text-muted">No hay productos disponibles por el momento.</h4>
             </div>
 
-            </div>
+          </div>
         </div>
 
-        <div class="col-lg-3 d-none d-lg-block">
-          <div class="filter-sidebar p-4">
-            <h5 class="fw-bold mb-4 filter-title-prueba">
-              <i class="bi bi-stars me-2"></i>PRUEBATE TU PRENDA
-            </h5>
+        <div class="col-lg-3 order-lg-1 mb-5">
+          <div class="card border-0 shadow-sm p-4 sticky-top" style="top: 100px; z-index: 10;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+               <h5 class="fw-bold m-0"><i class="bi bi-sliders"></i> FILTROS</h5>
+               <button class="btn btn-link text-dark text-decoration-none p-0" id="btnLimpiarFiltros">Limpiar</button>
+            </div>
+            
+            <hr class="mb-4">
 
-            <h5 class="fw-bold mb-3 filter-subtitle">
-              <i class="bi bi-funnel me-2"></i>FILTRADO
-            </h5>
-            <button class="btn btn-sm filter-limpiar-btn mb-4 w-100" id="btnLimpiarFiltros">
-              <i class="bi bi-arrow-clockwise me-1"></i>LIMPIAR FILTROS
-            </button>
-
-            <div class="filter-group">
-              <h6 class="fw-bold mb-2 filter-subtitle-small">
-                <i class="bi bi-currency-dollar"></i>PRECIO
-              </h6>
-              <div class="d-flex gap-2">
-                <input type="number" class="form-control text-white custom-filter-input" placeholder="Mín" min="0" 
-                       id="precioMin" />
-                <input type="number" class="form-control text-white  custom-filter-input" placeholder="Máx" min="0" 
-                       id="precioMax" />
+            <div class="mb-4">
+              <h6 class="fw-bold small text-uppercase mb-3">Rango de Precio</h6>
+              <div class="row g-2">
+                <div class="col-6">
+                  <input type="number" class="form-control form-control-sm" placeholder="Mín" id="precioMin">
+                </div>
+                <div class="col-6">
+                  <input type="number" class="form-control form-control-sm" placeholder="Máx" id="precioMax">
+                </div>
               </div>
             </div>
 
-            <div class="filter-group">
-              <h6 class="fw-bold mb-2 filter-subtitle-small">
-                <i class="bi bi-grid-3x3"></i>TALLAS
-              </h6>
-              <div class="d-flex gap-2 flex-wrap" id="filtroTallas">
-                <span class="talla-badge" data-talla="XS">XS</span>
-                <span class="talla-badge" data-talla="S">S</span>
-                <span class="talla-badge" data-talla="M">M</span>
-                <span class="talla-badge" data-talla="L">L</span>
-                <span class="talla-badge" data-talla="XL">XL</span>
-                <span class="talla-badge" data-talla="XXL">XXL</span>
+            <div class="mb-4">
+              <h6 class="fw-bold small text-uppercase mb-3">Tallas</h6>
+              <div class="d-flex flex-wrap gap-2" id="filtroTallas">
+                <span class="badge border text-dark fw-normal p-2 talla-badge" data-talla="S">S</span>
+                <span class="badge border text-dark fw-normal p-2 talla-badge" data-talla="M">M</span>
+                <span class="badge border text-dark fw-normal p-2 talla-badge" data-talla="L">L</span>
+                <span class="badge border text-dark fw-normal p-2 talla-badge" data-talla="XL">XL</span>
               </div>
             </div>
 
-            <div class="filter-group">
-              <h6 class="fw-bold mb-2 filter-subtitle-small">
-                <i class="bi bi-tags"></i>CATEGORÍAS
-              </h6>
+            <div class="mb-4">
+              <h6 class="fw-bold small text-uppercase mb-3">Categorías</h6>
               <div class="d-flex flex-column gap-2" id="filtroCategorias">
-                <div class="form-check" th:each="cat : ${listaCategorias}">
-                  <input class="form-check-input" type="checkbox" 
-                         th:id="'cat-' + ${cat.id}" 
-                         th:value="${cat.id}"
-                         th:data-nombre="${cat.nombre}" />
-                  <label class="form-check-label" 
-                         th:for="'cat-' + ${cat.id}" 
-                         th:text="${cat.nombre}">
-                  </label>
-                </div>
+                 <div class="form-check" th:each="cat : ${listaCategorias}">
+                    <input class="form-check-input" type="checkbox" th:value="${cat.id}" th:id="'cat-' + ${cat.id}">
+                    <label class="form-check-label" th:for="'cat-' + ${cat.id}" th:text="${cat.nombre}">Nombre</label>
+                 </div>
               </div>
             </div>
-            
-            <div class="filter-group">
-              <h6 class="fw-bold mb-2 filter-subtitle-small">
-                <i class="bi bi-box-seam"></i>DISPONIBILIDAD
-              </h6>
-              <div class="d-flex flex-column gap-2">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="filtroStock" checked />
-                  <label class="form-check-label" for="filtroStock">
-                    Mostrar solo disponibles
-                  </label>
-                </div>
-              </div>
-            </div>
-            
-            <div class="mt-4 p-3 text-center rounded"
-                 style="background-color: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3);">
-              <i class="bi bi-truck text-warning fs-4 mb-2 d-block"></i>
-              <p class="small mb-0" style="color: var(--color-secundario);">
-                <strong>Envío gratis</strong><br>
-                En compras mayores a S/. 100
-              </p>
+
+            <div class="form-check form-switch">
+               <input class="form-check-input" type="checkbox" id="filtroStock" checked>
+               <label class="form-check-label small" for="filtroStock">Solo con Stock</label>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
 
-  <div th:replace="client/fragments/carrito :: carrito-offcanvas"></div>
-
-  <div th:replace="client/fragments/navbar :: loginModal"></div>
-  <div th:replace="client/fragments/navbar :: registerModal"></div>
-
-  <footer th:replace="client/fragments/footer :: footer"></footer>
+  <div th:replace="~{client/fragments/carrito :: carrito-offcanvas}"></div>
+  <div th:replace="~{client/fragments/navbar :: loginModal}"></div>
+  <div th:replace="~{client/fragments/navbar :: registerModal}"></div>
+  <footer th:replace="~{client/fragments/footer :: footer}"></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <script>
-    // 📦 DATOS DE PRODUCTOS DE EJEMPLO
-    document.addEventListener('DOMContentLoaded', function() {
-      // 🎯 INICIALIZAR EFECTOS
-      inicializarEfectos();
-      
-      // 🔍 CONFIGURAR BÚSQUEDA Y FILTROS
-      configurarFiltros();
-      
-      // 🛒 CONFIGURAR BOTONES DEL CARRITO (Mantener si existe la función)
-      // configurarCarrito(); 
-      
-      // 🎨 EFECTOS VISUALES SIMPLES
-      function inicializarEfectos() {
-        // Se mantiene el efecto para que la tarjeta en hover quede por encima
-        const cards = document.querySelectorAll('.custom-product-card');
-        cards.forEach(card => {
-          card.addEventListener('mouseenter', function() {
-            this.style.zIndex = '10';
-          });
-          
-          card.addEventListener('mouseleave', function() {
-            this.style.zIndex = '1';
-          });
-        });
-        
-        // Efecto en badges de tallas
-        document.querySelectorAll('.talla-badge').forEach(badge => {
-          badge.addEventListener('click', function() {
-            this.classList.toggle('active');
-            filtrarProductos();
-          });
-        });
-      }
-      
-      // 🔍 CONFIGURAR FILTROS (Mantenemos la lógica de filtrado)
-      function configurarFiltros() {
-        const btnBuscar = document.getElementById('btnBuscar');
-        const buscador = document.getElementById('buscadorProductos');
-        const btnLimpiar = document.getElementById('btnLimpiarFiltros');
-        
-        btnBuscar?.addEventListener('click', filtrarProductos);
-        buscador?.addEventListener('input', filtrarProductos);
-        btnLimpiar?.addEventListener('click', limpiarFiltros);
-        
-        // Filtros de precio
-        document.getElementById('precioMin')?.addEventListener('input', filtrarProductos);
-        document.getElementById('precioMax')?.addEventListener('input', filtrarProductos);
-        document.getElementById('filtroStock')?.addEventListener('change', filtrarProductos);
-        
-        // Filtros de categorías
-        document.querySelectorAll('#filtroCategorias input[type="checkbox"]').forEach(checkbox => {
-          checkbox.addEventListener('change', filtrarProductos);
-        });
-      }
-      
-      
-      // 🔍 FUNCIÓN DE FILTRADO (Se mantiene la lógica original)
-      function filtrarProductos() {
-        const busqueda = document.getElementById('buscadorProductos')?.value.toLowerCase() || '';
-        const precioMin = parseFloat(document.getElementById('precioMin')?.value) || 0;
-        const precioMax = parseFloat(document.getElementById('precioMax')?.value) || Infinity;
-        const soloDisponibles = document.getElementById('filtroStock')?.checked || false;
-        const tallasSeleccionadas = Array.from(document.querySelectorAll('.talla-badge.active'))
-          .map(b => b.dataset.talla);
-        const categoriasSeleccionadas = Array.from(document.querySelectorAll('#filtroCategorias input:checked'))
-          .map(cb => cb.value);
-        
-        // Filtrar productos
-        const cards = document.querySelectorAll('.custom-product-card');
-        cards.forEach(card => {
-          // Buscamos el div contenedor del producto, que tiene la clase col-lg-4, para ocultar/mostrar
-          const contenedorProducto = card.closest('.col-lg-4');
-          if (!contenedorProducto) return;
 
-          const nombre = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
-          const precioText = card.querySelector('.card-price')?.textContent || 'S/. 0.00';
-          // Se ajusta la regex para limpiar el precio
-          const precio = parseFloat(precioText.replace(/S\/\.|[^\d.]/g, '').trim()) || 0; 
-          
-          // La lógica de stock se basa en si el botón de agregar al carrito está deshabilitado.
-          // En Thymeleaf, si está deshabilitado, el botón tiene el atributo 'disabled'.
-          const tieneStock = !card.querySelector('.product-add-btn')?.disabled; 
-          const categoria = card.querySelector('.badge-category span')?.textContent || '';
-          
-          let mostrar = true;
-          
-          // Filtrar por búsqueda
-          if (busqueda && !nombre.includes(busqueda)) {
-            mostrar = false;
-          }
-          
-          // Filtrar por precio
-          if (precio < precioMin || precio > precioMax) {
-            mostrar = false;
-          }
-          
-          // Filtrar por stock
-          if (soloDisponibles && !tieneStock) {
-            mostrar = false;
-          }
-          
-          // NOTA: La lógica para filtrar por **talla** y **categoría** usando los datos del DOM 
-          // requiere que los datos de las variantes (tallas disponibles, IDs de categorías) 
-          // estén incrustados en la tarjeta, lo que no sucede en el código original. 
-          // De momento, mantendremos la simplificación y se enfocará en nombre, precio y stock.
-          
-          // Mostrar/ocultar tarjeta
-          contenedorProducto.style.display = mostrar ? 'block' : 'none';
-        });
-      }
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
       
-      // 🧹 LIMPIAR FILTROS
-      function limpiarFiltros() {
-        document.getElementById('buscadorProductos').value = '';
-        document.getElementById('precioMin').value = '';
-        document.getElementById('precioMax').value = '';
-        // Se asume que el filtro de stock debe mostrar solo disponibles por defecto
-        document.getElementById('filtroStock').checked = true; 
-        
-        document.querySelectorAll('.talla-badge.active').forEach(badge => {
-          badge.classList.remove('active');
+      const buscador = document.getElementById("buscadorProductos");
+      const precioMinInput = document.getElementById("precioMin");
+      const precioMaxInput = document.getElementById("precioMax");
+      const stockCheck = document.getElementById("filtroStock");
+      const btnLimpiar = document.getElementById("btnLimpiarFiltros");
+      
+      if(buscador) buscador.addEventListener("input", filtrar);
+      if(precioMinInput) precioMinInput.addEventListener("input", filtrar);
+      if(precioMaxInput) precioMaxInput.addEventListener("input", filtrar);
+      if(stockCheck) stockCheck.addEventListener("change", filtrar);
+      
+      document.querySelectorAll(".talla-badge").forEach(badge => {
+        badge.addEventListener("click", function() {
+          this.classList.toggle("active");
+          filtrar();
         });
-        
-        document.querySelectorAll('#filtroCategorias input:checked').forEach(checkbox => {
-          checkbox.checked = false;
+      });
+
+      document.querySelectorAll("#filtroCategorias input").forEach(ch => {
+        ch.addEventListener("change", filtrar);
+      });
+
+      function filtrar() {
+        const texto = buscador ? buscador.value.toLowerCase().trim() : "";
+        const min = parseFloat(precioMinInput?.value) || 0;
+        const max = parseFloat(precioMaxInput?.value) || 999999;
+        const soloStock = stockCheck ? stockCheck.checked : false;
+
+        const tallasActivas = Array.from(document.querySelectorAll(".talla-badge.active")).map(b => b.dataset.talla);
+        const catsActivas = Array.from(document.querySelectorAll("#filtroCategorias input:checked")).map(i => i.value);
+
+        document.querySelectorAll(".product-card-filter").forEach(card => {
+          const contenedor = card.closest(".col-lg-4"); 
+          
+          const nombre = (card.dataset.nombre || "").toString();
+          const precio = parseFloat(card.dataset.precio) || 0;
+          const stock = parseInt(card.dataset.stock) || 0;
+          const catId = (card.dataset.categoria || "").toString();
+          const tallasProd = (card.dataset.tallas || "").split(",");
+
+          let visible = true;
+
+          if (texto && !nombre.includes(texto)) visible = false;
+          if (visible && (precio < min || precio > max)) visible = false;
+          if (visible && soloStock && stock <= 0) visible = false;
+          if (visible && catsActivas.length > 0 && !catsActivas.includes(catId)) visible = false;
+          if (visible && tallasActivas.length > 0) {
+             const tieneTalla = tallasProd.some(t => tallasActivas.includes(t));
+             if (!tieneTalla) visible = false;
+          }
+
+          if(contenedor) {
+             contenedor.style.display = visible ? "block" : "none";
+          }
         });
-        
-        filtrarProductos();
+      }
+
+      if(btnLimpiar) {
+        btnLimpiar.addEventListener("click", () => {
+          if(buscador) buscador.value = "";
+          if(precioMinInput) precioMinInput.value = "";
+          if(precioMaxInput) precioMaxInput.value = "";
+          if(stockCheck) stockCheck.checked = true;
+          document.querySelectorAll(".talla-badge").forEach(b => b.classList.remove("active"));
+          document.querySelectorAll("#filtroCategorias input").forEach(c => c.checked = false);
+          filtrar();
+        });
       }
     });
-    
-    document.getElementById("logoutBtn")?.addEventListener("click", async (e) => {
-      e.preventDefault();
-      await fetch("/logout", { method: "POST" });
-      window.location.reload();
-    });
+
+    function actualizarPrecioModal(productoId, inputRadio) {
+        const precio = parseFloat(inputRadio.dataset.precio);
+        const stock = parseInt(inputRadio.dataset.stock);
+        const varianteId = inputRadio.value;
+
+        const display = document.getElementById('precioDisplay-' + productoId);
+        const btn = document.getElementById('btnAgregar-' + productoId);
+        const hiddenInput = document.getElementById('inputVarianteId-' + productoId);
+        const stockDisplay = document.getElementById('stockDisplay-' + productoId);
+
+        display.innerHTML = 'S/. ' + precio.toFixed(2);
+        display.classList.remove('text-muted');
+        display.classList.add('text-success');
+        
+        hiddenInput.value = varianteId;
+
+        if(stockDisplay) {
+            stockDisplay.innerHTML = `<i class="bi bi-box-seam"></i> Stock disponible: ${stock} unidades`;
+        }
+
+        if (stock > 0) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-bag-plus me-2"></i> AGREGAR AL CARRITO';
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-dark');
+        } else {
+            btn.disabled = true;
+            btn.innerHTML = 'AGOTADO';
+        }
+    }
   </script>
 </body>
 </html>

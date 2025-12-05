@@ -4,7 +4,9 @@ import com.integrador.sistema_de_ventas.springboot_app.models.Categoria;
 import com.integrador.sistema_de_ventas.springboot_app.models.Producto;
 import com.integrador.sistema_de_ventas.springboot_app.models.VarianteProducto;
 import com.integrador.sistema_de_ventas.springboot_app.dto.ProductoCreateDTO;
+import com.integrador.sistema_de_ventas.springboot_app.dto.ProductoDTO;
 import com.integrador.sistema_de_ventas.springboot_app.dto.ProductoUpdateDTO;
+import com.integrador.sistema_de_ventas.springboot_app.dto.VarianteDTO;
 import com.integrador.sistema_de_ventas.springboot_app.repository.ProductoRepository;
 import com.integrador.sistema_de_ventas.springboot_app.repository.CategoriaRepository;
 import com.integrador.sistema_de_ventas.springboot_app.services.GuardadoImgService;
@@ -20,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -153,5 +156,48 @@ public class ProductoServiceImpl implements ProductoService {
         producto.setEliminado(true);
         producto.setFechaActualizacion(LocalDateTime.now());
         productoRepository.save(producto);
+    }
+
+    public List<ProductoDTO> obtenerProductosParaCatalogo() {
+
+        List<Producto> productosEntities = productoRepository.findAll(); 
+        return productosEntities.stream()
+            .filter(p -> p.getActivo() && !p.getEliminado())
+            .map(this::convertirAProductoDTO)
+            .collect(Collectors.toList());
+    }
+
+    private ProductoDTO convertirAProductoDTO(Producto entidad) {
+        ProductoDTO dto = new ProductoDTO();
+        dto.setId(entidad.getId());
+        dto.setNombre(entidad.getNombre());
+        dto.setDescripcion(entidad.getDescripcion());
+        dto.setUrl_imagen(entidad.getImagen());
+        
+        // ... (tu lógica de categorías) ...
+
+        if (entidad.getVariantes() != null) {
+            List<VarianteDTO> variantesDTO = entidad.getVariantes().stream()
+                .filter(VarianteProducto::getActivo)
+                .filter(v -> v.getStock() > 0)
+                .map(VarianteDTO::fromVariante)
+                .collect(Collectors.toList());
+            
+            dto.setVariantes(variantesDTO);
+
+            // --- LÓGICA NUEVA: CALCULAR PRECIO MÍNIMO ---
+            if (!variantesDTO.isEmpty()) {
+                BigDecimal minPrecio = variantesDTO.stream()
+                    .map(VarianteDTO::getPrecio)
+                    .min(BigDecimal::compareTo) // Compara decimales correctamente
+                    .orElse(BigDecimal.ZERO);
+                dto.setPrecioMinimo(minPrecio);
+            } else {
+                dto.setPrecioMinimo(BigDecimal.ZERO);
+            }
+            // --------------------------------------------
+        }
+        
+        return dto;
     }
 }

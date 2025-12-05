@@ -1,5 +1,7 @@
 package com.integrador.sistema_de_ventas.springboot_app.controllers.view.admin;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.integrador.sistema_de_ventas.springboot_app.dto.CategoriaResponseDTO;
 import com.integrador.sistema_de_ventas.springboot_app.dto.ProductoCreateDTO;
@@ -18,6 +22,7 @@ import com.integrador.sistema_de_ventas.springboot_app.models.Categoria;
 import com.integrador.sistema_de_ventas.springboot_app.models.Producto;
 import com.integrador.sistema_de_ventas.springboot_app.services.impl.CategoriaServiceImpl;
 import com.integrador.sistema_de_ventas.springboot_app.services.impl.ProductoServiceImpl;
+import com.integrador.sistema_de_ventas.springboot_app.services.impl.VarianteProductoServiceImpl;
 
 @Controller
 @RequestMapping("/admin/inventario")
@@ -28,6 +33,9 @@ public class InventarioVista {
 
     @Autowired
     CategoriaServiceImpl categoriaServiceImpl;
+
+    @Autowired
+    VarianteProductoServiceImpl varianteService;
 
     @GetMapping
     public String inventario(Model model) {
@@ -111,5 +119,36 @@ public class InventarioVista {
         return "redirect:/admin/inventario";
     }
 
+    @PostMapping("/agregar-stock")
+    public String agregarStock(
+            @RequestParam("productoId") Long productoId,
 
+            @RequestParam(value = "stockS", required = false, defaultValue = "0") Integer stockS,
+            @RequestParam(value = "precioS", required = false) BigDecimal precioS,
+
+            @RequestParam(value = "stockM", required = false, defaultValue = "0") Integer stockM,
+            @RequestParam(value = "precioM", required = false) BigDecimal precioM,
+
+            @RequestParam(value = "stockL", required = false, defaultValue = "0") Integer stockL,
+            @RequestParam(value = "precioL", required = false) BigDecimal precioL,
+
+            @RequestParam(value = "stockXL", required = false, defaultValue = "0") Integer stockXL,
+            @RequestParam(value = "precioXL", required = false) BigDecimal precioXL,
+
+            RedirectAttributes flash) {
+        try {
+
+            varianteService.agregarOActualizarStock(productoId, "S", stockS, precioS);
+            varianteService.agregarOActualizarStock(productoId, "M", stockM, precioM);
+            varianteService.agregarOActualizarStock(productoId, "L", stockL, precioL);
+            varianteService.agregarOActualizarStock(productoId, "XL", stockXL, precioXL);
+
+            flash.addFlashAttribute("success", "Stock actualizado correctamente");
+
+        } catch (Exception e) {
+            flash.addFlashAttribute("error", "Error al actualizar stock: " + e.getMessage());
+        }
+
+        return "redirect:/admin/inventario";
+    }
 }

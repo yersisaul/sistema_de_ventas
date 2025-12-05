@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,22 +20,24 @@ import java.util.Optional;
 public class InventarioController {
     @Autowired
     private VarianteProductoService varianteService;
-    
+
     @GetMapping("/variantes")
     public ResponseEntity<?> obtenerTodasLasVariantes() { // Obtener todas las variantes de producto
         try {
-            List<VarianteProducto> variantes = varianteService.obtenerTodasLasVariantes(); // Ajusta según tu lógica para obtener todas las variantes
+            List<VarianteProducto> variantes = varianteService.obtenerTodasLasVariantes(); // Ajusta según tu lógica
+                                                                                           // para obtener todas las
+                                                                                           // variantes
             List<VarianteDTO> variantesDTO = variantes.stream()
-                .map(VarianteDTO::fromVariante)
-                .toList();
-            
+                    .map(VarianteDTO::fromVariante)
+                    .toList();
+
             return ResponseEntity.ok(variantesDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + e.getMessage());
+                    .body("Error: " + e.getMessage());
         }
     }
-    
+
     @GetMapping("/variantes/stock-bajo")
     public ResponseEntity<?> obtenerVariantesStockBajo() {
         try {
@@ -40,10 +45,10 @@ public class InventarioController {
             return ResponseEntity.ok(variantes);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + e.getMessage());
+                    .body("Error: " + e.getMessage());
         }
     }
-    
+
     @GetMapping("/variantes/{id}")
     public ResponseEntity<?> obtenerVariantePorId(@PathVariable Long id) {
         try {
@@ -52,13 +57,13 @@ public class InventarioController {
                 return ResponseEntity.ok(variante.get());
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Variante no encontrada");
+                    .body("Variante no encontrada");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + e.getMessage());
+                    .body("Error: " + e.getMessage());
         }
     }
-    
+
     @PutMapping("/variantes/{id}/stock")
     public ResponseEntity<?> actualizarStock(@PathVariable Long id, @RequestParam Integer cantidad) {
         try {
@@ -66,21 +71,22 @@ public class InventarioController {
             return ResponseEntity.ok("Stock actualizado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + e.getMessage());
+                    .body("Error: " + e.getMessage());
         }
     }
-    
+
     @PutMapping("/variantes/{id}")
-    public ResponseEntity<?> actualizarVariante(@PathVariable Long id, @RequestBody VarianteUpdateDTO varianteUpdateDTO) {
+    public ResponseEntity<?> actualizarVariante(@PathVariable Long id,
+            @RequestBody VarianteUpdateDTO varianteUpdateDTO) {
         try {
             VarianteProducto varianteActualizada = varianteService.actualizarVariante(id, varianteUpdateDTO);
             return ResponseEntity.ok("Variante actualizada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + e.getMessage());
+                    .body("Error: " + e.getMessage());
         }
     }
-    
+
     @DeleteMapping("/variantes/{id}")
     public ResponseEntity<?> desactivarVariante(@PathVariable Long id) {
         try {
@@ -88,7 +94,9 @@ public class InventarioController {
             return ResponseEntity.ok("Variante desactivada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + e.getMessage());
+                    .body("Error: " + e.getMessage());
         }
     }
+
+    
 }

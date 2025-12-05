@@ -224,7 +224,7 @@
                       </td>
                       <td>
                         <input type="number" class="form-control form-control-sm text-center border-info" 
-                               name="precioS" min="0" step="0.01" placeholder="0.00" required
+                               name="precioS" min="0" step="0.01" placeholder="0.00"
                                style="border-color: #0dcaf0;">
                       </td>
                     </tr>
@@ -244,7 +244,7 @@
                       </td>
                       <td>
                         <input type="number" class="form-control form-control-sm text-center border-info" 
-                               name="precioM" min="0" step="0.01" placeholder="0.00" required
+                               name="precioM" min="0" step="0.01" placeholder="0.00"
                                style="border-color: #0dcaf0;">
                       </td>
                     </tr>
@@ -264,7 +264,7 @@
                       </td>
                       <td>
                         <input type="number" class="form-control form-control-sm text-center border-info" 
-                               name="precioL" min="0" step="0.01" placeholder="0.00" required
+                               name="precioL" min="0" step="0.01" placeholder="0.00"
                                style="border-color: #0dcaf0;">
                       </td>
                     </tr>
@@ -284,7 +284,7 @@
                       </td>
                       <td>
                         <input type="number" class="form-control form-control-sm text-center border-info" 
-                               name="precioXL" min="0" step="0.01" placeholder="0.00" required
+                               name="precioXL" min="0" step="0.01" placeholder="0.00"
                                style="border-color: #0dcaf0;">
                       </td>
                     </tr>
@@ -330,6 +330,52 @@
           </div>
         </form>
       </div>
+      <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 1. Detectamos cuando se abre el modal de Stock
+        var modalStock = document.getElementById('modalAgregarStock');
+        
+        modalStock.addEventListener('show.bs.modal', function (event) {
+            // 2. Identificamos qué botón disparó el evento
+            var button = event.relatedTarget;
+            
+            // 3. Extraemos la info guardada en los "data-..." del botón
+            var id = button.getAttribute('data-id');
+            var nombre = button.getAttribute('data-nombre');
+            var imagen = button.getAttribute('data-imagen');
+            // var categoria = button.getAttribute('data-categoria'); // Si lo necesitas
+
+            // 4. INYECTAMOS el ID en el input oculto (¡ESTO ES LO MÁS IMPORTANTE!)
+            var inputId = document.getElementById('productoIdStock');
+            inputId.value = id;
+
+            // 5. Actualizamos la parte visual del modal (Nombre e Imagen)
+            document.getElementById('nombreStock').textContent = nombre;
+            
+            var imgPreview = document.getElementById('imagenStockPreview');
+            if (imagen && imagen.trim() !== "") {
+                // Si la imagen viene de la BD (ruta relativa o url)
+                imgPreview.src = imagen; 
+            } else {
+                // Imagen por defecto si no tiene
+                imgPreview.src = 'https://placehold.co/150?text=Sin+Imagen';
+            }
+
+            // 6. Reseteamos los inputs a 0
+            // Para que el usuario escriba solo la cantidad NUEVA que llega
+            document.querySelector('input[name="stockS"]').value = 0;
+            document.querySelector('input[name="stockM"]').value = 0;
+            document.querySelector('input[name="stockL"]').value = 0;
+            document.querySelector('input[name="stockXL"]').value = 0;
+            
+            // Reseteamos precios (opcional, dejarlos vacíos)
+            document.querySelector('input[name="precioS"]').value = "";
+            document.querySelector('input[name="precioM"]').value = "";
+            document.querySelector('input[name="precioL"]').value = "";
+            document.querySelector('input[name="precioXL"]').value = "";
+        });
+    });
+</script>
 
     </div>
   </div>
