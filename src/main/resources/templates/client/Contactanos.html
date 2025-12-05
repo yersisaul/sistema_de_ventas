@@ -5,60 +5,337 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contactanos</title>
+    <title>Contáctanos - MAMBO</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" th:href="@{/css/client/base.css}">
-    <link rel="stylesheet" th:href="@{/css/client/contactanos.css}">
-
+     <link rel="stylesheet" th:href="@{/css/client/contactanos.css}">
 </head>
 <body>
     <header th:replace="client/fragments/navbar :: navbar"></header>
 
-    <main class="contactanos-section text-center text-white pt-5 pb-5" style="min-height: 80vh;">
-        <div class="container pt-5 pb-5">
-            <h1 class="contactanos-title display-3 fw-bold mt-5 mb-4">Contáctanos</h1>
-            <div class="underline-divisor mb-5 mx-auto"></div>
-            <h3 class="fw-normal mb-4">Quieres ponerte en contacto con nosotros?</h3>
-            <p class="contactanos-info h5 fw-bold mb-5">
-                Escríbenos o llámanos al número 
-                <span class="text-warning">+51912321878</span> 
-                o envíanos un correo electrónico a 
-                <span class="text-warning">MamboClothing@gmail.com</span>
-            </p>
+    <!-- 🌟 BANNER HERO -->
+    <section class="hero-banner">
+        <div class="floating-elements">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
         </div>
-        <div class="row justify-content-center mt-5">
-            <div class="col-lg-8 col-md-10">
-                <form class="contact-form">
-                    
-                    <div class="mb-4">
-                        <input type="text" class="form-control custom-form-input" id="nombreContacto" placeholder="Nombre">
-                    </div>
-
-                    <div class="mb-4">
-                        <input type="email" class="form-control custom-form-input" id="correoContacto" placeholder="Correo electrónico">
-                    </div>
-
-                    <div class="mb-4">
-                        <textarea class="form-control custom-form-input" id="mensajeContacto" rows="5" placeholder="Mensaje"></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-block w-100 custom-send-btn py-3 mt-4">
-                        Enviar
-                    </button>
-                    
-                </form>
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h1 class="hero-title">¿TIENES DUDAS? ¡ESCRIBENOS!</h1>
+                    <p class="hero-subtitle">
+                        Estamos aquí para escucharte. Cada consulta, sugerencia o comentario es importante para nosotros.
+                        ¡Conéctate con MAMBO!
+                    </p>
+                </div>
             </div>
         </div>
-    </main>
-    
+    </section>
+
+    <!-- 📍 SECCIÓN PRINCIPAL -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="row g-5">
+                <!-- 📝 FORMULARIO -->
+                <div class="col-lg-6">
+                    <div class="contact-card">
+                        <h3 class="section-title">Escríbenos</h3>
+                        <p class="text-muted mb-4" style="color: rgba(255,255,255,0.7) !important;">
+                            Completa el formulario y te responderemos en menos de 24 horas.
+                        </p>
+
+                        <form [formGroup]="form" (ngSubmit)="enviar()">
+                            <!-- Nombre -->
+                            <div class="mb-4">
+                                <label class="form-label" for="nombre">Nombre completo *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0">
+                                        <i class="bi bi-person" style="color: var(--color-secundario);"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        formControlName="nombre"
+                                        class="form-control border-start-0"
+                                        placeholder="Ingresa tu nombre"
+                                        [class.is-invalid]="form.get('nombre')?.touched && form.get('nombre')?.invalid"
+                                    />
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form.get('nombre')?.errors?.['required']">
+                                    Este campo es obligatorio.
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form.get('nombre')?.errors?.['minlength']">
+                                    El nombre debe tener al menos 3 caracteres.
+                                </div>
+                            </div>
+
+                            <!-- Correo -->
+                            <div class="mb-4">
+                                <label class="form-label" for="correo">Correo electrónico *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0">
+                                        <i class="bi bi-envelope" style="color: var(--color-secundario);"></i>
+                                    </span>
+                                    <input
+                                        type="email"
+                                        formControlName="correo"
+                                        class="form-control border-start-0"
+                                        placeholder="tucorreo@ejemplo.com"
+                                        [class.is-invalid]="form.get('correo')?.touched && form.get('correo')?.invalid"
+                                    />
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form.get('correo')?.errors?.['required']">
+                                    Este campo es obligatorio.
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form.get('correo')?.errors?.['email']">
+                                    Ingresa un correo válido.
+                                </div>
+                            </div>
+
+                            <!-- Mensaje -->
+                            <div class="mb-4">
+                                <label class="form-label" for="mensaje">Tu mensaje *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0 align-items-start pt-3">
+                                        <i class="bi bi-chat-left-text" style="color: var(--color-secundario);"></i>
+                                    </span>
+                                    <textarea
+                                        rows="5"
+                                        formControlName="mensaje"
+                                        class="form-control border-start-0"
+                                        placeholder="¿En qué podemos ayudarte?..."
+                                        [class.is-invalid]="form.get('mensaje')?.touched && form.get('mensaje')?.invalid"
+                                    ></textarea>
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form.get('mensaje')?.errors?.['required']">
+                                    Este campo es obligatorio.
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form.get('mensaje')?.errors?.['minlength']">
+                                    Tu mensaje debe tener al menos 10 caracteres.
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-send">
+                                <i class="bi bi-send-fill"></i> Enviar Mensaje
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 📍 INFORMACIÓN DE CONTACTO -->
+                <div class="col-lg-6">
+                    <div class="info-card">
+                        <h3 class="section-title">Conecta con MAMBO</h3>
+                        <p class="text-muted mb-4" style="color: rgba(255,255,255,0.7) !important;">
+                            Encuéntranos o contáctanos a través de estos medios
+                        </p>
+
+                        <!-- Dirección -->
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h5>📍 Nuestra Ubicación</h5>
+                                <p>
+                                    Multicentro - Santa Clara - Ate<br>
+                                    Tiendas N°05-393<br>
+                                    <small class="text-warning">Horario: Lunes a Sábado 9:00 AM - 9:00 PM</small>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Teléfono -->
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="bi bi-telephone"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h5>📞 Llámanos</h5>
+                                <p>
+                                    +51 923 123 890<br>
+                                    <small class="text-warning">Atención al cliente: 9:00 AM - 6:00 PM</small>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Correo -->
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="bi bi-envelope-paper"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h5>📧 Escríbenos</h5>
+                                <p>
+                                    MamboClothing@gmail.com<br>
+                                    <small class="text-warning">Respondemos en menos de 24 horas</small>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Redes Sociales -->
+                        <div class="social-section">
+                            <h5 class="social-title">Síguenos en redes</h5>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon facebook">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="#" class="social-icon instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                                <a href="#" class="social-icon tiktok">
+                                    <i class="bi bi-tiktok"></i>
+                                </a>
+                                <a href="#" class="social-icon">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Mapa -->
+                        <div class="map-container mt-4">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.2725530461834!2d-76.95347052502668!3d-12.092298942098162!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c7c5c4d7e3a1%3A0xa0b39c5c4b8a3b3d!2sMulticentro%20Santa%20Clara!5e0!3m2!1ses-419!2spe!4v1703555555555!5m2!1ses-419!2spe"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 💡 SECCIÓN EXTRA - PREGUNTAS FRECUENTES -->
+    <section class="faq-section py-5" style="background: rgba(0,0,0,0.5);">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center mb-5">
+                    <h3 class="section-title" style="display: inline-block;">Preguntas Frecuentes</h3>
+                    <p class="text-muted mt-3" style="color: rgba(255,255,255,0.7) !important;">
+                        Respuestas rápidas a las dudas más comunes
+                    </p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card bg-transparent border border-secondary">
+                        <div class="card-body">
+                            <h5 class="text-warning">
+                                <i class="bi bi-question-circle me-2"></i>¿Cuál es el tiempo de entrega?
+                            </h5>
+                            <p class="text-white-50 mb-0">
+                                El tiempo de entrega varía según tu ubicación. En Lima Metropolitana: 1-2 días hábiles. Provincias: 3-7 días hábiles.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card bg-transparent border border-secondary">
+                        <div class="card-body">
+                            <h5 class="text-warning">
+                                <i class="bi bi-question-circle me-2"></i>¿Aceptan devoluciones?
+                            </h5>
+                            <p class="text-white-50 mb-0">
+                                Sí, aceptamos devoluciones dentro de los 15 días posteriores a la compra. El producto debe estar en perfecto estado.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card bg-transparent border border-secondary">
+                        <div class="card-body">
+                            <h5 class="text-warning">
+                                <i class="bi bi-question-circle me-2"></i>¿Tienen tienda física?
+                            </h5>
+                            <p class="text-white-50 mb-0">
+                                Sí, nuestra tienda principal está en Multicentro Santa Clara, Ate. Puedes visitarnos de lunes a sábado.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card bg-transparent border border-secondary">
+                        <div class="card-body">
+                            <h5 class="text-warning">
+                                <i class="bi bi-question-circle me-2"></i>¿Hacen envíos internacionales?
+                            </h5>
+                            <p class="text-white-50 mb-0">
+                                Actualmente solo realizamos envíos a nivel nacional dentro de Perú. Próximamente expandiremos a otros países.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <div th:replace="client/fragments/navbar :: loginModal"></div>
     <div th:replace="client/fragments/navbar :: registerModal"></div>
-    <div th:replace="client/fragments/navbar :: carritoOffcanvas"></div>
 
     <footer th:replace="client/fragments/footer :: footer"></footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Animación para los elementos al hacer scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observar las tarjetas
+            document.querySelectorAll('.contact-card, .info-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+            
+            // Efecto de escritura para el título
+            const title = document.querySelector('.hero-title');
+            const originalText = title.textContent;
+            title.textContent = '';
+            
+            let i = 0;
+            function typeWriter() {
+                if (i < originalText.length) {
+                    title.textContent += originalText.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 100);
+                }
+            }
+            
+            // Iniciar efecto después de 500ms
+            setTimeout(typeWriter, 500);
+            
+            // Efecto hover mejorado para botones
+            document.querySelectorAll('.btn-send').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.02)';
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
 </body>
 </html>

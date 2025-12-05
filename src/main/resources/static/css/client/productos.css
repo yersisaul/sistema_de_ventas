@@ -1,318 +1,377 @@
+/* 🔥 ESTILOS SIMPLIFICADOS PARA PRODUCTOS MAMBO */
 
-        :root {
-            --bg-dark: #0a0a0a;
-            --bg-card: #1a1a1a;
-            --bg-hover: #2a2a2a;
-            --primary: #ff4444;
-            --secondary: #ff6b35;
-            --accent: #00d9ff;
-            --text-primary: #ffffff;
-            --text-secondary: #b0b0b0;
-            --text-muted: #666666;
-            --border-color: #333333;
-            --success: #00cc66;
-            --warning: #ffaa00;
-        }
-        
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
-        
-        .catalogo-section {
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
-            min-height: 100vh;
-            padding-top: 80px !important;
-        }
-        
-        .banner-top {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                        url("/Img/ropa-urbana.PNG");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: var(--text-primary);
-            font-size: 2.5rem;
-            font-weight: 800;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
-            letter-spacing: 1px;
-        }
-        
-        .catalogo-title {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
-        }
-        
-        .custom-search-bar {
-            border: 2px solid var(--border-color);
-            border-radius: 25px;
-            overflow: hidden;
-            background: var(--bg-card);
-            transition: all 0.3s ease;
-        }
-        
-        .custom-search-bar:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
-        }
-        
-        .custom-search-input {
-            background: transparent !important;
-            border: none !important;
-            color: var(--text-primary) !important;
-            padding: 12px 20px;
-            font-size: 0.95rem;
-        }
-        
-        .custom-search-input::placeholder {
-            color: var(--text-muted) !important;
-        }
-        
-        .custom-search-input:focus {
-            box-shadow: none !important;
-        }
-        
-        .custom-search-btn {
-            background: linear-gradient(45deg, var(--primary), var(--secondary)) !important;
-            border: none !important;
-            color: white !important;
-            padding: 0 20px;
-            transition: all 0.3s ease;
-        }
-        
-        .custom-search-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3);
-        }
-        
-        /* Cards de Producto - Estilo Temu */
-        .custom-product-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .custom-product-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 0 12px 30px rgba(255, 68, 68, 0.15);
-        }
-        
-        .card-img-container {
-            height: 250px;
-            overflow: hidden;
-            position: relative;
-            background: var(--bg-dark);
-        }
-        
-        .card-img-top {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-        
-        .custom-product-card:hover .card-img-top {
-            transform: scale(1.05);
-        }
-        
-        .card-body {
-            padding: 1.25rem;
-            background: var(--bg-card);
-        }
-        
-        .card-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
-        }
-        
-        .card-text {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            line-height: 1.4;
-            margin-bottom: 1rem;
-        }
-        
-        .card-price {
-            color: var(--primary);
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        
-        .product-add-btn {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 8px;
-            width: 100%;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .product-add-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 68, 68, 0.3);
-        }
-        
-        /* Badges */
-        .badge {
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-        }
-        
-        .badge-category {
-            background: linear-gradient(45deg, var(--warning), #ffcc00);
-            color: #000;
-        }
-        
-        .badge-stock {
-            background: var(--success);
-            color: white;
-        }
-        
-        .badge-out {
-            background: var(--primary);
-            color: white;
-        }
-        
-        /* Sidebar de Filtros */
-        .filter-sidebar {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            position: sticky;
-            top: 100px;
-        }
-        
-        .filter-title-prueba {
-            color: var(--accent);
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-        
-        .filter-subtitle {
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-        
-        .filter-subtitle-small {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .filter-limpiar-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            border-radius: 6px;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
-        
-        .filter-limpiar-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        
-        .custom-filter-input {
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 0.9rem;
-        }
-        
-        .custom-filter-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.1);
-        }
-        
-        .talla-badge {
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-        
-        .talla-badge:hover, .talla-badge.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        /* Modal de Detalle */
-        .modal-content {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-        }
-        
-        .modal-header {
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .modal-title {
-            color: var(--text-primary);
-            font-weight: 700;
-        }
-        
-        .btn-close-white {
-            filter: invert(1);
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .banner-top {
-                font-size: 1.8rem;
-                padding: 3rem 1rem;
-            }
-            
-            .catalogo-title {
-                font-size: 1.5rem;
-            }
-            
-            .card-img-container {
-                height: 200px;
-            }
-        }
-        
-        /* Efectos de carga */
-        .product-card-skeleton {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 1rem;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0.6; }
-        }
+:root {
+  --color-primario: #000000;
+  --color-secundario: #FFD700; /* Dorado/Amarillo */
+  --color-terciario: #FFFFFF;
+  --color-fondo: #0A0A0A;
+  --color-texto: #E0E0E0;
+  --color-borde: #333333;
+  --color-hover: #1A1A1A;
+}
+
+body {
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* --- ESTILOS GENERALES --- */
+
+/* 🌟 BANNER SUPERIOR SIMPLE */
+.banner-top {
+  background-color: var(--color-primario); /* Fondo sólido */
+  color: var(--color-terciario);
+  font-size: 2rem;
+  font-weight: 700;
+  padding: 80px 20px 50px 20px;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+  border-bottom: 3px solid var(--color-secundario);
+}
+
+/* 🎴 TÍTULO PRINCIPAL SIMPLE */
+.catalogo-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-terciario); /* Color de texto sólido */
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid var(--color-secundario); /* Línea simple */
+  display: inline-block;
+}
+
+/* 🔍 RA DE BÚSQUEDA SIMPLE */
+.custom-search-bar {
+  max-width: 500px;
+  margin-left: auto;
+  background-color: var(--color-hover);
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+.custom-search-bar:focus-within {
+  border-color: var(--color-secundario);
+}
+
+.custom-search-input {
+  background: transparent;
+  border: none;
+  color: var(--color-terciario);
+  padding: 10px 15px;
+  font-size: 1rem;
+}
+
+.custom-search-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.custom-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.custom-search-btn {
+  background-color: var(--color-secundario);
+  color: var(--color-primario);
+  border: none;
+  border-radius: 6px;
+  width: 40px;
+  height: 40px;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.custom-search-btn:hover {
+  background-color: #e6c300;
+}
+
+/* --- TARJETAS DE PRODUCTO SIMPLIFICADAS --- */
+
+.custom-product-card {
+  background-color: var(--color-hover);
+  border: 1px solid var(--color-borde);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+  height: 100%;
+}
+
+.custom-product-card:hover {
+  border-color: var(--color-secundario);
+  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.1);
+  transform: translateY(-5px); /* Movimiento simple */
+}
+
+/* 🖼️ CONTENEDOR DE IMAGEN */
+.card-img-container {
+  overflow: hidden;
+  height: 250px;
+  background-color: #222222;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.custom-product-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+/* 📝 CONTENIDO DE LA TARJETA */
+.card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 250px);
+}
+
+.card-title {
+  color: var(--color-terciario);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  /* Eliminar clamp para simplificar */
+}
+
+.card-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  flex-grow: 1;
+  margin-bottom: 15px;
+  /* Eliminar clamp para simplificar */
+}
+
+/* 💰 PRECIO Y SKU */
+.card-price {
+  color: var(--color-secundario);
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin: 0;
+}
+
+.sku-badge {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+}
+
+/* 🎯 BOTÓN AGREGAR AL CARRITO SIMPLE */
+.product-add-btn {
+  background-color: var(--color-secundario);
+  color: var(--color-primario);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: auto;
+  text-transform: uppercase;
+}
+
+.product-add-btn:hover {
+  background-color: #e6c300;
+  transform: translateY(-1px);
+}
+
+.product-add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #666;
+}
+
+/* 🏷️ BADGES SIMPLIFICADOS */
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.badge-stock {
+  background-color: #198754;
+  color: white;
+}
+
+.badge-out {
+  background-color: #dc3545;
+  color: white;
+}
+
+.badge-category {
+  background-color: rgba(255, 215, 0, 0.2);
+  color: var(--color-secundario);
+  border: 1px solid var(--color-secundario);
+}
+
+/* 🎯 BOTÓN DE VISTA RÁPIDA SIMPLE */
+.btn-vista-rapida {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: var(--color-secundario);
+  border: 1px solid var(--color-secundario);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-product-card:hover .btn-vista-rapida {
+  opacity: 1;
+}
+
+.btn-vista-rapida:hover {
+  background-color: var(--color-secundario);
+  color: var(--color-primario);
+}
+
+/* --- SIDEBAR DE FILTROS SIMPLIFICADO --- */
+
+.filter-sidebar {
+  background-color: var(--color-hover);
+  border: 1px solid var(--color-borde);
+  border-radius: 10px;
+  position: sticky;
+  top: 30px;
+  border-left: 3px solid var(--color-secundario);
+}
+
+.filter-title-prueba {
+  color: var(--color-secundario);
+  font-size: 1.2rem;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-secundario);
+}
+
+.filter-subtitle {
+  color: var(--color-terciario);
+  font-size: 1.1rem;
+  margin-top: 20px;
+  padding-left: 10px;
+  border-left: 3px solid var(--color-secundario);
+}
+
+.filter-limpiar-btn {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-texto);
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  padding: 8px 15px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.filter-limpiar-btn:hover {
+  background-color: rgba(255, 215, 0, 0.1);
+  border-color: var(--color-secundario);
+  color: var(--color-secundario);
+}
+
+.filter-group {
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filter-subtitle-small {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.filter-subtitle-small i {
+  color: var(--color-secundario);
+  margin-right: 8px;
+}
+
+/* 🎯 INPUTS DE FILTRO */
+.custom-filter-input {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-borde);
+  border-radius: 6px;
+  color: var(--color-terciario);
+  padding: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.custom-filter-input:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-secundario);
+  box-shadow: none;
+}
+
+/* 🏷️ BADGES DE TALLA SIMPLIFICADOS */
+.talla-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  color: var(--color-texto);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  min-width: 40px;
+  height: 40px;
+}
+
+.talla-badge:hover {
+  border-color: var(--color-secundario);
+  color: var(--color-terciario);
+}
+
+.talla-badge.active {
+  background-color: var(--color-secundario);
+  border-color: var(--color-secundario);
+  color: var(--color-primario);
+  transform: scale(1.05);
+}
+
+/* ☑️ CHECKBOXES SIMPLIFICADOS */
+.form-check-input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-borde);
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0.2em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.form-check-input:checked {
+  background-color: var(--color-secundario);
+  border-color: var(--color-secundario);
+}
+
+.form-check-label {
+  color: var(--color-texto);
+  cursor: pointer;
+  margin-left: 8px;
+  font-size: 0.9rem;
+}
+
+/* 🎨 MENSAJE DE PRODUCTOS VACÍOS SIMPLE */
+.empty-products {
+  background-color: rgba(20, 20, 20, 0.5);
+  border: 1px dashed var(--color-borde);
+}
+
+.empty-products i {
+  color: rgba(255, 215, 0, 0.3);
+}

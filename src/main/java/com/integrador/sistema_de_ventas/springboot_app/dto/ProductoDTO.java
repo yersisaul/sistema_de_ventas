@@ -13,10 +13,9 @@ public class ProductoDTO {
     private String sku;
     private String nombre;
     private String descripcion;
-    private Long categoriaId;
-    private String categoriaNombre;
+    private CategoriaResponseDTO categoria;
+    private String url_imagen;
     private List<VarianteDTO> variantes;
-    private List<String> imagenes;
     private Double calificacionPromedio;
     private Integer totalReseñas;
 }

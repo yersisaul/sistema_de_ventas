@@ -1,5 +1,7 @@
 package com.integrador.sistema_de_ventas.springboot_app.controllers.admin;
 
+import com.integrador.sistema_de_ventas.springboot_app.dto.VarianteDTO;
+import com.integrador.sistema_de_ventas.springboot_app.dto.VarianteUpdateDTO;
 import com.integrador.sistema_de_ventas.springboot_app.models.VarianteProducto;
 import com.integrador.sistema_de_ventas.springboot_app.services.VarianteProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +15,18 @@ import java.util.Optional;
 @RequestMapping("/api/admin/inventario")
 @CrossOrigin(origins = "*")
 public class InventarioController {
-    
     @Autowired
     private VarianteProductoService varianteService;
     
     @GetMapping("/variantes")
-    public ResponseEntity<?> obtenerTodasLasVariantes() {
+    public ResponseEntity<?> obtenerTodasLasVariantes() { // Obtener todas las variantes de producto
         try {
-            // Obtener todas las variantes (implementar en servicio si es necesario)
-            return ResponseEntity.ok("Endpoint para obtener todas las variantes");
+            List<VarianteProducto> variantes = varianteService.obtenerTodasLasVariantes(); // Ajusta según tu lógica para obtener todas las variantes
+            List<VarianteDTO> variantesDTO = variantes.stream()
+                .map(VarianteDTO::fromVariante)
+                .toList();
+            
+            return ResponseEntity.ok(variantesDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error: " + e.getMessage());
@@ -66,10 +71,10 @@ public class InventarioController {
     }
     
     @PutMapping("/variantes/{id}")
-    public ResponseEntity<?> actualizarVariante(@PathVariable Long id, @RequestBody VarianteProducto variante) {
+    public ResponseEntity<?> actualizarVariante(@PathVariable Long id, @RequestBody VarianteUpdateDTO varianteUpdateDTO) {
         try {
-            VarianteProducto varianteActualizada = varianteService.actualizarVariante(id, variante);
-            return ResponseEntity.ok(varianteActualizada);
+            VarianteProducto varianteActualizada = varianteService.actualizarVariante(id, varianteUpdateDTO);
+            return ResponseEntity.ok("Variante actualizada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error: " + e.getMessage());

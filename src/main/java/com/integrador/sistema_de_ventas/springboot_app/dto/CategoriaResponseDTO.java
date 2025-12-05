@@ -14,7 +14,6 @@ public class CategoriaResponseDTO {
         
         CategoriaResponseDTO dto = new CategoriaResponseDTO();
         dto.setNombre(categoria.getNombre());
-        
         return dto;
     }
 }
