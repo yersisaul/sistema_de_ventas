@@ -1,6 +1,8 @@
 package com.integrador.sistema_de_ventas.springboot_app.services;
 
 import com.integrador.sistema_de_ventas.springboot_app.dto.PedidoCreateDTO;
+import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioCreateDTO;
+import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioResponseDTO;
 import com.integrador.sistema_de_ventas.springboot_app.models.Pedido;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,4 +18,9 @@ public interface PedidoService {
     Pedido actualizarPedido(Long id, Pedido pedido);
     Pedido actualizarEstadoPedido(Long id, String nuevoEstado);
     void cancelarPedido(Long id);
+    
+
+    
+
+
 }

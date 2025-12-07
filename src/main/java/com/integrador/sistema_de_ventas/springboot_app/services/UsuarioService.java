@@ -1,6 +1,9 @@
 package com.integrador.sistema_de_ventas.springboot_app.services;
 
+import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioCreateDTO;
 import com.integrador.sistema_de_ventas.springboot_app.models.Usuario;
+import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioResponseDTO;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -16,4 +19,11 @@ public interface UsuarioService {
     void desactivarUsuario(Long id);
     void eliminarUsuario(Long id);
     Boolean validarCredenciales(String nIdentificacion, String contrasena);
+    UsuarioResponseDTO crearCliente(UsuarioCreateDTO dto);
+    UsuarioResponseDTO actualizarCliente(Long id, UsuarioCreateDTO dto);
+
+    
+
+
+
 }
