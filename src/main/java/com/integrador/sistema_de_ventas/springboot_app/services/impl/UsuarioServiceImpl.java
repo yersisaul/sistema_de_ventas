@@ -1,5 +1,6 @@
 package com.integrador.sistema_de_ventas.springboot_app.services.impl;
-
+import com.integrador.sistema_de_ventas.springboot_app.exception.BadRequestException;
+import com.integrador.sistema_de_ventas.springboot_app.exception.ResourceNotFoundException;
 import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioCreateDTO;
 import com.integrador.sistema_de_ventas.springboot_app.models.Usuario;
 import com.integrador.sistema_de_ventas.springboot_app.repository.UsuarioRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioResponseDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.stream.Collectors; 
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,12 +28,16 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario crearUsuario(Usuario usuario) {
         if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
-            throw new RuntimeException("El correo ya está registrado");
+            throw new BadRequestException("El correo ya está registrado");
         }
         if (usuarioRepository.findBynIdentificacion(usuario.getNIdentificacion()).isPresent()) {
-            throw new RuntimeException("La identificación ya está registrada");
+            throw new BadRequestException("La identificación ya está registrada");
         }
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+        if (usuario.getRol() == null) usuario.setRol("CLIENTE"); 
+        if (usuario.getEstado() == null) usuario.setEstado(true);
+        if (usuario.getEliminado() == null) usuario.setEliminado(false);
+        if (usuario.getPuntosFidelizacion() == null) usuario.setPuntosFidelizacion(0);
         usuario.setFechaRegistro(LocalDateTime.now());
         usuario.setFechaActualizacion(LocalDateTime.now());
         usuario.setEliminado(false);
@@ -117,28 +123,78 @@ public class UsuarioServiceImpl implements UsuarioService {
         return false;
     }
 
+    private UsuarioResponseDTO mapToDTO(Usuario usuario) {
+        if (usuario == null) {
+            return null;
+        }
+        UsuarioResponseDTO dto = new UsuarioResponseDTO();
+        dto.setIdUsuario(usuario.getId());
+        dto.setTipoDocumento(usuario.getTipoIdentificacion());
+        dto.setNumeroDocumento(usuario.getNIdentificacion());
+        dto.setNombre(usuario.getNombres());
+        
+     
+        String apellidosCompletos = usuario.getApellidos() != null ? usuario.getApellidos().trim() : "";
+        String[] partes = apellidosCompletos.split("\\s+"); // Separar por uno o más espacios
+        dto.setApellidoPaterno(partes.length >= 1 ? partes[0] : ""); // Primer apellido
+        dto.setApellidoMaterno(partes.length >= 2 ? partes[partes.length - 1] : ""); // Último apellido
+        
+        dto.setTelefono(usuario.getTelefono());
+        dto.setCorreo(usuario.getCorreo());
+        dto.setDireccion(usuario.getDireccion());
+     
+        return dto;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UsuarioResponseDTO> obtenerUsuariosPorRolDTO(String rol) {
+        //  el método del repositorio que filtra por rol, estado activo y no eliminado
+        return usuarioRepository.findActiveByRol(rol) 
+                .stream()
+                .map(this::mapToDTO) // Mapeamos cada Usuario a un UsuarioResponseDTO
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    // También es buena práctica devolver el DTO en el GET individual desde el servicio
+    @Transactional(readOnly = true)
+    public UsuarioResponseDTO obtenerClienteDTO(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con ID: " + id));
+        
+        if (!"CLIENTE".equals(usuario.getRol())) {
+            throw new ResourceNotFoundException("El ID no corresponde a un cliente");
+        }
+        
+        return mapToDTO(usuario);
+    }
+
     @Override
     public UsuarioResponseDTO crearCliente(UsuarioCreateDTO dto) {
 
         Usuario usuario = new Usuario();
 
-        usuario.setTipoIdentificacion(dto.getTipoDocumento()); // OK
-        usuario.setNIdentificacion(dto.getNumeroDocumento()); // OK
+        usuario.setTipoIdentificacion(dto.getTipoDocumento()); 
+        usuario.setNIdentificacion(dto.getNumeroDocumento());
         usuario.setNombres(dto.getNombre()); // OK
-        usuario.setApellidos(dto.getApellidoPaterno() + " " + dto.getApellidoMaterno()); // un solo campo
+         String apellidosCompletos = dto.getApellidoPaterno() + " " + (dto.getApellidoMaterno() != null ? dto.getApellidoMaterno() : "");
+        usuario.setApellidos(apellidosCompletos.trim()); // un solo campo
         usuario.setTelefono(dto.getTelefono());
         usuario.setCorreo(dto.getCorreo());
         usuario.setDireccion(dto.getDireccion());
         usuario.setContrasena(dto.getContraseña()); // TEXTO PLANO
 
         usuario.setRol("CLIENTE"); // por defecto
+        
         usuario.setEstado(true);
         usuario.setPuntosFidelizacion(0);
         usuario.setEliminado(false);
         usuario.setFechaRegistro(LocalDateTime.now());
         usuario.setFechaActualizacion(LocalDateTime.now());
 
-        Usuario guardado = usuarioRepository.save(usuario);
+        //Usuario guardado = usuarioRepository.save(usuario);
+        Usuario guardado = crearUsuario(usuario); 
 
         UsuarioResponseDTO response = new UsuarioResponseDTO();
         response.setIdUsuario(guardado.getId());
@@ -157,12 +213,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioResponseDTO actualizarCliente(Long id, UsuarioCreateDTO dto) {
 
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
 
         usuario.setTipoIdentificacion(dto.getTipoDocumento());
         usuario.setNIdentificacion(dto.getNumeroDocumento());
         usuario.setNombres(dto.getNombre());
-        usuario.setApellidos(dto.getApellidoPaterno() + " " + dto.getApellidoMaterno());
+         String apellidosCompletos = dto.getApellidoPaterno() + " " + (dto.getApellidoMaterno() != null ? dto.getApellidoMaterno() : "");
+         usuario.setApellidos(apellidosCompletos.trim());
         usuario.setTelefono(dto.getTelefono());
         usuario.setCorreo(dto.getCorreo());
         usuario.setDireccion(dto.getDireccion());
@@ -182,5 +239,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         return response;
     }
+
 
 }

@@ -98,9 +98,8 @@
               
               <td th:text="${cliente.direccion}">UVC 1555 CALLE 13 ZONA R - HUAYCAN</td>
 
-              <td>
-                <a 
-                   class="text-dark fw-semibold text-decoration-none me-3 editar-btn">
+            <td>
+                <a href="#" class="text-dark fw-semibold text-decoration-none me-3 editar-btn">
                   <i class="bi bi-pencil-square me-1"></i>Editar
                 </a>
                 
@@ -217,6 +216,78 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/validacion.js}"></script>
     <script th:src="@{/js/usuarios.js}"></script>
+    
+    <div class="modal fade" id="modalEditarCliente" tabindex="-1" aria-labelledby="modalEditarClienteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 600px">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 10px;">
+
+            <div class="modal-header border-0">
+                <h5 class="modal-title w-100 text-center fw-bold py-2 text-white"
+                    style="background-color: rgb(0, 0, 0); border-width: 10px; border-radius: 10px;">
+                    EDITAR CLIENTE
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body px-5 MB-2">
+                <form id="formEditarCliente">
+                    <input type="hidden" id="editId">
+
+                    <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                        <label class="form-label fw-semibold m-0" style="min-width: 160px;">Tipo Documento:</label>
+                        <select class="form-select" id="edit_tipoDocumento" required>
+                            <option value="DNI">DNI</option>
+                            <option value="RUC">RUC</option>
+                            <option value="PASAPORTE">PASAPORTE</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                        <label class="form-label fw-semibold m-0" style="min-width: 160px;">Número Documento:</label>
+                        <input type="text" class="form-control" id="edit_numeroDocumento" required>
+                    </div>
+
+                    <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                        <label class="form-label fw-semibold m-0" style="min-width: 160px;">Nombre completo:</label>
+                        <input type="text" class="form-control" id="edit_nombre" required>
+                    </div>
+
+                    <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                        <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellido Paterno:</label>
+                        <input type="text" class="form-control" id="edit_apellidoPaterno" required>
+                    </div>
+
+                    <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                        <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellido Materno:</label>
+                        <input type="text" class="form-control" id="edit_apellidoMaterno">
+                    </div>
+
+                    <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                        <label class="form-label fw-semibold m-0" style="min-width: 160px;">Teléfono:</label>
+                        <input type="tel" class="form-control" id="edit_telefono" required>
+                    </div>
+
+                    <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                        <label class="form-label fw-semibold m-0" style="min-width: 160px;">Correo:</label>
+                        <input type="email" class="form-control" id="edit_correo" required>
+                    </div>
+
+                    <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                        <label class="form-label fw-semibold m-0" style="min-width: 160px;">Dirección:</label>
+                        <input type="text" class="form-control" id="edit_direccion" required>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="button" class="btn btn-dark px-4 py-2 fw-bold" style="border-radius: 12px;" onclick="guardarEdicion()">
+                            GUARDAR CAMBIOS
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
   </main>
 </body>
 

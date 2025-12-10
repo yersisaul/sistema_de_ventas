@@ -15,12 +15,18 @@ public interface UsuarioService {
     List<Usuario> obtenerTodosLosUsuarios();
     List<Usuario> obtenerUsuariosPorRol(String rol);
     List<Usuario> obtenerUsuariosActivos();
+    List<UsuarioResponseDTO> obtenerUsuariosPorRolDTO(String rol);
     Usuario actualizarUsuario(Long id, Usuario usuario);
     void desactivarUsuario(Long id);
     void eliminarUsuario(Long id);
     Boolean validarCredenciales(String nIdentificacion, String contrasena);
     UsuarioResponseDTO crearCliente(UsuarioCreateDTO dto);
     UsuarioResponseDTO actualizarCliente(Long id, UsuarioCreateDTO dto);
+    UsuarioResponseDTO obtenerClienteDTO(Long id);
+   
+
+   
+
 
     
 

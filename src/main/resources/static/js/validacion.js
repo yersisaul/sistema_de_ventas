@@ -10,15 +10,15 @@ const togglePassword = document.getElementById('togglePassword');
     togglePassword.classList.toggle('bi-eye-slash');
   });
   
-  const nombreInput = document.getElementById('nombre');
+  const nombreInput = document.getElementById('nombres');
   nombreInput.addEventListener('input', () => {
     nombreInput.value = nombreInput.value.replace(/[^a-zA-Z\s]/g, '');
   })
-  const apellidoP = document.getElementById('nomp');
+  const apellidoP = document.getElementById('apellidoPaterno');
   apellidoP.addEventListener('input', () => {
     apellidoP.value = apellidoP.value.replace(/[^a-zA-Z\s]/g, '');
   })
-  const apellidoM = document.getElementById('nomm');
+  const apellidoM = document.getElementById('apellidoMaterno');
   apellidoM.addEventListener('input', () => {
     apellidoM.value = apellidoM.value.replace(/[^a-zA-Z\s]/g, '');
   })
@@ -26,7 +26,7 @@ const togglePassword = document.getElementById('togglePassword');
   number.addEventListener('input', () =>{
     number.value = number.value.replace(/[^0-9]/g, '');
   })
-  const cel = document.getElementById('cel');
+  const cel = document.getElementById('telefono');
   cel.addEventListener('input', () =>{
     cel.value = cel.value.replace(/[^0-9]/g, '');
   })
