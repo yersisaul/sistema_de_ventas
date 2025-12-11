@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -169,15 +168,15 @@
 
               <!-- Apellido paterno -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
-                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellido paterno:</label>
-                <input type="text" class="form-control" id="apellidoPaterno" required placeholder="Ej: Pérez">
+                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellidos:</label>
+                <input type="text" class="form-control" id="apellidos" required placeholder="Ej: Pérez">
               </div>
 
-              <!-- Apellido materno -->
+              <!-- Apellido materno 
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellido materno:</label>
                 <input type="text" class="form-control" id="nomm" required placeholder="Ej: García">
-              </div>
+              </div>-->
 
               <!-- Teléfono -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
@@ -210,6 +209,80 @@
               <div class="text-center mt-4">
                 <button type="submit" class="btn btn-outline-dark px-4 py-2 fw-bold" style="border-radius: 12px;">
                   AGREGAR
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalEditarCliente" tabindex="-1" aria-labelledby="modalEditarClienteLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" style="max-width: 600px">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 10px;">
+
+          <div class="modal-header border-0">
+            <h5 class="modal-title w-100 text-center fw-bold py-2 text-white"
+              style="background-color: black; border-radius: 10px;">
+              EDITAR USUARIO
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+
+          <div class="modal-body px-5">
+            <p class="text-center m-0">¡Actualiza la información del vendedor!</p>
+
+            <form id="formEditarCliente" onsubmit="event.preventDefault(); guardarEdicion();">
+
+              <input type="hidden" id="editId">
+
+              <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Número Documento:</label>
+                <div class="dni d-flex gap-2 w-100">
+                  <select class="form-select" id="edit_tipoDocumento" style="max-width: 120px;">
+                    <option value="DNI">DNI</option>
+                  </select>
+                  <input type="text" class="form-control" id="edit_numeroDocumento" required
+                    placeholder="Ingrese número">
+                </div>
+              </div>
+
+              <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Nombre completo:</label>
+                <input type="text" class="form-control" id="edit_nombre" required placeholder="Ej: Juan Carlos">
+              </div>
+
+              <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellido paterno:</label>
+                <input type="text" class="form-control" id="edit_apellidoPaterno" required placeholder="Ej: Pérez">
+              </div>
+
+              <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellido materno:</label>
+                <input type="text" class="form-control" id="edit_apellidoMaterno" required placeholder="Ej: García">
+              </div>
+
+              <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Teléfono:</label>
+                <input type="tel" class="form-control" id="edit_telefono" required placeholder="Ej: 987654321">
+              </div>
+
+              <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Correo:</label>
+                <input type="email" class="form-control" id="edit_correo" required placeholder="Ej: ejemplo@gmail.com">
+              </div>
+
+              <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Dirección:</label>
+                <input type="text" class="form-control" id="edit_direccion" required
+                  placeholder="Ej: Av. Los Olivos 123">
+              </div>
+
+              <div class="text-center mt-4">
+                <button type="submit" class="btn btn-dark px-4 py-2 fw-bold" style="border-radius: 12px;">
+                  GUARDAR CAMBIOS
                 </button>
               </div>
 

@@ -56,9 +56,9 @@ public class ClienteAuthController {
             UsuarioResponseDTO nuevoClienteDTO = usuarioService.crearCliente(createDTO);
             LoginResponse response = new LoginResponse(
                     nuevoClienteDTO.getIdUsuario(),
-                    nuevoClienteDTO.getNombre(),
-                    nuevoClienteDTO.getApellidoPaterno(),
-                    nuevoClienteDTO.getNumeroDocumento(),
+                    nuevoClienteDTO.getNombres(),
+                    nuevoClienteDTO.getApellidos(),
+                    nuevoClienteDTO.getNIdentificacion(),
                     nuevoClienteDTO.getCorreo(),
                     "CLIENTE",
                     "Cliente registrado exitosamente");
@@ -76,4 +76,5 @@ public class ClienteAuthController {
                     .body(new LoginResponse(null, null, null, null, null, null, "Error: " + e.getMessage()));
         }
     }
+
 }

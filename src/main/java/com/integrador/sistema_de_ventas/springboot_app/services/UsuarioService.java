@@ -1,6 +1,7 @@
 package com.integrador.sistema_de_ventas.springboot_app.services;
 
 import com.integrador.sistema_de_ventas.springboot_app.dto.ClienteDTO;
+import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioCreateDTO;
 import com.integrador.sistema_de_ventas.springboot_app.models.Usuario;
 import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioResponseDTO;
 
@@ -25,4 +26,7 @@ public interface UsuarioService {
      * Obtener todos los clientes en formato DTO
      */
     List<ClienteDTO> obtenerClientesDTO();
+    UsuarioResponseDTO crearCliente(UsuarioCreateDTO dto);
+    UsuarioResponseDTO actualizarCliente(Long id, UsuarioCreateDTO dto);
+    UsuarioResponseDTO obtenerClienteDTO(Long id);
 }
