@@ -65,8 +65,13 @@
           </div>
           <div class="col-md-6 text-md-end">
             <h6 class="text-light mb-2">NÚMERO DE COMPROBANTE</h6>
+<<<<<<< HEAD
             <div class="numero-comprobante">B001-00001245</div>
             <small class="text-light opacity-75">Fecha: 26/12/2024 - Hora: 14:30</small>
+=======
+            <div class="numero-comprobante">B001-00000001</div>
+            <small class="text-light opacity-75" id="fechaComprobanteTexto">Fecha: 26/12/2024 - Hora: 14:30</small>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
           </div>
         </div>
       </div>
@@ -153,7 +158,14 @@
               <h6 class="fw-bold mb-3">DATOS DE LA VENTA</h6>
               <div class="mb-3">
                 <label class="form-label fw-semibold">Fecha</label>
+<<<<<<< HEAD
                 <input type="datetime-local" class="form-control" value="2024-12-26T14:30">
+=======
+                <input type="datetime-local" 
+                      class="form-control" 
+                      id="fechaVenta"
+                      readonly>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
               </div>
               <div class="mb-3">
                 <label class="form-label fw-semibold">Vendedor</label>
@@ -194,6 +206,7 @@
                 </button>
               </div>
               
+<<<<<<< HEAD
               <!-- Lista de productos -->
               <div id="listaProductos">
                 <!-- Producto 1 -->
@@ -275,6 +288,19 @@
                     <i class="bi bi-plus-circle me-2"></i>Agregar Productos
                   </button>
                 </div>
+=======
+              <!-- Lista de productos (se llenará dinámicamente) -->
+              <div id="listaProductos"></div>
+              
+              <!-- Mensaje si no hay productos -->
+              <div id="sinProductos" class="text-center py-5">
+                <i class="bi bi-cart-x fs-1 text-muted mb-3 d-block"></i>
+                <h6 class="fw-bold mb-2">No hay productos agregados</h6>
+                <p class="text-muted mb-3">Agrega productos para generar la venta</p>
+                <button class="btn btn-mambo" data-bs-toggle="modal" data-bs-target="#modalProductos">
+                  <i class="bi bi-plus-circle me-2"></i>Agregar Productos
+                </button>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
               </div>
             </div>
           </div>
@@ -358,7 +384,10 @@
       </div>
     </div>
   </main>
+<<<<<<< HEAD
 
+=======
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
   <!-- 🔸 Modal Buscar Cliente -->
   <div class="modal fade" id="modalClientes" tabindex="-1">
     <div class="modal-dialog modal-lg">
@@ -369,8 +398,13 @@
         </div>
         <div class="modal-body">
           <div class="input-group mb-3">
+<<<<<<< HEAD
             <input type="text" class="form-control" placeholder="Buscar por nombre, documento...">
             <button class="btn btn-dark"><i class="bi bi-search"></i></button>
+=======
+            <input type="text" id="inputBuscarCliente" class="form-control" placeholder="Buscar por nombre, documento...">
+            <button class="btn btn-dark" id="btnBuscarCliente"><i class="bi bi-search"></i></button>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
           </div>
           
           <div class="table-responsive">
@@ -383,6 +417,7 @@
                   <th>Acción</th>
                 </tr>
               </thead>
+<<<<<<< HEAD
               <tbody>
                 <tr>
                   <td><strong>Juan Pérez</strong><br><small>Cliente frecuente</small></td>
@@ -401,6 +436,28 @@
                   <td>RUC: 20123456789</td>
                   <td>contacto@empresa.com</td>
                   <td><button class="btn btn-sm btn-dark seleccionar-cliente" data-cliente='{"nombre":"Empresa S.A.C.","documento":"20123456789","email":"contacto@empresa.com","ruc":"20123456789"}'>Seleccionar</button></td>
+=======
+              <tbody id="tablaClientesBody">
+                <tr th:each="cliente : ${clientes}">
+                  <td>
+                    <strong th:text="${cliente.nombreCompleto}">Juan Pérez</strong><br>
+                    <small>Cliente</small>
+                  </td>
+                  <td th:text="${cliente.documentoFormateado}">DNI: 70123456</td>
+                  <td th:text="${cliente.correo}">juan@email.com</td>
+                  <td>
+                    <button class="btn btn-sm btn-dark seleccionar-cliente" 
+                            th:attr="data-id=${cliente.id},
+                                    data-nombre=${cliente.nombreCompleto},
+                                    data-documento=${cliente.nIdentificacion},
+                                    data-tipo-doc=${cliente.tipoIdentificacion},
+                                    data-email=${cliente.correo},
+                                    data-telefono=${cliente.telefono != null ? cliente.telefono : ''},
+                                    data-direccion=${cliente.direccion != null ? cliente.direccion : ''}">
+                      Seleccionar
+                    </button>
+                  </td>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                 </tr>
               </tbody>
             </table>
@@ -428,21 +485,29 @@
           <div class="row mb-3">
             <div class="col-md-8">
               <div class="input-group">
+<<<<<<< HEAD
                 <input type="text" class="form-control" placeholder="Buscar por nombre, SKU, categoría...">
+=======
+                <input type="text" class="form-control" placeholder="Buscar por nombre, SKU...">
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                 <button class="btn btn-dark"><i class="bi bi-search"></i></button>
               </div>
             </div>
             <div class="col-md-4">
               <select class="form-select">
                 <option>Todas las categorías</option>
+<<<<<<< HEAD
                 <option>Polos</option>
                 <option>Jeans</option>
                 <option>Casacas</option>
                 <option>Accesorios</option>
+=======
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
               </select>
             </div>
           </div>
           
+<<<<<<< HEAD
           <div class="row" id="listaModalProductos">
             <!-- Producto 1 -->
             <div class="col-md-4 mb-3">
@@ -496,6 +561,13 @@
             </div>
             
             <!-- Más productos... -->
+=======
+          <!-- ⬇️ Aquí se cargarán los productos con JavaScript -->
+          <div class="row" id="listaModalProductos">
+            <div class="col-12 text-center py-5">
+              <p class="text-muted">Haz clic en "Agregar Productos" para cargar</p>
+            </div>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
           </div>
         </div>
         <div class="modal-footer">
@@ -507,6 +579,7 @@
       </div>
     </div>
   </div>
+<<<<<<< HEAD
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
@@ -767,5 +840,41 @@
       calcularTotales();
     });
   </script>
+=======
+  <!-- 🖨️ MODAL DE IMPRESIÓN -->
+  <div class="modal fade" id="modalImpresion" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-printer me-2"></i>Comprobante de Venta
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="contenidoImpresion">
+          <div class="text-center py-5">
+            <div class="spinner-border text-dark" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3">Cargando comprobante...</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-2"></i>Cerrar
+          </button>
+          <button type="button" class="btn btn-dark" id="btnDescargarPDF">
+            <i class="bi bi-download me-2"></i>Descargar PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script th:src="@{/js/nuevaVenta.js}"></script>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
 </body>
 </html>

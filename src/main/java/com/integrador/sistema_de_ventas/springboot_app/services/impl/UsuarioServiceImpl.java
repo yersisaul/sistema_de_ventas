@@ -1,7 +1,12 @@
 package com.integrador.sistema_de_ventas.springboot_app.services.impl;
+<<<<<<< HEAD
 import com.integrador.sistema_de_ventas.springboot_app.exception.BadRequestException;
 import com.integrador.sistema_de_ventas.springboot_app.exception.ResourceNotFoundException;
 import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioCreateDTO;
+=======
+
+import com.integrador.sistema_de_ventas.springboot_app.dto.ClienteDTO;
+>>>>>>> c7f0a7c3c255bc5c87d2f6cfd406cbbc01c662ae
 import com.integrador.sistema_de_ventas.springboot_app.models.Usuario;
 import com.integrador.sistema_de_ventas.springboot_app.repository.UsuarioRepository;
 import com.integrador.sistema_de_ventas.springboot_app.services.UsuarioService;
@@ -14,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -122,123 +128,16 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         return false;
     }
-
-    private UsuarioResponseDTO mapToDTO(Usuario usuario) {
-        if (usuario == null) {
-            return null;
-        }
-        UsuarioResponseDTO dto = new UsuarioResponseDTO();
-        dto.setIdUsuario(usuario.getId());
-        dto.setTipoDocumento(usuario.getTipoIdentificacion());
-        dto.setNumeroDocumento(usuario.getNIdentificacion());
-        dto.setNombre(usuario.getNombres());
-        
-     
-        String apellidosCompletos = usuario.getApellidos() != null ? usuario.getApellidos().trim() : "";
-        String[] partes = apellidosCompletos.split("\\s+"); // Separar por uno o más espacios
-        dto.setApellidoPaterno(partes.length >= 1 ? partes[0] : ""); // Primer apellido
-        dto.setApellidoMaterno(partes.length >= 2 ? partes[partes.length - 1] : ""); // Último apellido
-        
-        dto.setTelefono(usuario.getTelefono());
-        dto.setCorreo(usuario.getCorreo());
-        dto.setDireccion(usuario.getDireccion());
-     
-        return dto;
-    }
-
+    
     @Override
     @Transactional(readOnly = true)
-    public List<UsuarioResponseDTO> obtenerUsuariosPorRolDTO(String rol) {
-        //  el método del repositorio que filtra por rol, estado activo y no eliminado
-        return usuarioRepository.findActiveByRol(rol) 
-                .stream()
-                .map(this::mapToDTO) // Mapeamos cada Usuario a un UsuarioResponseDTO
+    public List<ClienteDTO> obtenerClientesDTO() {
+        // Obtener clientes activos usando el método del repositorio
+        List<Usuario> clientes = usuarioRepository.findByRolAndEstadoAndEliminadoFalse("CLIENTE", true);
+        
+        // Convertir a ClienteDTO usando el constructor
+        return clientes.stream()
+                .map(ClienteDTO::new)
                 .collect(Collectors.toList());
     }
-
-    @Override
-    // También es buena práctica devolver el DTO en el GET individual desde el servicio
-    @Transactional(readOnly = true)
-    public UsuarioResponseDTO obtenerClienteDTO(Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con ID: " + id));
-        
-        if (!"CLIENTE".equals(usuario.getRol())) {
-            throw new ResourceNotFoundException("El ID no corresponde a un cliente");
-        }
-        
-        return mapToDTO(usuario);
-    }
-
-    @Override
-    public UsuarioResponseDTO crearCliente(UsuarioCreateDTO dto) {
-
-        Usuario usuario = new Usuario();
-
-        usuario.setTipoIdentificacion(dto.getTipoDocumento()); 
-        usuario.setNIdentificacion(dto.getNumeroDocumento());
-        usuario.setNombres(dto.getNombre()); // OK
-         String apellidosCompletos = dto.getApellidoPaterno() + " " + (dto.getApellidoMaterno() != null ? dto.getApellidoMaterno() : "");
-        usuario.setApellidos(apellidosCompletos.trim()); // un solo campo
-        usuario.setTelefono(dto.getTelefono());
-        usuario.setCorreo(dto.getCorreo());
-        usuario.setDireccion(dto.getDireccion());
-        usuario.setContrasena(dto.getContraseña()); // TEXTO PLANO
-
-        usuario.setRol("CLIENTE"); // por defecto
-        
-        usuario.setEstado(true);
-        usuario.setPuntosFidelizacion(0);
-        usuario.setEliminado(false);
-        usuario.setFechaRegistro(LocalDateTime.now());
-        usuario.setFechaActualizacion(LocalDateTime.now());
-
-        //Usuario guardado = usuarioRepository.save(usuario);
-        Usuario guardado = crearUsuario(usuario); 
-
-        UsuarioResponseDTO response = new UsuarioResponseDTO();
-        response.setIdUsuario(guardado.getId());
-        response.setTipoDocumento(guardado.getTipoIdentificacion());
-        response.setNumeroDocumento(guardado.getNIdentificacion());
-        response.setNombre(guardado.getNombres());
-        response.setApellidoPaterno(guardado.getApellidos()); // va completo
-        response.setTelefono(guardado.getTelefono());
-        response.setCorreo(guardado.getCorreo());
-        response.setDireccion(guardado.getDireccion());
-
-        return response;
-    }
-
-    @Override
-    public UsuarioResponseDTO actualizarCliente(Long id, UsuarioCreateDTO dto) {
-
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
-
-        usuario.setTipoIdentificacion(dto.getTipoDocumento());
-        usuario.setNIdentificacion(dto.getNumeroDocumento());
-        usuario.setNombres(dto.getNombre());
-         String apellidosCompletos = dto.getApellidoPaterno() + " " + (dto.getApellidoMaterno() != null ? dto.getApellidoMaterno() : "");
-         usuario.setApellidos(apellidosCompletos.trim());
-        usuario.setTelefono(dto.getTelefono());
-        usuario.setCorreo(dto.getCorreo());
-        usuario.setDireccion(dto.getDireccion());
-        usuario.setFechaActualizacion(LocalDateTime.now());
-
-        Usuario actualizado = usuarioRepository.save(usuario);
-
-        UsuarioResponseDTO response = new UsuarioResponseDTO();
-        response.setIdUsuario(actualizado.getId());
-        response.setTipoDocumento(actualizado.getTipoIdentificacion());
-        response.setNumeroDocumento(actualizado.getNIdentificacion());
-        response.setNombre(actualizado.getNombres());
-        response.setApellidoPaterno(actualizado.getApellidos());
-        response.setTelefono(actualizado.getTelefono());
-        response.setCorreo(actualizado.getCorreo());
-        response.setDireccion(actualizado.getDireccion());
-
-        return response;
-    }
-
-
 }

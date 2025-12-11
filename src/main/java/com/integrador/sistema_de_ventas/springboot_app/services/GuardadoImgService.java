@@ -21,7 +21,7 @@ public class GuardadoImgService {
             Files.write(path, img.getBytes());
 
             // URL pública para Angular
-            return "/uploads/productos/" + fileName;
+             return "http://localhost:8080/uploads/productos/" + fileName;
         } catch (Exception e){
             throw new RuntimeException("Error al guardar la imagen", e);
         }
