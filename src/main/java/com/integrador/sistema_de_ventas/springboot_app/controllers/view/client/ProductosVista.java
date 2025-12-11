@@ -8,8 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.integrador.sistema_de_ventas.springboot_app.dto.ProductoDTO;
-import com.integrador.sistema_de_ventas.springboot_app.models.Producto;
 import com.integrador.sistema_de_ventas.springboot_app.services.impl.CategoriaServiceImpl;
 import com.integrador.sistema_de_ventas.springboot_app.services.impl.ProductoServiceImpl;
 
@@ -24,9 +22,7 @@ public class ProductosVista {
 
     @GetMapping
     public String productos(Model model) {
-        List<ProductoDTO> listaProductos = productoServiceImpl.obtenerProductosParaCatalogo();
-        
-        model.addAttribute("listaProductos", listaProductos);
+        model.addAttribute("listaProductos", productoServiceImpl.obtenerProductosActivos());
         model.addAttribute("listaCategorias", categoriaServiceImpl.obtenerTodasLasCategorias());
         return "client/Produtos";
     }
