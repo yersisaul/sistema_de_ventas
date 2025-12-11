@@ -2,6 +2,8 @@ package com.integrador.sistema_de_ventas.springboot_app.services;
 
 import com.integrador.sistema_de_ventas.springboot_app.dto.ClienteDTO;
 import com.integrador.sistema_de_ventas.springboot_app.models.Usuario;
+import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioResponseDTO;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +15,7 @@ public interface UsuarioService {
     List<Usuario> obtenerTodosLosUsuarios();
     List<Usuario> obtenerUsuariosPorRol(String rol);
     List<Usuario> obtenerUsuariosActivos();
+    List<UsuarioResponseDTO> obtenerUsuariosPorRolDTO(String rol);
     Usuario actualizarUsuario(Long id, Usuario usuario);
     void desactivarUsuario(Long id);
     void eliminarUsuario(Long id);
