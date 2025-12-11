@@ -1,11 +1,16 @@
 package com.integrador.sistema_de_ventas.springboot_app.services.impl;
 
+import com.integrador.sistema_de_ventas.springboot_app.dto.VarianteUpdateDTO;
+import com.integrador.sistema_de_ventas.springboot_app.models.Producto;
 import com.integrador.sistema_de_ventas.springboot_app.models.VarianteProducto;
+import com.integrador.sistema_de_ventas.springboot_app.repository.ProductoRepository;
 import com.integrador.sistema_de_ventas.springboot_app.repository.VarianteProductoRepository;
 import com.integrador.sistema_de_ventas.springboot_app.services.VarianteProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +20,9 @@ public class VarianteProductoServiceImpl implements VarianteProductoService {
     
     @Autowired
     private VarianteProductoRepository varianteRepository;
+
+    @Autowired
+    private ProductoRepository productoRepository;    
     
     @Override
     public VarianteProducto crearVariante(VarianteProducto variante) {
@@ -48,19 +56,17 @@ public class VarianteProductoServiceImpl implements VarianteProductoService {
     
     @Override
     @Transactional(readOnly = true)
-    public Optional<VarianteProducto> obtenerVariantePorProductoTallaColor(Long productoId, String talla, String color) {
-        return varianteRepository.findByProductoIdAndTallaAndColor(productoId, talla, color);
+    public Optional<VarianteProducto> obtenerVariantePorProductoTalla(Long productoId, String talla) {
+        return varianteRepository.findByProductoIdAndTalla(productoId, talla);
     }
     
     @Override
-    public VarianteProducto actualizarVariante(Long id, VarianteProducto varianteActualizada) {
+    public VarianteProducto actualizarVariante(Long id, VarianteUpdateDTO varianteActualizada) {
         VarianteProducto variante = varianteRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Variante no encontrada"));
         
-        variante.setTalla(varianteActualizada.getTalla());
-        variante.setColor(varianteActualizada.getColor());
+        variante.setStock(varianteActualizada.getStock());
         variante.setPrecio(varianteActualizada.getPrecio());
-        variante.setPrecioDescuento(varianteActualizada.getPrecioDescuento());
         
         return varianteRepository.save(variante);
     }
@@ -84,5 +90,50 @@ public class VarianteProductoServiceImpl implements VarianteProductoService {
             .orElseThrow(() -> new RuntimeException("Variante no encontrada"));
         variante.setActivo(false);
         varianteRepository.save(variante);
+    }
+
+    @Override
+    public List<VarianteProducto> obtenerTodasLasVariantes() {
+        return varianteRepository.findAll();
+    }
+
+    @Override
+    public void agregarOActualizarStock(Long productoId, String talla, Integer cantidad, BigDecimal precio) {
+        
+        if (cantidad == null || cantidad <= 0) {
+            return;
+        }
+
+        Optional<VarianteProducto> varianteOpt = varianteRepository.findByProductoIdAndTalla(productoId, talla);
+
+        if (varianteOpt.isPresent()) {
+            VarianteProducto variante = varianteOpt.get();
+            
+            Integer stockActual = variante.getStock();
+            Integer nuevoStockTotal = stockActual + cantidad; //
+            
+            variante.setStock(nuevoStockTotal);
+            
+            if (precio != null && precio.compareTo(BigDecimal.ZERO) > 0) {
+                variante.setPrecio(precio);
+            }
+            
+            varianteRepository.save(variante);
+            
+        } else {
+
+            Producto producto = productoRepository.findById(productoId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + productoId));
+
+            VarianteProducto nuevaVariante = new VarianteProducto();
+            nuevaVariante.setProducto(producto);
+            nuevaVariante.setTalla(talla);
+            nuevaVariante.setStock(cantidad); 
+            
+            nuevaVariante.setPrecio(precio != null ? precio : BigDecimal.ZERO);
+            nuevaVariante.setActivo(true);
+            
+            varianteRepository.save(nuevaVariante);
+        }
     }
 }

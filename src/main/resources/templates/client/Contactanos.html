@@ -6,19 +6,262 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contáctanos - MAMBO</title>
+<<<<<<< HEAD
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" th:href="@{/css/client/base.css}">
      <link rel="stylesheet" th:href="@{/css/client/contactanos.css}">
+=======
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <link rel="stylesheet" th:href="@{/css/client/base.css}">
+    
+    <style>
+        :root {
+            --bg-body: #000000;
+            --bg-card: #111111;
+            --accent: #FFD700; /* Amarillo Mambo */
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border: #222222;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero-banner {
+            padding: 80px 0 60px;
+            background: linear-gradient(180deg, #000 0%, #0a0a0a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-title {
+            font-weight: 900;
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            background: -webkit-linear-gradient(45deg, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Elementos flotantes decorativos */
+        .floating-element {
+            position: absolute;
+            background: var(--accent);
+            opacity: 0.1;
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: 0;
+        }
+        .floating-element:nth-child(1) { top: -10%; left: -5%; width: 300px; height: 300px; }
+        .floating-element:nth-child(2) { bottom: 10%; right: -5%; width: 200px; height: 200px; background: #00c6ff; }
+
+        /* --- TARJETAS --- */
+        .contact-card, .info-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0; /* Estilo industrial */
+            padding: 40px;
+            height: 100%;
+            position: relative;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .contact-card:hover, .info-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .section-title {
+            color: var(--accent);
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* --- FORMULARIO --- */
+        .form-label {
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group-text {
+            background-color: #050505;
+            border: 1px solid var(--border);
+            border-right: none;
+            color: var(--accent);
+        }
+
+        .form-control {
+            background-color: #050505;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 12px;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            background-color: #080808;
+            border-color: var(--accent);
+            box-shadow: none;
+            color: white;
+        }
+        
+        .form-control::placeholder { color: #444; }
+
+        /* Botón Enviar */
+        .btn-send {
+            background-color: var(--accent);
+            color: black;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            border-radius: 0;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+        
+        .btn-send:hover {
+            background-color: #fff;
+            color: black;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+
+        /* --- INFO ICONOS --- */
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+        
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .contact-text h5 {
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .contact-text p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* --- REDES SOCIALES --- */
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            background: #050505;
+        }
+        
+        .social-icon:hover {
+            background: var(--accent);
+            color: black;
+            border-color: var(--accent);
+        }
+
+        /* --- MAPA DARK MODE --- */
+        .map-container iframe {
+            width: 100%;
+            height: 250px;
+            border: 0;
+            /* Filtro mágico para hacer el mapa oscuro */
+            filter: grayscale(100%) invert(92%) contrast(83%);
+            border: 1px solid var(--border);
+        }
+
+        /* --- FAQ SECTION --- */
+        .faq-section {
+            background-color: #050505;
+            border-top: 1px solid var(--border);
+        }
+        
+        .card.bg-transparent {
+            border: 1px solid var(--border) !important;
+            transition: 0.3s;
+        }
+        
+        .card.bg-transparent:hover {
+            background-color: #111 !important;
+            border-color: var(--accent) !important;
+        }
+        
+        .text-warning {
+            color: var(--accent) !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        
+        .text-white-50 {
+            color: #888 !important;
+        }
+
+    </style>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
 </head>
 <body>
     <header th:replace="client/fragments/navbar :: navbar"></header>
 
+<<<<<<< HEAD
     <!-- 🌟 BANNER HERO -->
+=======
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
     <section class="hero-banner">
         <div class="floating-elements">
             <div class="floating-element"></div>
             <div class="floating-element"></div>
+<<<<<<< HEAD
             <div class="floating-element"></div>
         </div>
         <div class="container">
@@ -28,12 +271,23 @@
                     <p class="hero-subtitle">
                         Estamos aquí para escucharte. Cada consulta, sugerencia o comentario es importante para nosotros.
                         ¡Conéctate con MAMBO!
+=======
+        </div>
+        <div class="container position-relative" style="z-index: 1;">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-10">
+                    <h1 class="hero-title">¿TIENES DUDAS? <span style="color: var(--accent);">ESCRÍBENOS</span></h1>
+                    <p class="hero-subtitle">
+                        Estamos aquí para escucharte. Tu estilo es nuestra prioridad. 
+                        Conéctate con el equipo <strong style="color:white">MAMBO</strong>.
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
+<<<<<<< HEAD
     <!-- 📍 SECCIÓN PRINCIPAL -->
     <section class="contact-section">
         <div class="container">
@@ -53,16 +307,41 @@
                                 <div class="input-group">
                                     <span class="input-group-text bg-transparent border-end-0">
                                         <i class="bi bi-person" style="color: var(--color-secundario);"></i>
+=======
+    <section class="contact-section py-5">
+        <div class="container">
+            <div class="row g-5">
+                
+                <div class="col-lg-6">
+                    <div class="contact-card">
+                        <h3 class="section-title"><i class="bi bi-envelope-fill me-2"></i> FORMULARIO</h3>
+                        <p class="text-muted mb-4">
+                            Completa los campos y te responderemos en menos de 24 horas.
+                        </p>
+
+                        <form [formGroup]="form" (ngSubmit)="enviar()">
+                            
+                            <div class="mb-4">
+                                <label class="form-label" for="nombre">Nombre completo</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-person"></i>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                                     </span>
                                     <input
                                         type="text"
                                         formControlName="nombre"
                                         class="form-control border-start-0"
+<<<<<<< HEAD
                                         placeholder="Ingresa tu nombre"
+=======
+                                        placeholder="TU NOMBRE"
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                                         [class.is-invalid]="form.get('nombre')?.touched && form.get('nombre')?.invalid"
                                     />
                                 </div>
                                 <div class="invalid-feedback" *ngIf="form.get('nombre')?.errors?.['required']">
+<<<<<<< HEAD
                                     Este campo es obligatorio.
                                 </div>
                                 <div class="invalid-feedback" *ngIf="form.get('nombre')?.errors?.['minlength']">
@@ -76,11 +355,23 @@
                                 <div class="input-group">
                                     <span class="input-group-text bg-transparent border-end-0">
                                         <i class="bi bi-envelope" style="color: var(--color-secundario);"></i>
+=======
+                                    Requerido.
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label" for="correo">Correo electrónico</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-envelope"></i>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                                     </span>
                                     <input
                                         type="email"
                                         formControlName="correo"
                                         class="form-control border-start-0"
+<<<<<<< HEAD
                                         placeholder="tucorreo@ejemplo.com"
                                         [class.is-invalid]="form.get('correo')?.touched && form.get('correo')?.invalid"
                                     />
@@ -99,11 +390,28 @@
                                 <div class="input-group">
                                     <span class="input-group-text bg-transparent border-end-0 align-items-start pt-3">
                                         <i class="bi bi-chat-left-text" style="color: var(--color-secundario);"></i>
+=======
+                                        placeholder="TU@CORREO.COM"
+                                        [class.is-invalid]="form.get('correo')?.touched && form.get('correo')?.invalid"
+                                    />
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form.get('correo')?.errors?.['email']">
+                                    Correo inválido.
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label" for="mensaje">Tu mensaje</label>
+                                <div class="input-group">
+                                    <span class="input-group-text align-items-start pt-3">
+                                        <i class="bi bi-chat-left-text"></i>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                                     </span>
                                     <textarea
                                         rows="5"
                                         formControlName="mensaje"
                                         class="form-control border-start-0"
+<<<<<<< HEAD
                                         placeholder="¿En qué podemos ayudarte?..."
                                         [class.is-invalid]="form.get('mensaje')?.touched && form.get('mensaje')?.invalid"
                                     ></textarea>
@@ -118,11 +426,22 @@
 
                             <button type="submit" class="btn btn-send">
                                 <i class="bi bi-send-fill"></i> Enviar Mensaje
+=======
+                                        placeholder="Escribe tu consulta aquí..."
+                                        [class.is-invalid]="form.get('mensaje')?.touched && form.get('mensaje')?.invalid"
+                                    ></textarea>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-send">
+                                <i class="bi bi-send-fill me-2"></i> ENVIAR AHORA
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                             </button>
                         </form>
                     </div>
                 </div>
 
+<<<<<<< HEAD
                 <!-- 📍 INFORMACIÓN DE CONTACTO -->
                 <div class="col-lg-6">
                     <div class="info-card">
@@ -197,6 +516,62 @@
                         <div class="map-container mt-4">
                             <iframe
                                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.2725530461834!2d-76.95347052502668!3d-12.092298942098162!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c7c5c4d7e3a1%3A0xa0b39c5c4b8a3b3d!2sMulticentro%20Santa%20Clara!5e0!3m2!1ses-419!2spe!4v1703555555555!5m2!1ses-419!2spe"
+=======
+                <div class="col-lg-6">
+                    <div class="info-card">
+                        <h3 class="section-title"><i class="bi bi-geo-alt-fill me-2"></i> UBICACIÓN</h3>
+                        <p class="text-muted mb-4">
+                            Encuéntranos en nuestras sedes o redes sociales.
+                        </p>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="bi bi-shop"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h5>MAMBO STORE</h5>
+                                <p>
+                                    Multicentro - Santa Clara - Ate<br>
+                                    Tiendas N°05-393
+                                </p>
+                                <small style="color: var(--accent);">Lunes a Sábado 9:00 AM - 9:00 PM</small>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="bi bi-whatsapp"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h5>WHATSAPP</h5>
+                                <p>+51 923 123 890</p>
+                                <small style="color: var(--accent);">Atención online rápida</small>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="bi bi-envelope-open"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h5>EMAIL</h5>
+                                <p>MamboClothing@gmail.com</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top border-secondary border-opacity-25">
+                            <h5 class="text-white text-uppercase fs-6 mb-3">Síguenos en redes</h5>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                                <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                                <a href="#" class="social-icon"><i class="bi bi-tiktok"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="map-container mt-4">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3902.506822607997!2d-76.8975!3d-12.0086!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDAwJzMxLjAiUyA3NsKwNTMnNTEuMCJX!5e0!3m2!1ses!2spe!4v1625680000000!5m2!1ses!2spe"
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                                 allowfullscreen=""
                                 loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade"
@@ -208,6 +583,7 @@
         </div>
     </section>
 
+<<<<<<< HEAD
     <!-- 💡 SECCIÓN EXTRA - PREGUNTAS FRECUENTES -->
     <section class="faq-section py-5" style="background: rgba(0,0,0,0.5);">
         <div class="container">
@@ -217,11 +593,20 @@
                     <p class="text-muted mt-3" style="color: rgba(255,255,255,0.7) !important;">
                         Respuestas rápidas a las dudas más comunes
                     </p>
+=======
+    <section class="faq-section py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center mb-5">
+                    <h3 class="section-title text-white">PREGUNTAS FRECUENTES</h3>
+                    <div style="width: 50px; height: 3px; background: var(--accent); margin: 10px auto;"></div>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                 </div>
             </div>
             
             <div class="row g-4">
                 <div class="col-md-6">
+<<<<<<< HEAD
                     <div class="card bg-transparent border border-secondary">
                         <div class="card-body">
                             <h5 class="text-warning">
@@ -229,12 +614,22 @@
                             </h5>
                             <p class="text-white-50 mb-0">
                                 El tiempo de entrega varía según tu ubicación. En Lima Metropolitana: 1-2 días hábiles. Provincias: 3-7 días hábiles.
+=======
+                    <div class="card bg-transparent">
+                        <div class="card-body">
+                            <h5 class="text-warning">
+                                <i class="bi bi-truck me-2"></i>¿TIEMPO DE ENTREGA?
+                            </h5>
+                            <p class="text-white-50 mb-0">
+                                Lima: 1-2 días hábiles. Provincias: 3-7 días hábiles.
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                             </p>
                         </div>
                     </div>
                 </div>
                 
                 <div class="col-md-6">
+<<<<<<< HEAD
                     <div class="card bg-transparent border border-secondary">
                         <div class="card-body">
                             <h5 class="text-warning">
@@ -242,12 +637,22 @@
                             </h5>
                             <p class="text-white-50 mb-0">
                                 Sí, aceptamos devoluciones dentro de los 15 días posteriores a la compra. El producto debe estar en perfecto estado.
+=======
+                    <div class="card bg-transparent">
+                        <div class="card-body">
+                            <h5 class="text-warning">
+                                <i class="bi bi-arrow-repeat me-2"></i>¿DEVOLUCIONES?
+                            </h5>
+                            <p class="text-white-50 mb-0">
+                                Sí, dentro de los 15 días. La prenda debe estar nueva.
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                             </p>
                         </div>
                     </div>
                 </div>
                 
                 <div class="col-md-6">
+<<<<<<< HEAD
                     <div class="card bg-transparent border border-secondary">
                         <div class="card-body">
                             <h5 class="text-warning">
@@ -255,12 +660,22 @@
                             </h5>
                             <p class="text-white-50 mb-0">
                                 Sí, nuestra tienda principal está en Multicentro Santa Clara, Ate. Puedes visitarnos de lunes a sábado.
+=======
+                    <div class="card bg-transparent">
+                        <div class="card-body">
+                            <h5 class="text-warning">
+                                <i class="bi bi-geo me-2"></i>¿TIENDA FÍSICA?
+                            </h5>
+                            <p class="text-white-50 mb-0">
+                                Sí, en Santa Clara, Ate. Te esperamos.
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                             </p>
                         </div>
                     </div>
                 </div>
                 
                 <div class="col-md-6">
+<<<<<<< HEAD
                     <div class="card bg-transparent border border-secondary">
                         <div class="card-body">
                             <h5 class="text-warning">
@@ -268,6 +683,15 @@
                             </h5>
                             <p class="text-white-50 mb-0">
                                 Actualmente solo realizamos envíos a nivel nacional dentro de Perú. Próximamente expandiremos a otros países.
+=======
+                    <div class="card bg-transparent">
+                        <div class="card-body">
+                            <h5 class="text-warning">
+                                <i class="bi bi-airplane me-2"></i>¿ENVÍOS INTERNACIONALES?
+                            </h5>
+                            <p class="text-white-50 mb-0">
+                                Por el momento solo envíos nacionales en Perú.
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
                             </p>
                         </div>
                     </div>
@@ -284,7 +708,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+<<<<<<< HEAD
         // Animación para los elementos al hacer scroll
+=======
+        // Mantenemos tu JS original de efectos
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
         document.addEventListener('DOMContentLoaded', function() {
             const observerOptions = {
                 threshold: 0.1,
@@ -300,6 +728,7 @@
                 });
             }, observerOptions);
             
+<<<<<<< HEAD
             // Observar las tarjetas
             document.querySelectorAll('.contact-card, .info-card').forEach(card => {
                 card.style.opacity = '0';
@@ -335,6 +764,24 @@
                     this.style.transform = 'translateY(0) scale(1)';
                 });
             });
+=======
+            document.querySelectorAll('.contact-card, .info-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                observer.observe(card);
+            });
+            
+            // Efecto Typewriter Título
+            const title = document.querySelector('.hero-title');
+            if(title) {
+                // Pequeño efecto de parpadeo al inicio
+                title.style.opacity = 0;
+                setTimeout(() => {
+                    title.style.transition = "opacity 1s";
+                    title.style.opacity = 1;
+                }, 200);
+            }
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372
         });
     </script>
 </body>

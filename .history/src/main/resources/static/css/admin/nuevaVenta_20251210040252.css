@@ -1,0 +1,587 @@
+
+    /* Estilos específicos para nueva venta */
+    .comprobante-header {
+      background: linear-gradient(135deg, #000 0%, #333 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .switch-comprobante {
+      display: flex;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 4px;
+      width: fit-content;
+    }
+    
+    .switch-comprobante input[type="radio"] {
+      display: none;
+    }
+    
+    .switch-comprobante label {
+      padding: 10px 25px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s;
+      text-align: center;
+      min-width: 100px;
+    }
+    
+    .switch-comprobante input[type="radio"]:checked + label {
+      background: white;
+      color: #000;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .numero-comprobante {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    
+    /* Datos del cliente */
+    .datos-cliente-card {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 20px;
+      border-left: 4px solid #000;
+    }
+    
+    .cliente-seleccionado {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      border: 2px solid #dee2e6;
+    }
+    
+    /* Lista de productos */
+    .producto-item {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.2s;
+    }
+    
+    .producto-item:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .producto-item:last-child {
+      border-bottom: none;
+    }
+    
+    .badge-sku {
+      background-color: #e9ecef;
+      color: #495057;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    
+    .input-cantidad {
+      width: 80px;
+      text-align: center;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 8px;
+    }
+    
+    .btn-eliminar {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: #ffebee;
+      color: #c62828;
+      border: none;
+    }
+    
+    .btn-eliminar:hover {
+      background: #ffcdd2;
+    }
+    
+    /* Panel de resumen */
+    .resumen-panel {
+      position: sticky;
+      top: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid #dee2e6;
+    }
+    
+    .resumen-linea {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .resumen-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #000;
+      color: #000;
+    }
+    
+    /* Modal productos */
+    .modal-producto {
+      padding: 15px;
+      border: 2px solid #dee2e6;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .modal-producto:hover {
+      border-color: #000;
+      background-color: #f8f9fa;
+      transform: translateY(-2px);
+    }
+    
+    .stock-badge {
+      font-size: 0.85rem;
+      padding: 4px 8px;
+      border-radius: 20px;
+    }
+    
+    .stock-bueno {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    .stock-bajo {
+      background-color: #fff3e0;
+      color: #ef6c00;
+    }
+    
+    .stock-critico {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+    
+    /* Botones de acción */
+    .btn-mambo {
+      background: #000;
+      color: white;
+      padding: 10px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 2px solid #000;
+    }
+    
+    .btn-mambo:hover {
+      background: #333;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .btn-outline-mambo {
+      background: white;
+      color: #000;
+      padding: 10px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 2px solid #000;
+    }
+    
+    .btn-outline-mambo:hover {
+      background: #f8f9fa;
+      color: #000;
+    }
+    
+    /* Inputs y selects */
+    .form-control, .form-select {
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+      padding: 10px 15px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #000;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+    }
+    /* Botones de talla */
+    .tallas-container {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-talla {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #dee2e6;
+      border-radius: 6px;
+      background: white;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .btn-talla.talla-disponible:hover {
+      border-color: #2c3e50;
+      background: #f8f9fa;
+      transform: translateY(-2px);
+    }
+
+    .btn-talla.talla-disponible:active {
+      transform: translateY(0);
+      background: #4CAF50;
+      color: white;
+      border-color: #4CAF50;
+    }
+
+    .btn-talla.talla-agotada {
+      background: #f5f5f5;
+      color: #999;
+      cursor: not-allowed;
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    .btn-talla:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    /* Ajuste de la card de producto */
+    .card-producto {
+      transition: box-shadow 0.2s ease;
+    }
+
+    .card-producto:hover {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    /* ==========================================
+      🔸 LISTA DE PRODUCTOS - DISEÑO MEJORADO
+      ========================================== */
+
+    #listaProductos {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .producto-item {
+      padding: 20px;
+      border-bottom: 1px solid #e9ecef;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .producto-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .producto-item:last-child {
+      border-bottom: none;
+    }
+
+    .producto-item h6 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+
+    /* Badges mejorados */
+    .badge-sku {
+      display: inline-block;
+      padding: 5px 12px;
+      background: #f0f0f0;
+      color: #666;
+      font-size: 12px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    /* Input cantidad mejorado */
+    .input-cantidad {
+      width: 90px;
+      text-align: center;
+      font-weight: 600;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 10px 8px;
+      font-size: 15px;
+    }
+
+    .input-cantidad:focus {
+      border-color: #000;
+      box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.1);
+      outline: none;
+    }
+
+    /* Precios con estilo limpio */
+    .precio-unitario {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+
+    .precio-subtotal {
+      font-size: 17px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 4px;
+    }
+
+    .text-label-small {
+      font-size: 12px;
+      color: #999;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* Botón eliminar mejorado */
+    .btn-eliminar {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: #fff3f3;
+      color: #dc3545;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ffe0e0;
+    }
+
+    .btn-eliminar:hover {
+      background: #dc3545;
+      color: white;
+      border-color: #dc3545;
+      transform: scale(1.05);
+    }
+
+    .btn-eliminar i {
+      font-size: 16px;
+    }
+
+    /* Mensaje sin productos */
+    #sinProductos {
+      background: #fafafa;
+      border-radius: 8px;
+    }
+
+    #sinProductos i {
+      color: #ccc;
+    }
+
+    /* ==========================================
+      🔸 RESPONSIVE PARA PRODUCTOS
+      ========================================== */
+
+    @media (max-width: 768px) {
+      .producto-item .row > div {
+        margin-bottom: 12px;
+      }
+      
+      .input-cantidad {
+        width: 100%;
+      }
+      
+      .btn-eliminar {
+        width: 100%;
+      }
+      
+      .precio-unitario,
+      .precio-subtotal {
+        text-align: left;
+      }
+    }
+    /* ==========================================
+      🖨️ ESTILOS PARA IMPRESIÓN
+      ========================================== */
+
+    .comprobante-impresion {
+      font-family: 'Courier New', monospace;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px;
+      border: 2px solid #000;
+      background: white;
+    }
+
+    .comprobante-header-print {
+      text-align: center;
+      border-bottom: 2px dashed #000;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+
+    .comprobante-header-print h3 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .comprobante-header-print .numero-comp {
+      font-size: 20px;
+      font-weight: 700;
+      background: #000;
+      color: white;
+      padding: 5px 15px;
+      display: inline-block;
+      margin: 10px 0;
+    }
+
+    .comprobante-seccion {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed #ccc;
+    }
+
+    .comprobante-seccion:last-child {
+      border-bottom: none;
+    }
+
+    .comprobante-seccion h4 {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .comprobante-linea {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+      font-size: 13px;
+    }
+
+    .comprobante-linea strong {
+      font-weight: 700;
+    }
+
+    .comprobante-tabla {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 12px;
+    }
+
+    .comprobante-tabla th {
+      background: #000;
+      color: white;
+      padding: 8px;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .comprobante-tabla td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .comprobante-tabla tr:last-child td {
+      border-bottom: 2px solid #000;
+    }
+
+    .comprobante-total {
+      background: #f0f0f0;
+      padding: 15px;
+      margin-top: 20px;
+      border: 2px solid #000;
+    }
+
+    .comprobante-total .linea {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .comprobante-total .linea-total {
+      font-size: 18px;
+      font-weight: 800;
+      border-top: 2px solid #000;
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+
+    .comprobante-footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px dashed #000;
+      font-size: 11px;
+    }
+
+    /* Estilos para impresión real */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      
+      #contenidoImpresion,
+      #contenidoImpresion * {
+        visibility: visible;
+      }
+      
+      #contenidoImpresion {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+      
+      .comprobante-impresion {
+        border: none;
+        padding: 0;
+      }
+      
+      .modal-header,
+      .modal-footer {
+        display: none !important;
+      }
+    }
+    /* Responsive */
+    @media (max-width: 768px) {
+      .comprobante-header {
+        padding: 15px;
+      }
+      
+      .switch-comprobante {
+        flex-direction: column;
+        width: 100%;
+      }
+      
+      .switch-comprobante label {
+        width: 100%;
+        margin-bottom: 5px;
+      }
+      
+      .numero-comprobante {
+        font-size: 1.4rem;
+      }
+      
+      .resumen-panel {
+        position: static;
+        margin-top: 20px;
+      }
+    }

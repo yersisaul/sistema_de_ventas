@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!-- client/fragments/carrito-offcanvas.html -->
 <div th:fragment="carrito-offcanvas">
   <div
@@ -337,3 +338,218 @@
     window.carritoManager = new CarritoManager();
   </script>
 </div>
+=======
+<div th:fragment="carrito-offcanvas">
+  
+  <style>
+    /* Estilos para los botones de cantidad (+ / -) */
+    .btn-qty {
+        background-color: #222;
+        border: 1px solid #444;
+        color: white;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-weight: bold;
+    }
+    .btn-qty:hover {
+        border-color: #FFD700;
+        color: #FFD700;
+    }
+    .qty-display {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: white;
+        min-width: 20px;
+        text-align: center;
+    }
+  </style>
+
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCarrito" aria-labelledby="offcanvasLabel" 
+       style="background-color: #000; border-left: 1px solid #333; color: white;">
+    
+    <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
+      <h5 class="offcanvas-title fw-bold text-uppercase" id="offcanvasLabel" style="color: #FFD700;">
+        <i class="bi bi-cart-fill me-2"></i> TU CESTA
+      </h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body p-0 d-flex flex-column">
+      
+      <div id="carrito-items-container" class="flex-grow-1 overflow-auto p-3">
+         <p class="text-center text-muted mt-5">Tu carrito está vacío.</p>
+      </div>
+
+      <div class="p-3 bg-dark border-top border-secondary border-opacity-25">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-white small text-uppercase fw-bold">Total Estimado</span>
+          <span class="fs-4 fw-bold" id="carrito-total-monto" style="color: #FFD700;">S/. 0.00</span>
+        </div>
+        
+        <div class="d-grid gap-2">
+          <button onclick="irAPagar()" class="btn fw-bold text-uppercase" 
+                  style="background-color: #FFD700; color: black; border: none; padding: 12px;">
+             PROCESAR COMPRA <i class="bi bi-arrow-right-short"></i>
+          </button>
+          
+          <button onclick="limpiarCarrito()" class="btn btn-outline-secondary btn-sm text-uppercase">
+             Vaciar Carrito
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+
+    const CART_KEY = 'mambo_carrito_temporal';
+
+    // 1. Agregar Producto
+    function agregarAlCarritoTemporal(producto) {
+        let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        
+        const existente = carrito.find(item => item.varianteId === producto.varianteId);
+        
+        if (existente) {
+            existente.cantidad += 1;
+        } else {
+            carrito.push(producto);
+        }
+        
+        localStorage.setItem(CART_KEY, JSON.stringify(carrito));
+        
+        if(typeof mostrarNotificacion === 'function') mostrarNotificacion("¡Agregado a la cesta!", "success");
+        if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+        abrirCarritoUI();
+    }
+
+    // 2. Renderizar (Dibujar) el Carrito CON BOTONES +/-
+    // 2. Renderizar (Dibujar) el Carrito con PRECIO UNITARIO y SUBTOTAL
+    function renderizarCarrito() {
+        const container = document.getElementById('carrito-items-container');
+        const totalSpan = document.getElementById('carrito-total-monto');
+        const carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        
+        container.innerHTML = '';
+        let totalGeneral = 0;
+
+        if (carrito.length === 0) {
+            container.innerHTML = `
+                <div class="text-center mt-5" style="opacity: 0.5;">
+                    <i class="bi bi-cart-x" style="font-size: 3rem; color: #555;"></i>
+                    <p class="mt-3 text-muted">No has agregado productos.</p>
+                </div>`;
+            totalSpan.innerText = 'S/. 0.00';
+            return;
+        }
+
+        carrito.forEach((item, index) => {
+            // Cálculos
+            const precioUnitario = parseFloat(item.precio);
+            const subtotalItem = precioUnitario * item.cantidad;
+            totalGeneral += subtotalItem;
+
+            container.innerHTML += `
+                <div class="d-flex align-items-center mb-3 p-2 border border-secondary border-opacity-25 rounded" style="background: #111;">
+                    <img src="${item.imagen || 'https://via.placeholder.com/60'}" 
+                         style="width: 60px; height: 75px; object-fit: cover; border-radius: 4px;">
+                    
+                    <div class="ms-3 flex-grow-1">
+                        <h6 class="mb-1 text-white text-uppercase" style="font-size: 0.85rem; font-weight: 700;">${item.nombre}</h6>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <div class="text-muted small">
+                                Talla: <span class="text-white fw-bold">${item.talla}</span>
+                            </div>
+                            
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn-qty" 
+                                        onclick="cambiarCantidad(${index}, -1)"
+                                        ${item.cantidad === 1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>-</button>
+                                <span class="qty-display">${item.cantidad}</span>
+                                <button class="btn-qty" onclick="cambiarCantidad(${index}, 1)">+</button>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 pt-2 border-top border-secondary border-opacity-10 d-flex justify-content-between align-items-end">
+                            <div class="text-muted" style="font-size: 0.75rem;">
+                                Unit: S/. ${precioUnitario.toFixed(2)}
+                            </div>
+                            <div style="color: #FFD700; font-weight: 800; font-size: 0.95rem;">
+                                Total: S/. ${subtotalItem.toFixed(2)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="eliminarItem(${index})" class="btn btn-link text-danger p-0 ms-2 align-self-start">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            `;
+        });
+
+        totalSpan.innerText = 'S/. ' + totalGeneral.toFixed(2);
+    }
+    function cambiarCantidad(index, cambio) {
+        let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        
+        if (carrito[index]) {
+            const nuevaCantidad = carrito[index].cantidad + cambio;
+
+            if (nuevaCantidad < 1) {
+                return;
+            }
+            carrito[index].cantidad = nuevaCantidad;
+        }
+
+        // Guardar y Refrescar
+        localStorage.setItem(CART_KEY, JSON.stringify(carrito));
+        renderizarCarrito();
+        
+        // Actualizar el numerito del navbar si existe esa función
+        if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+    }
+
+    // 4. Funciones Auxiliares
+    function abrirCarritoUI() {
+        renderizarCarrito();
+        const offcanvasEl = document.getElementById('offcanvasCarrito');
+        // Verificar si bootstrap está definido
+        if (typeof bootstrap !== 'undefined') {
+            const offcanvas = new bootstrap.Offcanvas(offcanvasEl);
+            offcanvas.show();
+        }
+    }
+
+    function eliminarItem(index) {
+        let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        carrito.splice(index, 1);
+        localStorage.setItem(CART_KEY, JSON.stringify(carrito));
+        renderizarCarrito();
+        if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+    }
+
+    function limpiarCarrito() {
+        localStorage.removeItem(CART_KEY);
+        renderizarCarrito();
+        if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+    }
+
+    function irAPagar() {
+        let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        if(carrito.length === 0) {
+            alert("El carrito está vacío");
+            return;
+        }
+        window.location.href = "/checkout"; 
+    }
+  </script>
+</div>
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372

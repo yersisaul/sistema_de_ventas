@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* 🔥 ESTILOS SIMPLIFICADOS PARA PRODUCTOS MAMBO */
 
 :root {
@@ -375,3 +376,168 @@ body {
 .empty-products i {
   color: rgba(255, 215, 0, 0.3);
 }
+=======
+  
+
+    /* ================= TEMA BLACK & YELLOW MAMBO ================= */
+    :root {
+        --bg-body: #000000;       /* Negro puro */
+        --bg-card: #111111;       /* Gris carbón muy oscuro */
+        --accent-primary: #FFD700; /* Amarillo Oro (Principal) */
+        --accent-secondary: #00c6ff; /* Azul Cian (Detalles sutiles) */
+        --text-main: #ffffff;
+        --text-muted: #888888;
+        --border-color: #222222;
+    }
+
+    body {
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* === DISEÑO DE TARJETAS (CARDS) === */
+    .card-clean {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 0px; /* Bordes más rectos, estilo industrial */
+        transition: all 0.3s ease;
+    }
+
+    .card-clean:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(255, 215, 0, 0.15); /* Resplandor amarillo */
+        border-color: var(--accent-primary);
+    }
+
+    /* Corrección de Imágenes en Cards */
+    .card-img-wrapper {
+        position: relative;
+        width: 100%;
+        padding-top: 133%; /* Ratio 3:4 */
+        background-color: #050505;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-img-wrapper img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+        filter: grayscale(20%); /* Un toque desaturado inicial */
+    }
+
+    .card-clean:hover .card-img-wrapper img {
+        transform: scale(1.03);
+        filter: grayscale(0%); /* Color completo al hover */
+    }
+
+    /* === PRECIOS Y TEXTOS === */
+    .price-tag {
+        color: var(--accent-primary);
+        font-weight: 800;
+        letter-spacing: 0.5px;
+    }
+
+    .text-muted { color: var(--text-muted) !important; }
+
+    /* === BOTONES === */
+    .btn-mambo {
+        background-color: transparent;
+        border: 2px solid var(--accent-primary);
+        color: var(--accent-primary);
+        transition: all 0.3s;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        border-radius: 0px; /* Botones rectos */
+    }
+
+    .btn-mambo:hover {
+        background-color: var(--accent-primary);
+        color: #000; /* Texto negro sobre fondo amarillo */
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+    }
+
+    /* === SIDEBAR Y INPUTS === */
+    .filter-card {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+    }
+
+    .form-control {
+        background-color: #0a0a0a;
+        border: 1px solid #333;
+        color: white;
+        border-radius: 4px;
+    }
+
+    .form-control:focus {
+        background-color: #141414;
+        border-color: var(--accent-primary);
+        color: white;
+        box-shadow: none;
+    }
+    
+    .form-control::placeholder { color: #555; text-transform: uppercase; font-size: 0.8rem;}
+
+    .input-group-text {
+        background-color: #0a0a0a;
+        border: 1px solid #333;
+        color: var(--accent-primary);
+    }
+
+    /* === SELECTOR DE TALLAS (MODAL Y FILTRO) === */
+    .talla-selector input[type="radio"] { display: none; }
+    
+    .talla-selector label { 
+        cursor: pointer; transition: 0.2s; user-select: none; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-weight: bold; 
+        border-radius: 4px;
+        border: 2px solid #333; color: #888; background: #0a0a0a;
+    }
+    
+    .talla-selector input:checked + label { 
+        background-color: var(--accent-primary); color: #000; border-color: var(--accent-primary);
+    }
+    
+    .talla-selector input:disabled + label { 
+        background-color: #050505; color: #333; border-color: #222; cursor: not-allowed; text-decoration: line-through; 
+    }
+
+    /* Badges de filtro */
+    .talla-badge { 
+        cursor: pointer; user-select: none; padding: 8px 15px; 
+        border: 1px solid #333; border-radius: 4px; background: #0a0a0a; color: #888;
+        transition: 0.2s;
+    }
+    .talla-badge:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+    .talla-badge.active { 
+        background-color: var(--accent-primary) !important; color: black !important; border-color: var(--accent-primary) !important; font-weight: bold;
+    }
+
+    /* === MODAL OSCURO === */
+    .modal-content {
+        background-color: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color);
+    }
+    .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+    .modal-backdrop.show { opacity: 0.85; }
+
+    /* Checkboxes y Switches */
+    .form-check-input {
+        background-color: #0a0a0a; border-color: #444;
+    }
+    .form-check-input:checked {
+        background-color: var(--accent-primary); border-color: var(--accent-primary);
+    }
+    .form-switch .form-check-input { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23888'/%3e%3c/svg%3e"); }
+    .form-switch .form-check-input:checked { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23000'/%3e%3c/svg%3e"); }
+
+    /* Enlaces secundarios (Azul) */
+    .link-secondary-accent { color: var(--text-muted); text-decoration: none; transition: 0.2s;}
+    .link-secondary-accent:hover { color: var(--accent-secondary); }
+  
+>>>>>>> cc30f5e6f57c3705956f6194548fbe3316ff0372

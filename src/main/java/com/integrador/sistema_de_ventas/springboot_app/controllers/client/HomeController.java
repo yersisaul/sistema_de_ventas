@@ -1,6 +1,5 @@
 package com.integrador.sistema_de_ventas.springboot_app.controllers.client;
 
-import com.integrador.sistema_de_ventas.springboot_app.models.Categoria;
 import com.integrador.sistema_de_ventas.springboot_app.models.Producto;
 import com.integrador.sistema_de_ventas.springboot_app.services.CategoriaService;
 import com.integrador.sistema_de_ventas.springboot_app.services.ProductoService;
@@ -14,9 +13,6 @@ import java.util.List;
 @RequestMapping("/api/client/home")
 @CrossOrigin(origins = "*")
 public class HomeController {
-    
-    @Autowired
-    private CategoriaService categoriaService;
     
     @Autowired
     private ProductoService productoService;

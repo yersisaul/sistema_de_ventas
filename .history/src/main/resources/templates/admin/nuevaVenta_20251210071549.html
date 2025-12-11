@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nueva Venta - MAMBO</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/admin/nuevaVenta.css}" />
+  <link rel="stylesheet" th:href="@{/css/admin/navbar.css}" />
+
+</head>
+
+<body>
+  <!-- 🔹 NAVBAR LATERAL -->
+  <div th:replace="admin/fragments/navbar :: navbar"></div>
+
+  <!-- 🔹 CONTENIDO PRINCIPAL -->
+  <main class="main-content">
+    <div class="container-fluid">
+      <!-- 🔸 Encabezado con navegación -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <div class="d-flex align-items-center">
+            <button class="btn btn-dark d-md-none me-3" type="button" data-bs-toggle="offcanvas"
+              data-bs-target="#sidebarOffcanvas">
+              <i class="bi bi-list fs-4"></i>
+            </button>
+            <div>
+              <h4 style="font-weight:800">NUEVA VENTA</h4>
+              <p class="text-secondary m-0">Complete los datos para generar el comprobante</p>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <a th:href="@{/admin/ventas}" class="btn btn-outline-mambo">
+            <i class="bi bi-arrow-left me-2"></i>Cancelar
+          </a>
+          <button id="btnGenerar" class="btn btn-mambo">
+            <i class="bi bi-check-circle me-2"></i>Generar Venta
+          </button>
+        </div>
+      </div>
+
+      <!-- 🔸 Cabecera del comprobante -->
+      <div class="comprobante-header">
+        <div class="row align-items-center">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <h6 class="text-light mb-2">TIPO DE COMPROBANTE</h6>
+            <div class="switch-comprobante">
+              <input type="radio" id="boleta" name="tipoComprobante" checked>
+              <label for="boleta">
+                <i class="bi bi-receipt me-2"></i>BOLETA
+              </label>
+              
+              <input type="radio" id="factura" name="tipoComprobante">
+              <label for="factura">
+                <i class="bi bi-file-text me-2"></i>FACTURA
+              </label>
+            </div>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <h6 class="text-light mb-2">NÚMERO DE COMPROBANTE</h6>
+            <div class="numero-comprobante">B001-00000001</div>
+            <small class="text-light opacity-75" id="fechaComprobanteTexto">Fecha: 26/12/2024 - Hora: 14:30</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔸 Sección de datos del cliente -->
+      <div class="row mb-4">
+        <div class="col-lg-8">
+          <div class="datos-cliente-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold mb-0">DATOS DEL CLIENTE</h6>
+              <button class="btn btn-sm btn-outline-mambo" data-bs-toggle="modal" data-bs-target="#modalClientes">
+                <i class="bi bi-search me-1"></i>Buscar Cliente
+              </button>
+            </div>
+            
+            <div class="cliente-seleccionado mb-3">
+              <div>
+                <h6 class="fw-bold mb-1">CLIENTE OCASIONAL</h6>
+                <p class="text-muted mb-0">Seleccione un cliente o ingrese los datos manualmente</p>
+              </div>
+              <button class="btn btn-outline-danger btn-sm" id="btnQuitarCliente">
+                <i class="bi bi-x"></i>
+              </button>
+            </div>
+            
+            <!-- Formulario cliente (oculto inicialmente) -->
+            <div id="formCliente" style="display: none;">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Nombre Completo *</label>
+                  <input type="text" class="form-control" placeholder="Ej: Juan Pérez">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Documento *</label>
+                  <select class="form-select" id="tipoDocumento">
+                    <option value="dni">DNI</option>
+                    <option value="ce">Carnet de Extranjería</option>
+                    <option value="pasaporte">Pasaporte</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Número de Documento *</label>
+                  <input type="text" class="form-control" placeholder="Ej: 70123456">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Email (opcional)</label>
+                  <input type="email" class="form-control" placeholder="cliente@email.com">
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label fw-semibold">Dirección (opcional)</label>
+                  <input type="text" class="form-control" placeholder="Av. Ejemplo 123">
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label fw-semibold">Teléfono (opcional)</label>
+                  <input type="text" class="form-control" placeholder="+51 987654321">
+                </div>
+              </div>
+            </div>
+            
+            <!-- Datos para factura (solo se muestra cuando es factura) -->
+            <div id="datosFactura" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #dee2e6;">
+              <h6 class="fw-bold mb-3">DATOS PARA FACTURA</h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">RUC *</label>
+                  <input type="text" class="form-control" placeholder="Ej: 20123456789">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Razón Social *</label>
+                  <input type="text" class="form-control" placeholder="Nombre de la empresa">
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label fw-semibold">Dirección Fiscal *</label>
+                  <textarea class="form-control" rows="2" placeholder="Dirección completa para facturación"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 mt-3 mt-lg-0">
+          <div class="card h-100">
+            <div class="card-body">
+              <h6 class="fw-bold mb-3">DATOS DE LA VENTA</h6>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Fecha</label>
+                <input type="datetime-local" 
+                      class="form-control" 
+                      id="fechaVenta"
+                      readonly>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Vendedor</label>
+                <select class="form-select">
+                  <option>Administrador</option>
+                  <option>Vendedor 1</option>
+                  <option>Vendedor 2</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Método de Pago</label>
+                <select class="form-select" id="metodoPago">
+                  <option value="efectivo">Efectivo</option>
+                  <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                  <option value="yape">Yape/Plin</option>
+                  <option value="transferencia">Transferencia</option>
+                  <option value="mixto">Mixto</option>
+                </select>
+              </div>
+              <div id="campoVuelto" style="display: none;">
+                <label class="form-label fw-semibold">Monto Recibido</label>
+                <input type="number" class="form-control" placeholder="0.00" step="0.01">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔸 Productos -->
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0">PRODUCTOS</h6>
+                <button class="btn btn-mambo" data-bs-toggle="modal" data-bs-target="#modalProductos">
+                  <i class="bi bi-plus-circle me-1"></i>Agregar Productos
+                </button>
+              </div>
+              
+              <!-- Lista de productos (se llenará dinámicamente) -->
+              <div id="listaProductos"></div>
+              
+              <!-- Mensaje si no hay productos -->
+              <div id="sinProductos" class="text-center py-5">
+                <i class="bi bi-cart-x fs-1 text-muted mb-3 d-block"></i>
+                <h6 class="fw-bold mb-2">No hay productos agregados</h6>
+                <p class="text-muted mb-3">Agrega productos para generar la venta</p>
+                <button class="btn btn-mambo" data-bs-toggle="modal" data-bs-target="#modalProductos">
+                  <i class="bi bi-plus-circle me-2"></i>Agregar Productos
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Observaciones -->
+          <div class="card">
+            <div class="card-body">
+              <h6 class="fw-bold mb-3">OBSERVACIONES</h6>
+              <textarea class="form-control" rows="3" placeholder="Ingrese observaciones adicionales sobre la venta..."></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 🔸 Panel de resumen -->
+        <div class="col-lg-4">
+          <div class="resumen-panel">
+            <h6 class="fw-bold mb-4">RESUMEN DE VENTA</h6>
+            
+            <div class="resumen-linea">
+              <span>Subtotal:</span>
+              <strong id="subtotal">S/. 210.00</strong>
+            </div>
+            
+            <div class="resumen-linea">
+              <span>Descuento:</span>
+              <div class="d-flex align-items-center gap-2">
+                <input type="number" class="form-control form-control-sm" style="width: 80px;" value="0.00" step="0.01" id="descuento">
+                <select class="form-select form-select-sm" style="width: 80px;" id="tipoDescuento">
+                  <option value="fijo">S/.</option>
+                  <option value="porcentaje">%</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="resumen-linea">
+              <span>IGV (18%):</span>
+              <strong id="igv">S/. 37.80</strong>
+            </div>
+            
+            <div class="resumen-total">
+              <span>TOTAL:</span>
+              <span id="total">S/. 247.80</span>
+            </div>
+            
+            <!-- Información de pago -->
+            <div id="infoPago" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+              <h6 class="fw-bold mb-3">INFORMACIÓN DE PAGO</h6>
+              <div class="mb-2">
+                <span class="text-muted">Método:</span>
+                <strong id="metodoPagoTexto">Efectivo</strong>
+              </div>
+              <div id="infoVuelto" style="display: none;">
+                <div class="mb-2">
+                  <span class="text-muted">Recibido:</span>
+                  <strong id="montoRecibido">S/. 0.00</strong>
+                </div>
+                <div class="mb-2">
+                  <span class="text-muted">Vuelto:</span>
+                  <strong id="vuelto" class="text-success">S/. 0.00</strong>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="mt-4 d-grid gap-2">
+              <button id="btnGuardar" class="btn btn-mambo btn-lg">
+                <i class="bi bi-save me-2"></i>Guardar Venta
+              </button>
+              <button id="btnImprimir" class="btn btn-outline-mambo">
+                <i class="bi bi-printer me-2"></i>Guardar e Imprimir
+              </button>
+            </div>
+            
+            <!-- Estado de la venta -->
+            <div class="mt-3 text-center">
+              <span class="badge bg-success">Venta activa</span>
+              <small class="d-block text-muted mt-1">La venta se registrará en el sistema</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- 🔸 Modal Buscar Cliente -->
+  <div class="modal fade" id="modalClientes" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title">Seleccionar Cliente</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group mb-3">
+            <input type="text" id="inputBuscarCliente" class="form-control" placeholder="Buscar por nombre, documento...">
+            <button class="btn btn-dark" id="btnBuscarCliente"><i class="bi bi-search"></i></button>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Documento</th>
+                  <th>Email</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="tablaClientesBody">
+                <tr th:each="cliente : ${clientes}">
+                  <td>
+                    <strong th:text="${cliente.nombreCompleto}">Juan Pérez</strong><br>
+                    <small>Cliente</small>
+                  </td>
+                  <td th:text="${cliente.documentoFormateado}">DNI: 70123456</td>
+                  <td th:text="${cliente.correo}">juan@email.com</td>
+                  <td>
+                    <button class="btn btn-sm btn-dark seleccionar-cliente" 
+                            th:attr="data-id=${cliente.id},
+                                    data-nombre=${cliente.nombreCompleto},
+                                    data-documento=${cliente.nIdentificacion},
+                                    data-tipo-doc=${cliente.tipoIdentificacion},
+                                    data-email=${cliente.correo},
+                                    data-telefono=${cliente.telefono != null ? cliente.telefono : ''},
+                                    data-direccion=${cliente.direccion != null ? cliente.direccion : ''}">
+                      Seleccionar
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-dark" id="btnClienteNuevo">
+            <i class="bi bi-person-plus me-2"></i>Nuevo Cliente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔸 Modal Buscar Productos -->
+  <div class="modal fade" id="modalProductos" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title">Seleccionar Productos</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Buscar por nombre, SKU...">
+                <button class="btn btn-dark"><i class="bi bi-search"></i></button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select">
+                <option>Todas las categorías</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- ⬇️ Aquí se cargarán los productos con JavaScript -->
+          <div class="row" id="listaModalProductos">
+            <div class="col-12 text-center py-5">
+              <p class="text-muted">Haz clic en "Agregar Productos" para cargar</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-dark" data-bs-dismiss="modal">
+            <i class="bi bi-check-circle me-2"></i>Continuar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 🖨️ MODAL DE IMPRESIÓN -->
+  <div class="modal fade" id="modalImpresion" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-printer me-2"></i>Comprobante de Venta
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="contenidoImpresion">
+          <div class="text-center py-5">
+            <div class="spinner-border text-dark" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3">Cargando comprobante...</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-2"></i>Cerrar
+          </button>
+          <button type="button" class="btn btn-dark" id="btnImprimirModal">
+            <i class="bi bi-printer me-2"></i>Imprimir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script th:src="@{/js/nuevaVenta.js}"></script>
+</body>
+</html>

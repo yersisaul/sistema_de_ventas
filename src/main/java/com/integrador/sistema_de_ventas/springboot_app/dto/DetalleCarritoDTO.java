@@ -10,10 +10,5 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class DetalleCarritoDTO {
     private Long varianteProductoId;
-    private String nombreProducto;
-    private String talla;
-    private String color;
     private Integer cantidad;
-    private BigDecimal precioUnitario;
-    private BigDecimal subtotal;
 }
