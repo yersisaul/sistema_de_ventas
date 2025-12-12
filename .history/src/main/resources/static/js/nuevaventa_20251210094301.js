@@ -677,11 +677,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const tipoComprobante = document.getElementById('boleta').checked ? 'BOLETA' : 'FACTURA';
     const totales = calcularTotales();
-    console.log('📊 Totales calculados:');
-    console.log('  - Subtotal (sin IGV):', totales.subtotal);
-    console.log('  - Impuestos (IGV):', totales.impuestos);
-    console.log('  - Total (con IGV):', totales.total);
-    console.log('  - Descuento:', totales.descuento);
     // Preparar datos
     const pedidoData = {
       clienteId: parseInt(clienteId),

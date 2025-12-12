@@ -62,9 +62,11 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setTelefonoContacto(pedidoDTO.getTelefonoContacto());
         pedido.setNotas(pedidoDTO.getNotas());
         
+        // ⬇️⬇️⬇️ USAR VALORES DEL DTO (ya calculados correctamente en el frontend) ⬇️⬇️⬇️
         pedido.setSubtotal(pedidoDTO.getSubtotal());
         pedido.setImpuestos(pedidoDTO.getImpuestos());
         pedido.setTotal(pedidoDTO.getTotal());
+        // ⬆️⬆️⬆️ NO RECALCULAR ⬆️⬆️⬆️
         
         // Tipo de comprobante
         String tipoComprobante = pedidoDTO.getTipoComprobante() != null ? 
