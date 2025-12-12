@@ -19,4 +19,5 @@ public class PedidoCreateDTO {
     private String telefonoContacto;
     private String notas;
     private String tipoComprobante;
+    private String metodoPago;
 }

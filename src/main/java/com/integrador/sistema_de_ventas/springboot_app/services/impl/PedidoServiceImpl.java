@@ -1,16 +1,20 @@
 package com.integrador.sistema_de_ventas.springboot_app.services.impl;
 
+import com.integrador.sistema_de_ventas.springboot_app.dto.PagoCreateDTO;
 import com.integrador.sistema_de_ventas.springboot_app.dto.PedidoCreateDTO;
 import com.integrador.sistema_de_ventas.springboot_app.dto.PedidoDTO;
 import com.integrador.sistema_de_ventas.springboot_app.models.DetallePedido;
+import com.integrador.sistema_de_ventas.springboot_app.models.Pago;
 import com.integrador.sistema_de_ventas.springboot_app.models.Pedido;
 import com.integrador.sistema_de_ventas.springboot_app.models.Usuario;
 import com.integrador.sistema_de_ventas.springboot_app.models.VarianteProducto;
 import com.integrador.sistema_de_ventas.springboot_app.repository.DetallePedidoRepository;
+import com.integrador.sistema_de_ventas.springboot_app.repository.PagoRepository;
 import com.integrador.sistema_de_ventas.springboot_app.repository.PedidoRepository;
 import com.integrador.sistema_de_ventas.springboot_app.repository.UsuarioRepository;
 import com.integrador.sistema_de_ventas.springboot_app.repository.VarianteProductoRepository;
 import com.integrador.sistema_de_ventas.springboot_app.services.ComprobanteGeneratorService;
+import com.integrador.sistema_de_ventas.springboot_app.services.PagoService;
 import com.integrador.sistema_de_ventas.springboot_app.services.PedidoService;
 
 import org.aspectj.weaver.ast.Var;
@@ -41,6 +45,9 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Autowired
     private ComprobanteGeneratorService comprobanteGenerator;
+
+    @Autowired
+    private PagoService pagoService;
     
     @Override
     public Pedido crearPedido(PedidoCreateDTO pedidoDTO) {
@@ -98,6 +105,12 @@ public class PedidoServiceImpl implements PedidoService {
         for (DetallePedido detalle : detalles){
             DetallePedido detalle_guardado = detallePedidoRepository.save(detalle); // Guardar cada detalle del pedido
         }
+
+        Pago pago = new Pago();
+        pago.setPedido(pedido_guardado);
+        pago.setMetodoPago(pedidoDTO.getMetodoPago());
+        pago.setMonto(pedido_guardado.getTotal());
+        pagoService.crearPago(pago);      
         return pedido_guardado;
     }
     

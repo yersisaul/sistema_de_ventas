@@ -1,12 +1,8 @@
 package com.integrador.sistema_de_ventas.springboot_app.services.impl;
-<<<<<<< HEAD
 import com.integrador.sistema_de_ventas.springboot_app.exception.BadRequestException;
 import com.integrador.sistema_de_ventas.springboot_app.exception.ResourceNotFoundException;
-import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioCreateDTO;
-=======
-
 import com.integrador.sistema_de_ventas.springboot_app.dto.ClienteDTO;
->>>>>>> c7f0a7c3c255bc5c87d2f6cfd406cbbc01c662ae
+import com.integrador.sistema_de_ventas.springboot_app.dto.UsuarioCreateDTO;
 import com.integrador.sistema_de_ventas.springboot_app.models.Usuario;
 import com.integrador.sistema_de_ventas.springboot_app.repository.UsuarioRepository;
 import com.integrador.sistema_de_ventas.springboot_app.services.UsuarioService;
@@ -19,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -134,10 +129,22 @@ public class UsuarioServiceImpl implements UsuarioService {
     public List<ClienteDTO> obtenerClientesDTO() {
         // Obtener clientes activos usando el método del repositorio
         List<Usuario> clientes = usuarioRepository.findByRolAndEstadoAndEliminadoFalse("CLIENTE", true);
-        
+        ClienteDTO clienteDTO = new ClienteDTO();
+        for (Usuario cliente : clientes) {
+            clienteDTO.setNombre(cliente.getNombres());
+            clienteDTO.setApellidos(cliente.getApellidos());
+            clienteDTO.setNIdentificacion(cliente.getNIdentificacion());
+            clienteDTO.setCorreo(cliente.getCorreo());
+        }
         // Convertir a ClienteDTO usando el constructor
         return clientes.stream()
                 .map(ClienteDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UsuarioResponseDTO> obtenerUsuariosPorRolDTO(String rol) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'obtenerUsuariosPorRolDTO'");
     }
 }

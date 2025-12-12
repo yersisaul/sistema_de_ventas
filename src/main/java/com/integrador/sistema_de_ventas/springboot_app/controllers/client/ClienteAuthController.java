@@ -51,14 +51,14 @@ public class ClienteAuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registrarCliente(@RequestBody UsuarioCreateDTO createDTO) {
+    public ResponseEntity<?> registrarCliente(@RequestBody Usuario usuario) {
         try {
-            UsuarioResponseDTO nuevoClienteDTO = usuarioService.crearCliente(createDTO);
+            Usuario nuevoClienteDTO = usuarioService.crearUsuario(usuario);
             LoginResponse response = new LoginResponse(
-                    nuevoClienteDTO.getIdUsuario(),
-                    nuevoClienteDTO.getNombre(),
-                    nuevoClienteDTO.getApellidoPaterno(),
-                    nuevoClienteDTO.getNumeroDocumento(),
+                    nuevoClienteDTO.getId(),
+                    nuevoClienteDTO.getNombres(),
+                    nuevoClienteDTO.getApellidos(),
+                    nuevoClienteDTO.getNIdentificacion(),
                     nuevoClienteDTO.getCorreo(),
                     "CLIENTE",
                     "Cliente registrado exitosamente");

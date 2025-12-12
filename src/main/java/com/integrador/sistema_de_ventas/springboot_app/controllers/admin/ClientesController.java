@@ -35,7 +35,7 @@ public class ClientesController {
     public ResponseEntity<?> obtenerClientePorId(@PathVariable Long id) {
         try {
             // 💡 Cambio 4: Usamos un método que ya devuelve el DTO y maneja la validación de rol
-            UsuarioResponseDTO clienteDTO = usuarioService.obtenerClienteDTO(id);
+            Optional<Usuario> clienteDTO = usuarioService.obtenerUsuarioPorId(id);
             return ResponseEntity.ok(clienteDTO);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
@@ -47,9 +47,9 @@ public class ClientesController {
     @PutMapping("/{id}/update")
 public ResponseEntity<?> actualizarCliente(
         @PathVariable Long id,
-        @RequestBody UsuarioCreateDTO dto) {
+        @RequestBody Usuario usuario) {
     try {
-        UsuarioResponseDTO actualizado = usuarioService.actualizarCliente(id, dto);
+        Usuario actualizado = usuarioService.actualizarUsuario(id, usuario);
         return ResponseEntity.ok(actualizado);
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -80,8 +80,8 @@ public ResponseEntity<?> actualizarCliente(
     }
 
     @PostMapping("/create")
-    public ResponseEntity<UsuarioResponseDTO> crearCliente(@RequestBody UsuarioCreateDTO dto) {
-        UsuarioResponseDTO nuevo = usuarioService.crearCliente(dto);
+    public ResponseEntity<Usuario> crearCliente(@RequestBody Usuario usuario) {
+        Usuario nuevo = usuarioService.crearUsuario(usuario);
         return ResponseEntity.ok(nuevo);
     }
 
