@@ -1,14 +1,20 @@
 package com.integrador.sistema_de_ventas.springboot_app.controllers.client;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.integrador.sistema_de_ventas.springboot_app.dto.LoginRequest;
 import com.integrador.sistema_de_ventas.springboot_app.dto.LoginResponse;
 import com.integrador.sistema_de_ventas.springboot_app.models.Usuario;
 import com.integrador.sistema_de_ventas.springboot_app.services.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/client/auth")
@@ -22,21 +28,29 @@ public class ClienteAuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
             if (usuarioService.validarCredenciales(loginRequest.getNIdentificacion(), loginRequest.getContrasena())) {
-                Optional<Usuario> usuario = usuarioService.obtenerUsuarioPorIdentificacion(loginRequest.getNIdentificacion());
-                if (usuario.isPresent() && "CLIENTE".equals(usuario.get().getRol())) {
-                    LoginResponse response = new LoginResponse(
-                        usuario.get().getId(),
-                        usuario.get().getNombres(),
-                        usuario.get().getApellidos(),
-                        usuario.get().getNIdentificacion(),
-                        usuario.get().getCorreo(),
-                        usuario.get().getRol(),
-                        "Login exitoso"
-                    );
-                    return ResponseEntity.ok(response);
+                Optional<Usuario> usuarioOpt = usuarioService.obtenerUsuarioPorIdentificacion(loginRequest.getNIdentificacion());
+                
+                // CORREGIDO: Usamos el Enum para la comparación
+                if (usuarioOpt.isPresent()) {
+                    Usuario usuario = usuarioOpt.get();
+                    
+                    if (usuario.getRol() == Usuario.Rol.CLIENTE) {
+                        LoginResponse response = new LoginResponse(
+                            usuario.getId(),
+                            usuario.getNombres(),
+                            usuario.getApellidos(),
+                            usuario.getNIdentificacion(),
+                            usuario.getCorreo(),
+                            usuario.getRol().toString(), // CORREGIDO: Convertimos Enum a String
+                            "Login exitoso"
+                        );
+                        return ResponseEntity.ok(response);
+                    } else {
+                        // Si existe pero no es CLIENTE (ej: es un admin intentando loguearse como cliente)
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body(new LoginResponse(null, null, null, null, null, null, "Acceso denegado: No es cuenta de cliente"));
+                    }
                 }
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new LoginResponse(null, null, null, null, null, null, "Acceso denegado"));
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new LoginResponse(null, null, null, null, null, null, "Credenciales inválidas"));
@@ -49,8 +63,11 @@ public class ClienteAuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registrarCliente(@RequestBody Usuario usuario) {
         try {
-            usuario.setRol("CLIENTE");
+            // CORREGIDO: Usamos el Enum para asignar el rol
+            usuario.setRol(Usuario.Rol.CLIENTE);
+            
             Usuario nuevoCliente = usuarioService.crearUsuario(usuario);
+            
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new LoginResponse(
                     nuevoCliente.getId(),
@@ -58,7 +75,7 @@ public class ClienteAuthController {
                     nuevoCliente.getApellidos(),
                     nuevoCliente.getNIdentificacion(),
                     nuevoCliente.getCorreo(),
-                    nuevoCliente.getRol(),
+                    nuevoCliente.getRol().toString(), // CORREGIDO: Convertimos Enum a String
                     "Cliente registrado exitosamente"
                 ));
         } catch (Exception e) {

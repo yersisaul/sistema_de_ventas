@@ -10,9 +10,12 @@ public interface UsuarioService {
     Optional<Usuario> obtenerUsuarioPorCorreo(String correo);
     Optional<Usuario> obtenerUsuarioPorIdentificacion(String nIdentificacion);
     List<Usuario> obtenerTodosLosUsuarios();
-    List<Usuario> obtenerUsuariosPorRol(String rol);
+    
+    // Aquí usamos el Enum
+    List<Usuario> obtenerUsuariosPorRol(Usuario.Rol rol);
     List<Usuario> obtenerUsuariosActivos();
-    Usuario actualizarUsuario(Long id, Usuario usuario);
+    
+    Usuario actualizarUsuario(Long id, Usuario usuarioActualizado);
     void desactivarUsuario(Long id);
     void eliminarUsuario(Long id);
     Boolean validarCredenciales(String nIdentificacion, String contrasena);

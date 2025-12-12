@@ -15,221 +15,100 @@
 </head>
 
 <body>
-  <!-- 🔹 NAVBAR LATERAL -->
   <div th:replace="admin/fragments/navbar :: navbar"></div>
 
-  <!-- 🔹 CONTENIDO PRINCIPAL -->
   <main class="main-content p-4">
     <div class="container-fluid">
-      <!-- 🔸 Título y barra de búsqueda -->
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-1">
+      
+      <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <div class="d-flex flex-row align-content-center mb-3 align">
-            <!-- BOTÓN TOGGLE SOLO EN PANTALLAS PEQUEÑAS -->
-            <button class="btn btn-dark d-md-none top-0 start-0 me-3 z-3" type="button" data-bs-toggle="offcanvas"
-              data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
-              <i class="bi bi-list fs-4"></i>
-            </button>
-            <div class="flex-column">
-              <h4 style="font-weight:800">ENTREGAS MAMBO</h4>
-              <p class="text-secondary m-0 text-center">Lista de clientes de la tienda MAMBO</p>
-
-            </div>
-
-          </div>
-          <hr class="p-2 d-md-none">
-
-          <!-- 🔽 EN PANTALLAS PEQUEÑAS: BUSCADOR Y BOTÓN DEBAJO -->
-          <div class="d-flex flex-column flex-sm-row gap-2 d-md-none">
-            <div class="busqueda search-box position-relative w-100">
-              <input type="text" class="buscador form-control rounded-2 ps-4" placeholder="Buscar por documento..." />
-              <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
-            </div>
-          </div>
+          <h4 style="font-weight:800">ENTREGAS MAMBO</h4>
+          <p class="text-secondary m-0">Gestión de pedidos y despachos</p>
         </div>
-
-        <!-- 💻 EN PANTALLAS GRANDES: BUSCADOR Y BOTÓN EN FILA -->
-
       </div>
 
-    </div>
-
-    <!-- 🔸 Filtros -->
-    <div class="d-flex align-items-center justify-content-start gap-3 flex-wrap filtros-bar">
-      <!-- Filtro: Estado de entrega -->
-      <div>
-        <label class="fw-semibold small mb-1">Estado de entrega</label>
-        <div class="custom-select position-relative">
-          <select class="form-select rounded-2 filtro-select">
-            <option>Todos</option>
-            <option>Entregado</option>
-            <option>Pendiente</option>
-            <option>Cancelado</option>
+      <div class="d-flex align-items-center justify-content-start gap-3 flex-wrap filtros-bar mb-4">
+        <div>
+          <label class="fw-semibold small mb-1">Estado</label>
+          <select class="form-select rounded-2 filtro-select" id="filtroEstado">
+            <option value="todos">Todos</option>
+            <option value="COMPLETADO">Completado</option>
+            <option value="PENDIENTE">Pendiente</option>
+            <option value="CANCELADO">Cancelado</option>
           </select>
-          <i class="bi bi-caret-down-fill position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
         </div>
-      </div>
 
-      <!-- Filtro: Entrega -->
-      <div>
-        <label class="fw-semibold small mb-1">Entrega</label>
-        <div class="custom-select position-relative">
-          <select class="form-select rounded-2 filtro-select">
-            <option>Todos</option>
-            <option>Hoy</option>
-            <option>Esta semana</option>
-            <option>Este mes</option>
-          </select>
-          <i class="bi bi-caret-down-fill position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
-        </div>
-      </div>
-
-      <!-- Buscador -->
-      <div>
-        <label class="fw-semibold small mb-1">Documento</label>
-        <div class="search-box position-relative">
-          <input type="text" class="buscador form-control rounded-2 ps-4" placeholder="Buscar por documento..." />
-          <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
-        </div>
-      </div>
-
-      <!-- Botones -->
-      <div class="ms-auto d-flex gap-2 filtros">
-        <button class="btn btn-outline-dark rounded-2 px-4">FILTRAR</button>
-        <button class="btn btn-outline-dark rounded-2 px-4">LIMPIAR</button>
-      </div>
-    </div>
-
-
-    <!-- 🔸 Tabla principal -->
-    <div class="row">
-      <div class="col-lg-9">
-        <div class="table-responsive rounded-4 mt-2">
-          <table class="table align-middle mb-0">
-            <thead>
-              <tr class="text-uppercase small text-secondary">
-                <th>ID</th>
-                <th>IDENTIDAD</th>
-                <th>Cliente</th>
-                <th>Compra</th>
-                <th>Total</th>
-                <th>Entrega</th>
-                <th>Estado</th>
-                <th>Pedido</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td data-label="ID">0001</td>
-                <td data-label="Identidad">92343234</td>
-                <td data-label="Cliente">Vanesa Mendoza</td>
-                <td data-label="Compra">20/09/2025</td>
-                <td data-label="Total">s/ 250.00</td>
-                <td data-label="Entrega"><span class="tag tienda">En tienda</span></td>
-                <td data-label="Estado"><span class="tag pendiente">Pendiente</span></td>
-                <td data-label="Pedido">
-                  <a href="#" class="text-dark fw-semibold btn-observar" data-bs-toggle="modal"
-                    data-bs-target="#detalleModal">Observar</a>
-                  <i class="bi bi-pencil-square ms-2"></i>
-                </td>
-              </tr>
-              <tr>
-                <td data-label="ID">0003</td>
-                <td data-label="Identidad">666643234</td>
-                <td data-label="Cliente">Lucía Vargas</td>
-                <td data-label="Compra">25/09/2025</td>
-                <td data-label="Total">S/ 325.00</td>
-                <td data-label="Entrega"><span class="tag delivery">Delivery</span></td>
-                <td data-label="Estado"><span class="tag entregado">Entregado</span></td>
-                <td data-label="Pedido">
-                  <a href="#" class="text-dark fw-semibold btn-observar" data-bs-toggle="modal"
-                    data-bs-target="#detalleModal">Observar</a>
-                  <i class="bi bi-pencil-square ms-2"></i>
-                </td>
-              </tr>
-
-              <tr>
-                <td data-label="ID">0004</td>
-                <td data-label="Identidad">432662334</td>
-                <td data-label="Cliente">Marcos Ruiz</td>
-                <td data-label="Compra">27/09/2025</td>
-                <td data-label="Total">S/ 410.00</td>
-                <td data-label="Entrega"><span class="tag tienda">En tienda</span></td>
-                <td data-label="Estado"><span class="tag cancelado">Cancelado</span></td>
-                <td data-label="Pedido">
-                  <a href="#" class="text-dark fw-semibold btn-observar" data-bs-toggle="modal"
-                    data-bs-target="#detalleModal">Observar</a>
-                  <i class="bi bi-pencil-square ms-2"></i>
-                </td>
-              </tr>
-
-              <tr>
-                <td data-label="ID">0005</td>
-                <td data-label="Identidad">923434342</td>
-                <td data-label="Cliente">Sofía Herrera</td>
-                <td data-label="Compra">01/10/2025</td>
-                <td data-label="Total">S/ 280.00</td>
-                <td data-label="Entrega"><span class="tag delivery">Delivery</span></td>
-                <td data-label="Estado"><span class="tag pendiente">Pendiente</span></td>
-                <td data-label="Pedido">
-                  <a href="#" class="text-dark fw-semibold  btn-observar" data-bs-toggle="modal"
-                    data-bs-target="#detalleModal">Observar</a>
-                  <i class="bi bi-pencil-square ms-2"></i>
-                </td>
-              </tr>
-
-              <tr>
-                <td data-label="ID">0006</td>
-                <td data-label="Identidad">1232</td>
-                <td data-label="Cliente">Diego Salazar</td>
-                <td data-label="Compra">03/10/2025</td>
-                <td data-label="Total">S/ 150.00</td>
-                <td data-label="Entrega"><span class="tag tienda">En tienda</span></td>
-                <td data-label="Estado"><span class="tag entregado">Entregado</span></td>
-                <td data-label="Pedido">
-                  <a href="#" class="text-dark fw-semibold   btn-observar" data-bs-toggle="modal"
-                    data-bs-target="#detalleModal">Observar</a>
-                  <i class="bi bi-pencil-square ms-2"></i>
-                </td>
-              </tr>
-            </tbody>
-
-          </table>
-        </div>
-      </div>
-
-      <!-- 🔸 Panel lateral -->
-      <div sec:authorize="hasAnyRole('ADMIN','USUARIO')" class="col-lg-3 mt-4 mt-lg-0">
-        <div class="card shadow-sm p-3 delivery-panel">
-          <h6 class="mb-3" style="font-weight: 700">DELIVERY</h6>
-
-          <div class="delivery-card mb-3">
-            <div class="d-flex justify-content-between">
-              <span class="codDelivery">ID: 0001</span>
-              <small class="codDelivery">20/05/2025</small>
-            </div>
-            <span class="tag pendiente mt-2">Pendiente</span>
-          </div>
-
-          <div class="delivery-card">
-            <div class="d-flex justify-content-between">
-              <span>ID: 0001</span>
-              <small>20/05/2025</small>
-            </div>
-            <span class="tag ruta mt-2">En ruta</span>
+        <div class="flex-grow-1">
+          <label class="fw-semibold small mb-1">Buscar</label>
+          <div class="search-box position-relative">
+            <input type="text" id="buscador" class="form-control rounded-2 ps-4" placeholder="Buscar por cliente o DNI..." />
+            <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
           </div>
         </div>
       </div>
-    </div>
+
+      <div class="table-responsive rounded-4 mt-2">
+        <table class="table align-middle mb-0 table-hover">
+          <thead class="table-light">
+            <tr class="text-uppercase small text-secondary">
+              <th>ID</th>
+              <th>CLIENTE</th>
+              <th>DOCUMENTO</th>
+              <th>FECHA</th>
+              <th>TOTAL</th>
+              <th>ESTADO</th>
+              <th>ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody id="tablaPedidosBody">
+            
+            <tr th:each="pedido : ${listaPedidos}">
+              <td><span class="fw-bold" th:text="'#' + ${pedido.id}">#1</span></td>
+              
+              <td>
+                <div class="fw-bold" th:text="${pedido.cliente.nombres} + ' ' + ${pedido.cliente.apellidos}">Juan</div>
+                <small class="text-muted" th:text="${pedido.cliente.correo}">email</small>
+              </td>
+              
+              <td th:text="${pedido.cliente.nIdentificacion}">12345678</td>
+              
+              <td th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}">Fecha</td>
+              
+              <td class="fw-bold" th:text="'S/. ' + ${#numbers.formatDecimal(pedido.total, 1, 2)}">Total</td>
+              
+              <td>
+                <span class="badge" 
+                      th:classappend="${pedido.estado == 'COMPLETADO' ? 'bg-success' : (pedido.estado == 'PENDIENTE' ? 'bg-warning text-dark' : 'bg-danger')}"
+                      th:text="${pedido.estado}">Estado</span>
+              </td>
+              
+              <td>
+                <button class="btn btn-sm btn-outline-dark btn-observar" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#detalleModal"
+                        th:data-id="${pedido.id}">
+                  <i class="bi bi-eye me-1"></i>Observar
+                </button>
+              </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(listaPedidos)}">
+                <td colspan="7" class="text-center py-5 text-muted">No hay pedidos registrados</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </main>
-  <!-- Modal Detalle del Pedido -->
-  <div class="modal fade" id="detalleModal" tabindex="-1" aria-labelledby="detalleModalLabel" aria-hidden="true">
+
+  <div class="modal fade" id="detalleModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content rounded-4 shadow-lg border-0">
-        <div class="modal-header bg-dark text-white rounded-top-4">
-          <h5 class="modal-title fw-semibold" id="detalleModalLabel">Detalle del Pedido</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title">Detalle del Pedido #<span id="modalPedidoId"></span></h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <div class="table-responsive">
@@ -238,157 +117,102 @@
                 <tr>
                   <th>SKU</th>
                   <th>Producto</th>
-                  <th>Cantidad</th>
-                  <th>Precio Unitario</th>
-                  <th>Subtotal</th>
+                  <th class="text-center">Cant.</th>
+                  <th class="text-end">P. Unit</th>
+                  <th class="text-end">Subtotal</th>
                 </tr>
               </thead>
               <tbody id="detallePedidoBody">
-                <!-- Aquí se insertan los productos dinámicamente -->
+                <tr><td colspan="5" class="text-center">Cargando...</td></tr>
               </tbody>
             </table>
           </div>
-          <div class="text-end mt-3">
+          <div class="text-end mt-3 border-top pt-2">
             <h5 class="fw-bold">Total: <span id="detalleTotal">S/. 0.00</span></h5>
           </div>
         </div>
-        <div class="modal-footer d-flex justify-content-between">
+        <div class="modal-footer">
           <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cerrar</button>
-          <button id="btnDescargarBoleta" class="btn btn-dark">
-            <i class="bi bi-file-earmark-pdf-fill me-1"></i> Descargar Boleta
-          </button>
+          <button class="btn btn-dark"><i class="bi bi-printer me-2"></i>Imprimir</button>
         </div>
-
       </div>
     </div>
   </div>
-  <!-- Librerías para PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const buscadores = document.querySelectorAll(".buscador");
-      const filtroEstado = document.querySelectorAll(".filtro-select")[0];
-      const filtroEntrega = document.querySelectorAll(".filtro-select")[1];
-      const btnFiltrar = document.querySelector(".filtros .btn-outline-dark:nth-child(1)");
-      const btnLimpiar = document.querySelector(".filtros .btn-outline-dark:nth-child(2)");
-      const filas = document.querySelectorAll("tbody tr");
+      
+      // 1. FILTRADO LOCAL (Buscador)
+      const inputBuscar = document.getElementById("buscador");
+      const selectEstado = document.getElementById("filtroEstado");
+      const filas = document.querySelectorAll("#tablaPedidosBody tr");
 
-      function filtrarTabla() {
-        const texto = Array.from(buscadores)
-          .map(b => b.value.toLowerCase().trim())
-          .find(t => t.length > 0) || "";
-
-        const estadoSeleccionado = filtroEstado.value.toLowerCase();
-        const entregaSeleccionada = filtroEntrega.value.toLowerCase();
-
-        const hoy = new Date();
+      function filtrar() {
+        const texto = inputBuscar.value.toLowerCase();
+        const estado = selectEstado.value;
 
         filas.forEach(fila => {
-          const cliente = fila.querySelector("td:nth-child(2)").textContent.toLowerCase();
-          const entregaTexto = fila.querySelector("td:nth-child(5)").textContent.toLowerCase();
-          const estado = fila.querySelector("td:nth-child(6)").textContent.toLowerCase();
-          const fechaTexto = fila.querySelector("td:nth-child(3)").textContent.trim();
-          const [dia, mes, año] = fechaTexto.split("/").map(Number);
-          const fechaCompra = new Date(año, mes - 1, dia);
+          const textoFila = fila.innerText.toLowerCase();
+          const estadoFila = fila.querySelector(".badge")?.innerText || "";
+          
+          const coincideTexto = textoFila.includes(texto);
+          const coincideEstado = estado === "todos" || estadoFila === estado;
 
-          // 🧠 Condiciones de búsqueda
-          const coincideBusqueda =
-            cliente.includes(texto) ||
-            entregaTexto.includes(texto) ||
-            estado.includes(texto);
-
-          const coincideEstado = estadoSeleccionado === "todos" || estado.includes(estadoSeleccionado);
-
-          let coincideEntrega = true;
-          if (entregaSeleccionada === "hoy") {
-            coincideEntrega = fechaCompra.toDateString() === hoy.toDateString();
-          } else if (entregaSeleccionada === "esta semana") {
-            const diferenciaDias = (hoy - fechaCompra) / (1000 * 60 * 60 * 24);
-            coincideEntrega = diferenciaDias <= 7 && diferenciaDias >= 0;
-          } else if (entregaSeleccionada === "este mes") {
-            coincideEntrega =
-              fechaCompra.getMonth() === hoy.getMonth() &&
-              fechaCompra.getFullYear() === hoy.getFullYear();
-          }
-
-          // Mostrar u ocultar fila
-          if (coincideBusqueda && coincideEstado && coincideEntrega) {
-            fila.style.display = "";
-          } else {
-            fila.style.display = "none";
-          }
+          fila.style.display = (coincideTexto && coincideEstado) ? "" : "none";
         });
       }
 
-      // 🧹 LIMPIAR FILTROS
-      function limpiarFiltros() {
-        buscadores.forEach(b => (b.value = ""));
-        filtroEstado.value = "Todos";
-        filtroEntrega.value = "Todos";
-        filtrarTabla();
-      }
+      inputBuscar.addEventListener("keyup", filtrar);
+      selectEstado.addEventListener("change", filtrar);
 
-      // ⏱️ EVENTOS
-      buscadores.forEach(b => b.addEventListener("input", filtrarTabla));
-      filtroEstado.addEventListener("change", filtrarTabla);
-      filtroEntrega.addEventListener("change", filtrarTabla);
-      btnFiltrar.addEventListener("click", filtrarTabla);
-      btnLimpiar.addEventListener("click", limpiarFiltros);
-    });
+      // 2. MODAL DETALLES (Fetch API)
+      const modal = document.getElementById('detalleModal');
+      const tbody = document.getElementById('detallePedidoBody');
+      const totalSpan = document.getElementById('detalleTotal');
+      const idSpan = document.getElementById('modalPedidoId');
 
+      modal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const idPedido = button.getAttribute('data-id');
+        
+        idSpan.textContent = idPedido;
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-3"><div class="spinner-border spinner-border-sm"></div> Cargando...</td></tr>';
 
+        // Llamada al Backend
+        fetch(`/api/pedidos/${idPedido}/detalles`)
+          .then(res => res.json())
+          .then(data => {
+            tbody.innerHTML = "";
+            let total = 0;
 
+            if(data.length === 0) {
+               tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No hay detalles disponibles</td></tr>';
+               return;
+            }
 
-    const pedidos = {
-      "0001": [
-        { sku: "A001", nombre: "Polo Básico", cantidad: 2, precio: 39.9 },
-        { sku: "A002", nombre: "Pantalón Jeans", cantidad: 1, precio: 89.9 },
-        { sku: "A003", nombre: "Casaca Negra", cantidad: 1, precio: 129.9 }
-      ],
-      "0002": [
-        { sku: "B010", nombre: "Zapatillas Urbanas", cantidad: 1, precio: 159.9 },
-        { sku: "B011", nombre: "Medias x3", cantidad: 2, precio: 19.9 }
-      ]
-    };
-
-    document.querySelectorAll(".btn-observar").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-
-        // Suponiendo que cada fila tiene el ID del pedido en la primera columna
-        const fila = btn.closest("tr");
-        const idPedido = fila.querySelector("td:first-child").textContent.trim();
-
-        const productos = pedidos[idPedido] || [];
-        const tbody = document.getElementById("detallePedidoBody");
-        const totalSpan = document.getElementById("detalleTotal");
-
-        tbody.innerHTML = ""; // limpia
-        let total = 0;
-
-        productos.forEach(prod => {
-          const subtotal = prod.precio * prod.cantidad;
-          total += subtotal;
-
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-          <td>${prod.sku}</td>
-          <td>${prod.nombre}</td>
-          <td>${prod.cantidad}</td>
-          <td>S/. ${prod.precio.toFixed(2)}</td>
-          <td>S/. ${subtotal.toFixed(2)}</td>
-        `;
-          tbody.appendChild(tr);
-        });
-
-        totalSpan.textContent = `S/. ${total.toFixed(2)}`;
+            data.forEach(item => {
+              total += item.subtotal;
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                <td><span class="badge bg-light text-dark border">${item.sku || 'N/A'}</span></td>
+                <td class="fw-semibold">${item.nombre}</td>
+                <td class="text-center">${item.cantidad}</td>
+                <td class="text-end">S/. ${item.precio.toFixed(2)}</td>
+                <td class="text-end fw-bold">S/. ${item.subtotal.toFixed(2)}</td>
+              `;
+              tbody.appendChild(tr);
+            });
+            totalSpan.textContent = `S/. ${total.toFixed(2)}`;
+          })
+          .catch(err => {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error al cargar detalles</td></tr>';
+            console.error(err);
+          });
       });
+
     });
-</script>
-
+  </script>
 </body>
-
 </html>

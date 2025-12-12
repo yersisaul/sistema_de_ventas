@@ -8,77 +8,55 @@
     <title>MAMBO Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-      rel="stylesheet"
-    />
-
     <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/admin/navbar.css}">
-
   </head>
   <body>
-    <!-- 🔹 NAVBAR LATERAL -->
     <div th:replace="admin/fragments/navbar :: navbar"></div>
 
-    <!-- 🔹 CONTENIDO PRINCIPAL -->
     <main class="main-content">
       <div class="container-fluid p-4">
-        <!-- Bienvenida -->
+        
         <div class="row g-4 mb-4 align-items-center">
           <div class="col-lg-8">
-            <div
-              class="welcome-card d-flex justify-content-between align-items-center px-4 pt-2"
-            >
+            <div class="welcome-card d-flex justify-content-between align-items-center px-4 pt-2">
               <div>
                 <h4 class="mb-1 bienvenida">¡Bienvenido a MAMBO!</h4>
                 <p class="mb-0 text-secondary">
-                  Hola administrador de la tienda
+                  Hola <span th:text="${adminNombre}">Administrador</span>, aquí tienes el resumen de hoy.
                 </p>
               </div>
-              <img
-                th:src="@{/Img/descarga.png}" 
-                class="welcome-img rounded"
-                alt="Administrador"
-              />
+              <img th:src="@{/Img/descarga.png}" class="welcome-img rounded" alt="Administrador"/>
             </div>
           </div>
+          
           <div class="col-lg-2 col-6">
             <div class="info-box text-center p-3">
-              <p class="small fw-semibold text-secondary mb-1">
-                VENTAS DEL DÍA
-              </p>
-              <h5 class="fw-bold mb-1 number">S/. 348.25</h5>
+              <p class="small fw-semibold text-secondary mb-1">VENTAS DEL DÍA</p>
+              <h5 class="fw-bold mb-1 number" th:text="'S/. ' + ${ventasDia}">S/. 0.00</h5>
               <i class="bi bi-cash-stack fs-3 text-dark"></i>
             </div>
           </div>
 
           <div class="col-lg-2 col-6">
             <div class="info-box text-center p-3">
-              <p class="small fw-semibold text-secondary mb-1">
-                CLIENTES NUEVOS
-              </p>
-              <h5 class="fw-bold mb-1 number">29</h5>
+              <p class="small fw-semibold text-secondary mb-1">CLIENTES NUEVOS</p>
+              <h5 class="fw-bold mb-1 number" th:text="${clientesNuevos}">0</h5>
               <i class="bi bi-people fs-3 text-dark"></i>
             </div>
           </div>
         </div>
 
-        <!-- Estadísticas + panel lateral -->
         <div class="row">
           <div class="col-lg-8">
+            
             <div class="card shadow-sm p-3 mb-4">
-              <div
-                class="d-flex justify-content-between align-items-center mb-3"
-              >
-                <h6 class="fw-bold mb-0">ESTADÍSTICAS</h6>
-                <select class="form-select form-select-sm w-auto">
-                  <option>Mes</option>
-                </select>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0">ESTADÍSTICAS DE VENTAS (AÑO ACTUAL)</h6>
               </div>
               <canvas id="chart" height="120"></canvas>
             </div>
 
-            <!-- Pedidos recientes -->
             <div class="card shadow-sm p-3">
               <h6 class="fw-bold mb-3">PEDIDOS RECIENTES</h6>
               <div class="table-responsive">
@@ -93,30 +71,20 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>001</td>
-                      <td>Juan Pérez</td>
-                      <td>21/10/2025</td>
-                      <td><span class="badge bg-success">Completado</span></td>
-                      <td>S/. 45.00</td>
-                    </tr>
-                    <tr>
-                      <td>002</td>
-                      <td>María López</td>
-                      <td>21/10/2025</td>
+                    <tr th:each="pedido : ${pedidosRecientes}">
+                      <td th:text="'#' + ${pedido.id}">001</td>
+                      <td th:text="${pedido.cliente.nombres} + ' ' + ${pedido.cliente.apellidos}">Cliente</td>
+                      <td th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy')}">Fecha</td>
                       <td>
-                        <span class="badge bg-warning text-dark"
-                          >Pendiente</span
-                        >
+                        <span class="badge" 
+                              th:classappend="${pedido.estado == 'COMPLETADO' ? 'bg-success' : (pedido.estado == 'PENDIENTE' ? 'bg-warning text-dark' : 'bg-danger')}"
+                              th:text="${pedido.estado}">Estado</span>
                       </td>
-                      <td>S/. 32.00</td>
+                      <td th:text="'S/. ' + ${pedido.total}">Total</td>
                     </tr>
-                    <tr>
-                      <td>003</td>
-                      <td>Carlos Díaz</td>
-                      <td>20/10/2025</td>
-                      <td><span class="badge bg-danger">Cancelado</span></td>
-                      <td>S/. 0.00</td>
+                    
+                    <tr th:if="${#lists.isEmpty(pedidosRecientes)}">
+                        <td colspan="5" class="text-center text-muted">No hay pedidos recientes.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -127,60 +95,34 @@
           <div class="col-lg-4">
             <div class="card shadow-sm p-3 mb-4">
               <div class="d-flex justify-content-between mb-2">
-                <span style="font-weight: 700; color: #000000">ENTREGAS</span
-                ><span>25/50</span>
+                <span style="font-weight: 700; color: #000000">ENTREGAS</span>
+                <span>--/--</span>
               </div>
               <div class="progress mb-3" style="height: 6px">
                 <div class="progress-bar bg-dark" style="width: 50%"></div>
               </div>
 
               <div class="d-flex justify-content-between mb-2">
-                <span style="font-weight: 700; color: #000000"
-                  >PRODUCTOS EN STOCK</span
-                ><span>400/500</span>
+                <span style="font-weight: 700; color: #000000">PRODUCTOS EN STOCK</span>
+                <span>--/--</span>
               </div>
               <div class="progress mb-4" style="height: 6px">
                 <div class="progress-bar bg-dark" style="width: 80%"></div>
               </div>
 
               <h6 class="mb-3" style="font-weight: 800">NOVEDADES</h6>
-
               <div class="news-item d-flex mb-3">
-                <i class="bi bi-box-seam icon"></i>
+                <i class="bi bi-box-seam icon fs-4 me-3"></i>
                 <div>
-                  <strong>Productos con bajo stock</strong><br /><small
-                    >50 unidades por debajo del límite</small
-                  >
+                  <strong>Sistema activo</strong><br/>
+                  <small>Dashboard actualizado en tiempo real</small>
                 </div>
               </div>
-
-              <div class="news-item d-flex mb-3">
-                <i class="bi bi-truck icon"></i>
-                <div>
-                  <strong>Pedidos pendientes</strong><br /><small
-                    >50 por entregar</small
-                  >
-                </div>
-              </div>
-
-              <div class="news-item d-flex mb-4">
-                <i class="bi bi-exclamation-triangle icon"></i>
-                <div>
-                  <strong>Faltan productos</strong><br /><small
-                    >50 sin stock</small
-                  >
-                </div>
-              </div>
-
-              <div class="highlight-card p-3 rounded d-flex align-items-center">
-                <img
-                  src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=100&q=80"
-                  width="70"
-                  class="rounded me-3"
-                />
+              
+              <div class="highlight-card p-3 rounded d-flex align-items-center mt-auto" style="background: linear-gradient(to right, #2c3e50, #000000);">
+                <i class="bi bi-shop text-white fs-1 me-3"></i>
                 <p class="mb-0 text-white small">
-                  Ser reconocidos internacionalmente como un referente de moda
-                  innovadora y juvenil.
+                  Administración de Tienda MAMBO - v1.0
                 </p>
               </div>
             </div>
@@ -191,38 +133,34 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
+    
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+      const ventasData = /*[[${datosGrafico}]]*/ [0,0,0,0,0,0,0,0,0,0,0,0];
+      
       const ctx = document.getElementById("chart").getContext("2d");
       new Chart(ctx, {
         type: "line",
         data: {
-          labels: [
-            "Ene",
-            "Feb",
-            "Mar",
-            "Abr",
-            "May",
-            "Jun",
-            "Jul",
-            "Ago",
-            "Sep",
-          ],
+          labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
           datasets: [
             {
-              label: "Ventas",
-              data: [20, 50, 80, 40, 60, 90, 70, 100, 120],
+              label: "Ventas (S/.)",
+              data: ventasData,
               borderColor: "#000",
+              backgroundColor: "rgba(0,0,0,0.1)",
               borderWidth: 2,
               tension: 0.4,
-              fill: false,
+              fill: true,
             },
           ],
         },
         options: {
-          plugins: { legend: { display: false } },
+          plugins: { legend: { display: true } },
           scales: { y: { beginAtZero: true } },
         },
       });
+      /*]]>*/
     </script>
   </body>
 </html>

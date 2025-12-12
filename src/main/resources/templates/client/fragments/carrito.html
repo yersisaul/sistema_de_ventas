@@ -6,8 +6,8 @@
         background-color: #222;
         border: 1px solid #444;
         color: white;
-        width: 25px;
-        height: 25px;
+        width: 30px;
+        height: 30px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -15,16 +15,21 @@
         cursor: pointer;
         transition: 0.2s;
         font-weight: bold;
+        font-size: 14px;
     }
-    .btn-qty:hover {
+    .btn-qty:hover:not(:disabled) {
         border-color: #FFD700;
         color: #FFD700;
     }
+    .btn-qty:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
     .qty-display {
-        font-size: 0.9rem;
+        font-size: 1rem;
         font-weight: bold;
         color: white;
-        min-width: 20px;
+        min-width: 30px;
         text-align: center;
     }
   </style>
@@ -67,30 +72,46 @@
   </div>
 
   <script>
-
     const CART_KEY = 'mambo_carrito_temporal';
 
-    // 1. Agregar Producto
+    // 1. Agregar Producto con validación de stock
     function agregarAlCarritoTemporal(producto) {
         let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
         
+        // Buscar si ya existe la variante en el carrito
         const existente = carrito.find(item => item.varianteId === producto.varianteId);
         
         if (existente) {
+            // Validar stock antes de incrementar
+            if (existente.cantidad + 1 > existente.stockMax) { 
+                alert(`Stock insuficiente para "${producto.nombre}".\nStock disponible: ${existente.stockMax}`);
+                return false;
+            }
             existente.cantidad += 1;
         } else {
+            // Validar que la cantidad inicial no exceda el stock
+            if (producto.cantidad > producto.stockMax) {
+                alert(`Stock insuficiente para "${producto.nombre}".\nStock disponible: ${producto.stockMax}`);
+                return false;
+            }
             carrito.push(producto);
         }
         
         localStorage.setItem(CART_KEY, JSON.stringify(carrito));
         
-        if(typeof mostrarNotificacion === 'function') mostrarNotificacion("¡Agregado a la cesta!", "success");
+        if(typeof mostrarNotificacion === 'function') {
+            mostrarNotificacion("¡Agregado a la cesta!", "success");
+        } else {
+            // Notificación simple si no existe la función
+            console.log("Producto agregado al carrito");
+        }
+        
         if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
         abrirCarritoUI();
+        return true;
     }
 
-    // 2. Renderizar (Dibujar) el Carrito CON BOTONES +/-
-    // 2. Renderizar (Dibujar) el Carrito con PRECIO UNITARIO y SUBTOTAL
+    // 2. Renderizar carrito con validación de stock en botones
     function renderizarCarrito() {
         const container = document.getElementById('carrito-items-container');
         const totalSpan = document.getElementById('carrito-total-monto');
@@ -110,15 +131,19 @@
         }
 
         carrito.forEach((item, index) => {
-            // Cálculos
             const precioUnitario = parseFloat(item.precio);
             const subtotalItem = precioUnitario * item.cantidad;
             totalGeneral += subtotalItem;
 
+            // Determinar si los botones deben estar deshabilitados
+            const restarDisabled = item.cantidad <= 1;
+            const sumarDisabled = item.cantidad >= item.stockMax;
+
             container.innerHTML += `
                 <div class="d-flex align-items-center mb-3 p-2 border border-secondary border-opacity-25 rounded" style="background: #111;">
                     <img src="${item.imagen || 'https://via.placeholder.com/60'}" 
-                         style="width: 60px; height: 75px; object-fit: cover; border-radius: 4px;">
+                         style="width: 60px; height: 75px; object-fit: cover; border-radius: 4px;"
+                         alt="${item.nombre}">
                     
                     <div class="ms-3 flex-grow-1">
                         <h6 class="mb-1 text-white text-uppercase" style="font-size: 0.85rem; font-weight: 700;">${item.nombre}</h6>
@@ -131,9 +156,11 @@
                             <div class="d-flex align-items-center gap-2">
                                 <button class="btn-qty" 
                                         onclick="cambiarCantidad(${index}, -1)"
-                                        ${item.cantidad === 1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>-</button>
+                                        ${restarDisabled ? 'disabled' : ''}>-</button>
                                 <span class="qty-display">${item.cantidad}</span>
-                                <button class="btn-qty" onclick="cambiarCantidad(${index}, 1)">+</button>
+                                <button class="btn-qty" 
+                                        onclick="cambiarCantidad(${index}, 1)"
+                                        ${sumarDisabled ? 'disabled' : ''}>+</button>
                             </div>
                         </div>
 
@@ -156,23 +183,36 @@
 
         totalSpan.innerText = 'S/. ' + totalGeneral.toFixed(2);
     }
+
+    // 3. Cambiar cantidad con validación de stock
     function cambiarCantidad(index, cambio) {
         let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
         
-        if (carrito[index]) {
-            const nuevaCantidad = carrito[index].cantidad + cambio;
+        if (!carrito[index]) return;
 
-            if (nuevaCantidad < 1) {
-                return;
-            }
-            carrito[index].cantidad = nuevaCantidad;
+        const nuevaCantidad = carrito[index].cantidad + cambio;
+        const item = carrito[index];
+
+        // Validar límites de stock
+        if (nuevaCantidad > item.stockMax) {
+            alert(`Stock insuficiente para "${item.nombre}".\nStock disponible: ${item.stockMax}`);
+            return;
         }
 
-        // Guardar y Refrescar
+        if (nuevaCantidad < 1) {
+            // Preguntar si quiere eliminar el producto
+            if (confirm(`¿Deseas eliminar "${item.nombre}" del carrito?`)) {
+                eliminarItem(index);
+            }
+            return;
+        }
+
+        // Actualizar cantidad
+        carrito[index].cantidad = nuevaCantidad;
         localStorage.setItem(CART_KEY, JSON.stringify(carrito));
-        renderizarCarrito();
         
-        // Actualizar el numerito del navbar si existe esa función
+        // Actualizar UI
+        renderizarCarrito();
         if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
     }
 
@@ -180,25 +220,38 @@
     function abrirCarritoUI() {
         renderizarCarrito();
         const offcanvasEl = document.getElementById('offcanvasCarrito');
-        // Verificar si bootstrap está definido
-        if (typeof bootstrap !== 'undefined') {
-            const offcanvas = new bootstrap.Offcanvas(offcanvasEl);
+        if (offcanvasEl && typeof bootstrap !== 'undefined') {
+            const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
             offcanvas.show();
         }
     }
 
     function eliminarItem(index) {
         let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-        carrito.splice(index, 1);
-        localStorage.setItem(CART_KEY, JSON.stringify(carrito));
-        renderizarCarrito();
-        if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+        if (carrito[index]) {
+            const itemNombre = carrito[index].nombre;
+            if (confirm(`¿Estás seguro de quitar "${itemNombre}" de la cesta?`)) {
+                carrito.splice(index, 1);
+                localStorage.setItem(CART_KEY, JSON.stringify(carrito));
+                renderizarCarrito();
+                if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+            }
+        }
     }
 
     function limpiarCarrito() {
-        localStorage.removeItem(CART_KEY);
-        renderizarCarrito();
-        if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+        let carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        
+        if (carrito.length === 0) {
+            alert("El carrito ya está vacío");
+            return;
+        }
+
+        if (confirm("¿Estás seguro de vaciar toda la cesta?")) {
+            localStorage.removeItem(CART_KEY);
+            renderizarCarrito();
+            if(typeof actualizarBadgeNavbar === 'function') actualizarBadgeNavbar();
+        }
     }
 
     function irAPagar() {
@@ -207,7 +260,25 @@
             alert("El carrito está vacío");
             return;
         }
+        
+        // Validación final de stock
+        for (const item of carrito) {
+            if (item.cantidad > item.stockMax) {
+                alert(`El producto "${item.nombre}" no tiene suficiente stock. (Stock disponible: ${item.stockMax})`);
+                return;
+            }
+        }
+        
         window.location.href = "/checkout"; 
     }
+
+    // Inicializar cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+        renderizarCarrito();
+    });
+
+    // Exportar funciones globalmente
+    window.agregarAlCarritoTemporal = agregarAlCarritoTemporal;
+    window.abrirCarritoUI = abrirCarritoUI;
   </script>
 </div>

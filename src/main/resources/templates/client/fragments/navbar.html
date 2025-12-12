@@ -11,9 +11,9 @@
         <li class="nav-item"><a class="nav-link fw-bold barra" th:href="@{/client/vestidor}">VESTIDOR IA</a></li>
         <li class="nav-item"><a class="nav-link fw-bold barra" th:href="@{/client/contactanos}">CONTACTANOS</a></li>
         <li sec:authorize="hasRole('ADMIN')"  class="nav-item"><a class="nav-link fw-bold barra"
-            th:href="@{/admin/dashboard}">HISTORIAL</a></li>
+            th:href="@{/client/mispedidos}">HISTORIAL</a></li>
         <li sec:authorize="hasRole('CLIENTE')" class="nav-item"><a class="nav-link fw-bold barra"
-            th:href="@{/admin/pedidos}">HISTORIAL</a></li>
+            th:href="@{client/mispedidos}">HISTORIAL</a></li>
       </ul>
       <div class="nav-icons d-flex align-items-center">
         <button sec:authorize="!isAuthenticated()" class="btn btn-dark fw-bold boton" th:href="@{/admin/login}">
@@ -36,7 +36,10 @@
         <span th:text="'Hola, ' + ${#authentication.name}"></span>
 
         <!-- Botón de cerrar sesión -->
-        <button id="logoutBtn" class="btn btn-outline-light btn-sm fw-bold" th:href="@{/logout}">Cerrar Sesión</button>
+        <a class="btn btn-outline-light btn-sm fw-bold" th:href="@{/logout}">
+    Cerrar Sesión
+</a>
+
 
       </div>
 

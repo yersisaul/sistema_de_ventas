@@ -41,7 +41,7 @@ public class CheckoutVista {
         try {
             // Obtener el usuario logueado
             String username = auth.getName();
-            Usuario usuario = usuarioRepository.findBynIdentificacion(username)
+            Usuario usuario = usuarioRepository.findByNIdentificacion(username)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
             // Asignar el ID del cliente al DTO (Seguridad: no confiar solo en lo que viene del front)

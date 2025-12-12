@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class SecurityConfig {
+    
     private final CustomSuccessHandler customSuccessHandler;
     private final UserDetailsService userDetailsService;
 
@@ -26,9 +27,9 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // URLs públicas - INCLUYENDO EL PREFIJO /vista
+                // 1. RECURSOS PÚBLICOS (CSS, JS, IMÁGENES, API PÚBLICA)
                 .requestMatchers(
-                    "/api/**",  // ← PERMITIR TODAS LAS RUTAS API
+                    "/api/**", 
                     "/client/**",
                     "/", 
                     "/uploads/**",
@@ -40,20 +41,34 @@ public class SecurityConfig {
                     "/templates/**",
                     "/admin/login",
                     "/api/admin/auth/**",
-                    "/api/client/**", 
                     "/api/client/auth/**",
                     "/v3/api-docs/**",
                     "/swagger-ui/**", 
-                    "/swagger-ui.html",
-                    "/swagger-resources/**",
-                    "/webjars/**",
-                    "/configuration/ui",
-                    "/configuration/security"
+                    "/swagger-ui.html"
                 ).permitAll()
-                // Rutas administrativas ACTUALIZADAS
-                .requestMatchers("/admin/clientes", "/admin/dashboard", "/admin/inventario", "/admin/usuarios").hasRole("ADMIN")
-                .requestMatchers("/admin/pedidos").hasAnyRole("ADMIN", "CLIENTE")
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                // 2. REGLAS DE ACCESO POR ROL (Aquí está el cambio clave)
+
+                // A. SOLO ADMINISTRADOR (Gestión de Usuarios/Empleados)
+                .requestMatchers("/admin/usuarios/**").hasRole("ADMINISTRADOR")
+
+                // B. ADMINISTRADOR y VENDEDOR (Dashboard, Clientes, Ventas)
+                .requestMatchers(
+                    "/admin/dashboard", 
+                    "/admin/clientes/**", 
+                    "/admin/ventas/**" // Cubre lista y nueva venta
+                ).hasAnyRole("ADMINISTRADOR", "VENDEDOR")
+
+                // C. ADMINISTRADOR, VENDEDOR y CLIENTE (Pedidos e Inventario)
+                .requestMatchers(
+                    "/admin/pedidos/**", 
+                    "/admin/inventario/**"
+                ).hasAnyRole("ADMINISTRADOR", "VENDEDOR", "CLIENTE")
+
+                // D. API PROTEGIDA (Opcional, ajusta según necesidad)
+                .requestMatchers("/api/admin/**").hasAnyRole("ADMINISTRADOR", "VENDEDOR")
+
+                // CUALQUIER OTRA RUTA REQUIERE LOGIN
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -64,11 +79,11 @@ public class SecurityConfig {
                 .permitAll()
             )
             .logout(logout -> logout
+                .logoutUrl("/logout")
                 .logoutSuccessUrl("/admin/login?logout=true")
                 .permitAll()
             )
             .authenticationProvider(authenticationProvider());
-
 
         return http.build();
     }

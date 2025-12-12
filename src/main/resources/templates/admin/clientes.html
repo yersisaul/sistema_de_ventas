@@ -15,15 +15,27 @@
 </head>
 
 <body>
-  <!-- Navbar frag (asegúrate que existe) -->
   <div th:replace="admin/fragments/navbar :: navbar"></div>
 
   <main class="main-content p-4">
     <div class="container-fluid">
+      
+      <div th:if="${param.exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+        Operación realizada con éxito.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <div th:if="${param.eliminado}" class="alert alert-warning alert-dismissible fade show" role="alert">
+        Cliente eliminado correctamente.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        Error: <span th:text="${param.error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
         <div>
           <div class="d-flex flex-row align-content-center mb-3 align">
-            <!-- BOTÓN TOGGLE SOLO EN PANTALLAS PEQUEÑAS -->
             <button class="btn btn-dark d-md-none top-0 start-0 me-3 z-3" type="button" data-bs-toggle="offcanvas"
               data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
               <i class="bi bi-list fs-4"></i>
@@ -31,47 +43,40 @@
             <div class="flex-column">
               <h4 style="font-weight:800">NUESTROS CLIENTES</h4>
               <p class="text-secondary m-0 text-center">Lista de clientes de la tienda MAMBO</p>
-
             </div>
-           
           </div>
-           <hr class="p-2 d-md-none">
+          <hr class="p-2 d-md-none">
 
-          <!-- 🔽 EN PANTALLAS PEQUEÑAS: BUSCADOR Y BOTÓN DEBAJO -->
           <div class="d-flex flex-column flex-sm-row gap-2 d-md-none">
             <div class="busqueda search-box position-relative w-100">
-              <input type="text" id="buscador" class="buscador form-control rounded-2 ps-4" placeholder="Buscar por documento..." />
+              <input type="text" class="buscador form-control rounded-2 ps-4" placeholder="Buscar por documento..." />
               <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
             </div>
-
-            <button class="btn btn-outline-dark rounded-2 px-4 w-100" style="font-size: 12px" type="button"
+            <button class="btn btn-outline-dark rounded-2 px-4 w-100 btn-nuevo" style="font-size: 12px" type="button"
               data-bs-toggle="modal" data-bs-target="#modalProducto">
               NUEVO CLIENTE
             </button>
           </div>
         </div>
 
-        <!-- 💻 EN PANTALLAS GRANDES: BUSCADOR Y BOTÓN EN FILA -->
         <div class="d-none d-md-flex align-items-center gap-3">
           <div class="busqueda search-box position-relative">
             <input type="text" class="buscador form-control rounded-2 ps-4" placeholder="Buscar por documento..." />
             <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary"></i>
           </div>
-
-          <button class="btn btn-outline-dark rounded-2 px-4" style="font-size: 12px" type="button"
+          <button class="btn btn-outline-dark rounded-2 px-4 btn-nuevo" style="font-size: 12px" type="button"
             data-bs-toggle="modal" data-bs-target="#modalProducto">
             NUEVO CLIENTE
           </button>
         </div>
       </div>
 
-      <!-- Tabla principal: columnas generales + columnas de tallas -->
       <div class="table-responsive rounded-4 p-2">
         <table class="table align-middle mb-0 inventory-table">
           <thead class="table-light">
             <tr class="text-uppercase small text-secondary">
+              <th>TIPO</th>
               <th>DOCUMENTO</th>
-              <th>IDENTIDAD</th>
               <th>NOMBRE</th>
               <th>APELLIDO</th>
               <th>TELEFONO</th>
@@ -83,62 +88,64 @@
 
           <tbody>
             <tr th:each="cliente : ${listaClientes}">
-              
               <td th:text="${cliente.tipoIdentificacion}">DNI</td> 
-              
               <td th:text="${cliente.nIdentificacion}">72957500</td> 
-              
-              <td th:text="${cliente.nombres}">Isabel Crisrhina</td> 
-              
-              <td th:text="${cliente.apellidos}">Lopez Huamani</td> 
-              
+              <td th:text="${cliente.nombres}">Isabel</td> 
+              <td th:text="${cliente.apellidos}">Lopez</td> 
               <td th:text="${cliente.telefono}">912799689</td> 
-              
-              <td th:text="${cliente.correo}">IsabelCrsthina@gmail.com</td> 
-              
-              <td th:text="${cliente.direccion}">UVC 1555 CALLE 13 ZONA R - HUAYCAN</td>
+              <td th:text="${cliente.correo}">correo@gmail.com</td> 
+              <td th:text="${cliente.direccion}">Calle 13</td>
 
               <td>
-                <a 
-                   class="text-dark fw-semibold text-decoration-none me-3 editar-btn">
+                <a href="#" class="text-dark fw-semibold text-decoration-none me-3 editar-btn"
+                   data-bs-toggle="modal" 
+                   data-bs-target="#modalProducto"
+                   th:data-id="${cliente.id}"
+                   th:data-tipo="${cliente.tipoIdentificacion}"
+                   th:data-doc="${cliente.nIdentificacion}"
+                   th:data-nombres="${cliente.nombres}"
+                   th:data-apellidos="${cliente.apellidos}"
+                   th:data-telefono="${cliente.telefono}"
+                   th:data-correo="${cliente.correo}"
+                   th:data-direccion="${cliente.direccion}">
                   <i class="bi bi-pencil-square me-1"></i>Editar
                 </a>
                 
-                <a
+                <a th:href="@{/admin/clientes/eliminar/{id}(id=${cliente.id})}"
+                   onclick="return confirm('¿Estás seguro de eliminar este cliente?');"
                    class="text-danger fw-semibold text-decoration-none eliminar-btn">
                   <i class="bi bi-trash3 me-1"></i>Eliminar
                 </a>
               </td>
             </tr>
+            
+            <tr th:if="${#lists.isEmpty(listaClientes)}">
+                <td colspan="8" class="text-center py-4 text-muted">No hay clientes registrados.</td>
+            </tr>
           </tbody>
         </table>
       </div>
-
-
     </div>
 
-    <!-- MODAL REGISTRO CLIENTE -->
     <div class="modal fade" id="modalProducto" tabindex="-1" aria-labelledby="modalProductoLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" style="max-width: 600px">
         <div class="modal-content shadow-lg border-0" style="border-radius: 10px;">
 
-          <!-- Encabezado -->
           <div class="modal-header border-0">
             <h5 class="modal-title w-100 text-center fw-bold py-2 text-white"
-              style="background-color: black; border-radius: 10px;">
+              style="background-color: black; border-radius: 10px;" id="modalTitle">
               REGISTRO DE CLIENTE
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
 
-          <!-- Cuerpo -->
           <div class="modal-body px-5 MB-2">
-            <p class="text-center m-0">¡Registremos a nuestro cliente!</p>
+            <p class="text-center m-0 mb-3 text-muted">Complete los datos del cliente</p>
 
-            <form th:action="@{/admin/clientes/guardar}" method="post" th:object="${nuevoCliente}" id="formCliente" enctype="multipart/form-data">
+            <form th:action="@{/admin/clientes/guardar}" method="post" th:object="${nuevoCliente}" id="formCliente">
+              
+              <input type="hidden" th:field="*{id}" id="clienteId">
 
-              <!-- Tipo de Identificación -->
-              <!-- Added id="tipoIdentificacion" to match JavaScript expectations -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Tipo Documento:</label>
                 <select class="form-select" id="tipoIdentificacion" th:field="*{tipoIdentificacion}" required>
@@ -148,63 +155,49 @@
                 </select>
               </div>
 
-              <!-- Número de Identificación -->
-              <!-- Changed id from "number" to "nIdentificacion" to match JavaScript -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Número Documento:</label>
                 <input type="text" class="form-control" th:field="*{nIdentificacion}" id="nIdentificacion" required placeholder="Ingrese número">
               </div>
 
-              <!-- Nombre -->
-              <!-- Changed id from "nombre" to "nombres" to match JavaScript -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Nombre completo:</label>
                 <input type="text" class="form-control" th:field="*{nombres}" id="nombres" required placeholder="Ej: Juan Carlos">
               </div>
 
-              <!-- Apellido paterno -->
-              <!-- Changed id from "nomp" to "apellidoPaterno" to match JavaScript -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
-                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellidos</label>
-                <input type="text" class="form-control" th:field="*{apellidos}" id="apellidoPaterno" required placeholder="Ej: Pérez">
+                <label class="form-label fw-semibold m-0" style="min-width: 160px;">Apellidos:</label>
+                <input type="text" class="form-control" th:field="*{apellidos}" id="apellidos" required placeholder="Ej: Pérez">
               </div>
 
-              <!-- Teléfono -->
-              <!-- Changed id from "cel" to "telefono" to match JavaScript -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Teléfono:</label>
                 <input type="tel" class="form-control" id="telefono" th:field="*{telefono}" required placeholder="Ej: 987654321">
               </div>
 
-              <!-- Correo -->
-              <!-- Added id="correo" which was missing -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Correo:</label>
                 <input type="email" class="form-control" id="correo" th:field="*{correo}" required placeholder="Ej: ejemplo@gmail.com">
               </div>
 
-              <!-- Dirección -->
-              <!-- Added id="direccion" which was missing -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Dirección:</label>
                 <input type="text" class="form-control" id="direccion" th:field="*{direccion}" required placeholder="Ej: Av. Los Olivos 123">
               </div>
 
-              <!-- Contraseña -->
-              <!-- Changed id from "password" to "contrasena" to match JavaScript -->
               <div class="mb-3 d-flex flex-column flex-md-row align-items-md-center gap-2 position-relative">
                 <label class="form-label fw-semibold m-0" style="min-width: 160px;">Contraseña:</label>
                 <div class="w-100 position-relative">
-                  <input  th:field="*{contrasena}" type="password" class="form-control pe-5" id="contrasena" required
-                    placeholder="Ingrese una contraseña segura">
+                  <input th:field="*{contrasena}" type="password" class="form-control pe-5" id="contrasena"
+                    placeholder="Solo llenar si desea cambiarla">
                   <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3 text-secondary"
                     id="togglePassword" style="cursor: pointer;"></i>
                 </div>
               </div>
-              <!-- Botón -->
+
               <div class="text-center mt-4">
                 <button type="submit" class="btn btn-outline-dark px-4 py-2 fw-bold" style="border-radius: 12px;">
-                  AGREGAR
+                  GUARDAR
                 </button>
               </div>
 
@@ -215,9 +208,59 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/validacion.js}"></script>
-    <script th:src="@{/js/usuarios.js}"></script>
+    
+    <script>
+      // 1. Mostrar/Ocultar contraseña
+      const togglePassword = document.querySelector("#togglePassword");
+      const password = document.querySelector("#contrasena");
+
+      togglePassword.addEventListener("click", function () {
+        const type = password.getAttribute("type") === "password" ? "text" : "password";
+        password.setAttribute("type", type);
+        this.classList.toggle("bi-eye");
+        this.classList.toggle("bi-eye-slash");
+      });
+
+      // 2. Lógica del Modal (Crear vs Editar)
+      const modal = document.getElementById('modalProducto');
+      const modalTitle = document.getElementById('modalTitle');
+      const form = document.getElementById('formCliente');
+
+      modal.addEventListener('show.bs.modal', function (event) {
+        // Botón que abrió el modal
+        const button = event.relatedTarget;
+        
+        // Si el botón tiene data-id, es una EDICIÓN
+        const id = button.getAttribute('data-id');
+
+        if (id) {
+          modalTitle.textContent = "EDITAR CLIENTE";
+          
+          // Rellenar campos
+          form.querySelector('#clienteId').value = id;
+          form.querySelector('#tipoIdentificacion').value = button.getAttribute('data-tipo');
+          form.querySelector('#nIdentificacion').value = button.getAttribute('data-doc');
+          form.querySelector('#nombres').value = button.getAttribute('data-nombres');
+          form.querySelector('#apellidos').value = button.getAttribute('data-apellidos');
+          form.querySelector('#telefono').value = button.getAttribute('data-telefono');
+          form.querySelector('#correo').value = button.getAttribute('data-correo');
+          form.querySelector('#direccion').value = button.getAttribute('data-direccion');
+          
+          // Limpiar contraseña (no es obligatoria al editar)
+          form.querySelector('#contrasena').value = "";
+          form.querySelector('#contrasena').required = false; 
+          form.querySelector('#contrasena').placeholder = "Dejar vacío para mantener la actual";
+
+        } else {
+          // Si no tiene ID, es CREACIÓN
+          modalTitle.textContent = "REGISTRO DE CLIENTE";
+          form.reset(); // Limpia el formulario
+          form.querySelector('#clienteId').value = ""; // Asegura que el ID esté vacío
+          form.querySelector('#contrasena').required = true; // Obligatoria al crear
+          form.querySelector('#contrasena').placeholder = "Ingrese una contraseña segura";
+        }
+      });
+    </script>
   </main>
 </body>
-
 </html>

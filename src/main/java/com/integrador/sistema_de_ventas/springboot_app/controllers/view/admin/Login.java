@@ -1,14 +1,17 @@
 package com.integrador.sistema_de_ventas.springboot_app.controllers.view.admin;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/admin")
 public class Login {
-     @GetMapping("/login")
+
+    @GetMapping("/login")
     public String login() {
         return "admin/login";
     }
+    
+    // REMOVED dashboard() method because it's already in DashboardVista.java
 }

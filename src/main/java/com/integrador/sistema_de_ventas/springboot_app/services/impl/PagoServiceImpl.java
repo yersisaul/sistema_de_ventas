@@ -34,7 +34,7 @@ public class PagoServiceImpl implements PagoService {
     @Override
     public Pago crearPago(Pago pago) {
         pago.setFechaCreacion(LocalDateTime.now());
-        pago.setEstadoPago("PENDIENTE");
+        pago.setEstadoPago("COMPLETADO");
         return pagoRepository.save(pago);
     }
 

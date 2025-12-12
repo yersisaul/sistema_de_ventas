@@ -21,4 +21,11 @@ public interface VarianteProductoRepository extends JpaRepository<VarianteProduc
     @Query("SELECT v FROM VarianteProducto v WHERE v.stock < 10 AND v.activo = true")
     List<VarianteProducto> findVariantesStockBajo();
 
+    // Busca variantes donde el nombre del producto padre O el SKU coincidan
+    @Query("SELECT v FROM VarianteProducto v JOIN v.producto p " +
+           "WHERE v.activo = true AND p.eliminado = false AND " +
+           "(LOWER(p.nombre) LIKE LOWER(CONCAT('%', :term, '%')) OR " +
+           "LOWER(p.sku) LIKE LOWER(CONCAT('%', :term, '%')))")
+    List<VarianteProducto> buscarProductos(@Param("term") String term);
+
 }

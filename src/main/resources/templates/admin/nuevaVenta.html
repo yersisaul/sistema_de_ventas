@@ -12,22 +12,30 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
   <link rel="stylesheet" th:href="@{/css/admin/nuevaVenta.css}" />
   <link rel="stylesheet" th:href="@{/css/admin/navbar.css}" />
-
+  
+  <style>
+    /* Estilos extra para que se vea bien si falta el CSS externo */
+    .comprobante-header { background: #212529; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+    .badge-sku { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+    .producto-item { border-bottom: 1px solid #eee; padding: 10px 0; }
+    .stock-badge { font-size: 0.8rem; padding: 2px 5px; border-radius: 4px; }
+    .stock-bueno { background: #d1e7dd; color: #0f5132; }
+    .stock-bajo { background: #f8d7da; color: #842029; }
+    .modal-producto { cursor: pointer; transition: transform 0.2s; border: 1px solid #eee; padding: 10px; border-radius: 8px; }
+    .modal-producto:hover { transform: translateY(-3px); border-color: #333; }
+  </style>
 </head>
 
 <body>
-  <!-- 🔹 NAVBAR LATERAL -->
   <div th:replace="admin/fragments/navbar :: navbar"></div>
 
-  <!-- 🔹 CONTENIDO PRINCIPAL -->
   <main class="main-content">
     <div class="container-fluid">
-      <!-- 🔸 Encabezado con navegación -->
+      
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <div class="d-flex align-items-center">
-            <button class="btn btn-dark d-md-none me-3" type="button" data-bs-toggle="offcanvas"
-              data-bs-target="#sidebarOffcanvas">
+            <button class="btn btn-dark d-md-none me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">
               <i class="bi bi-list fs-4"></i>
             </button>
             <div>
@@ -37,329 +45,113 @@
           </div>
         </div>
         <div class="d-flex gap-2">
-          <a th:href="@{/admin/ventas}" class="btn btn-outline-mambo">
-            <i class="bi bi-arrow-left me-2"></i>Cancelar
-          </a>
-          <button id="btnGenerar" class="btn btn-mambo">
-            <i class="bi bi-check-circle me-2"></i>Generar Venta
-          </button>
+          <a th:href="@{/admin/ventas}" class="btn btn-outline-dark">Cancelar</a>
+          <button id="btnGenerar" class="btn btn-dark"><i class="bi bi-check-circle me-2"></i>Generar Venta</button>
         </div>
       </div>
 
-      <!-- 🔸 Cabecera del comprobante -->
       <div class="comprobante-header">
         <div class="row align-items-center">
           <div class="col-md-6 mb-3 mb-md-0">
             <h6 class="text-light mb-2">TIPO DE COMPROBANTE</h6>
-            <div class="switch-comprobante">
-              <input type="radio" id="boleta" name="tipoComprobante" checked>
-              <label for="boleta">
-                <i class="bi bi-receipt me-2"></i>BOLETA
-              </label>
-              
-              <input type="radio" id="factura" name="tipoComprobante">
-              <label for="factura">
-                <i class="bi bi-file-text me-2"></i>FACTURA
-              </label>
+            <div class="switch-comprobante d-flex gap-3">
+              <div>
+                <input type="radio" id="boleta" name="tipoComprobante" value="BOLETA" checked>
+                <label for="boleta" class="text-white cursor-pointer ms-1"><i class="bi bi-receipt me-2"></i>BOLETA</label>
+              </div>
+              <div>
+                <input type="radio" id="factura" name="tipoComprobante" value="FACTURA">
+                <label for="factura" class="text-white cursor-pointer ms-1"><i class="bi bi-file-text me-2"></i>FACTURA</label>
+              </div>
             </div>
           </div>
           <div class="col-md-6 text-md-end">
-            <h6 class="text-light mb-2">NÚMERO DE COMPROBANTE</h6>
-            <div class="numero-comprobante">B001-00001245</div>
-            <small class="text-light opacity-75">Fecha: 26/12/2024 - Hora: 14:30</small>
+            <h6 class="text-light mb-2">FECHA DE EMISIÓN</h6>
+            <div id="fechaActual" class="fw-bold">--/--/----</div>
           </div>
         </div>
       </div>
 
-      <!-- 🔸 Sección de datos del cliente -->
       <div class="row mb-4">
         <div class="col-lg-8">
-          <div class="datos-cliente-card">
+          <div class="card shadow-sm p-3 h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h6 class="fw-bold mb-0">DATOS DEL CLIENTE</h6>
-              <button class="btn btn-sm btn-outline-mambo" data-bs-toggle="modal" data-bs-target="#modalClientes">
+              <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modalClientes" onclick="cargarClientes()">
                 <i class="bi bi-search me-1"></i>Buscar Cliente
               </button>
             </div>
             
-            <div class="cliente-seleccionado mb-3">
-              <div>
-                <h6 class="fw-bold mb-1">CLIENTE OCASIONAL</h6>
-                <p class="text-muted mb-0">Seleccione un cliente o ingrese los datos manualmente</p>
-              </div>
-              <button class="btn btn-outline-danger btn-sm" id="btnQuitarCliente">
-                <i class="bi bi-x"></i>
-              </button>
+            <div class="cliente-info-display mb-3 p-3 bg-light rounded border">
+              <h6 class="fw-bold mb-1" id="lblNombreCliente">CLIENTE OCASIONAL</h6>
+              <p class="text-muted mb-0" id="lblDocCliente">DNI: 00000000</p>
+              <input type="hidden" id="idClienteSeleccionado" value="">
             </div>
             
-            <!-- Formulario cliente (oculto inicialmente) -->
-            <div id="formCliente" style="display: none;">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">Nombre Completo *</label>
-                  <input type="text" class="form-control" placeholder="Ej: Juan Pérez">
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">Documento *</label>
-                  <select class="form-select" id="tipoDocumento">
-                    <option value="dni">DNI</option>
-                    <option value="ce">Carnet de Extranjería</option>
-                    <option value="pasaporte">Pasaporte</option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">Número de Documento *</label>
-                  <input type="text" class="form-control" placeholder="Ej: 70123456">
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">Email (opcional)</label>
-                  <input type="email" class="form-control" placeholder="cliente@email.com">
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label fw-semibold">Dirección (opcional)</label>
-                  <input type="text" class="form-control" placeholder="Av. Ejemplo 123">
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label fw-semibold">Teléfono (opcional)</label>
-                  <input type="text" class="form-control" placeholder="+51 987654321">
-                </div>
-              </div>
-            </div>
-            
-            <!-- Datos para factura (solo se muestra cuando es factura) -->
-            <div id="datosFactura" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #dee2e6;">
-              <h6 class="fw-bold mb-3">DATOS PARA FACTURA</h6>
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">RUC *</label>
-                  <input type="text" class="form-control" placeholder="Ej: 20123456789">
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">Razón Social *</label>
-                  <input type="text" class="form-control" placeholder="Nombre de la empresa">
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label fw-semibold">Dirección Fiscal *</label>
-                  <textarea class="form-control" rows="2" placeholder="Dirección completa para facturación"></textarea>
-                </div>
-              </div>
-            </div>
+            <button class="btn btn-sm btn-link text-danger p-0 text-decoration-none" id="btnLimpiarCliente" style="display:none;">
+               <i class="bi bi-x-circle"></i> Quitar cliente seleccionado
+            </button>
           </div>
         </div>
         
         <div class="col-lg-4 mt-3 mt-lg-0">
-          <div class="card h-100">
-            <div class="card-body">
-              <h6 class="fw-bold mb-3">DATOS DE LA VENTA</h6>
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Fecha</label>
-                <input type="datetime-local" class="form-control" value="2024-12-26T14:30">
-              </div>
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Vendedor</label>
-                <select class="form-select">
-                  <option>Administrador</option>
-                  <option>Vendedor 1</option>
-                  <option>Vendedor 2</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Método de Pago</label>
-                <select class="form-select" id="metodoPago">
-                  <option value="efectivo">Efectivo</option>
-                  <option value="tarjeta">Tarjeta de Crédito/Débito</option>
-                  <option value="yape">Yape/Plin</option>
-                  <option value="transferencia">Transferencia</option>
-                  <option value="mixto">Mixto</option>
-                </select>
-              </div>
-              <div id="campoVuelto" style="display: none;">
-                <label class="form-label fw-semibold">Monto Recibido</label>
-                <input type="number" class="form-control" placeholder="0.00" step="0.01">
-              </div>
-            </div>
+          <div class="card shadow-sm p-3 h-100">
+            <h6 class="fw-bold mb-3">PAGO</h6>
+            <label class="form-label small fw-bold">Método de Pago</label>
+            <select class="form-select mb-3" id="metodoPago">
+              <option value="EFECTIVO">Efectivo</option>
+              <option value="TARJETA">Tarjeta de Crédito/Débito</option>
+              <option value="YAPE">Yape/Plin</option>
+              <option value="TRANSFERENCIA">Transferencia</option>
+            </select>
           </div>
         </div>
       </div>
 
-      <!-- 🔸 Productos -->
       <div class="row">
         <div class="col-lg-8">
-          <div class="card mb-4">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="fw-bold mb-0">PRODUCTOS</h6>
-                <button class="btn btn-mambo" data-bs-toggle="modal" data-bs-target="#modalProductos">
-                  <i class="bi bi-plus-circle me-1"></i>Agregar Productos
-                </button>
-              </div>
-              
-              <!-- Lista de productos -->
-              <div id="listaProductos">
-                <!-- Producto 1 -->
-                <div class="producto-item">
-                  <div class="row align-items-center">
-                    <div class="col-md-5">
-                      <div class="d-flex align-items-start">
-                        <div class="me-3" style="width: 60px; height: 60px; background: #f0f0f0; border-radius: 8px;"></div>
-                        <div>
-                          <h6 class="fw-bold mb-1">Polo MAMBO Classic Black</h6>
-                          <div class="d-flex gap-2">
-                            <span class="badge-sku">SKU: POLO-BLK-001</span>
-                            <span class="badge-sku">Talla: M</span>
-                            <span class="badge-sku">Color: Negro</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-2">
-                      <input type="number" class="form-control input-cantidad" value="2" min="1" data-precio="45.00">
-                    </div>
-                    <div class="col-md-2">
-                      <h6 class="fw-bold mb-0">S/. 45.00</h6>
-                      <small class="text-muted">Precio unitario</small>
-                    </div>
-                    <div class="col-md-2">
-                      <h6 class="fw-bold mb-0 text-dark">S/. 90.00</h6>
-                      <small class="text-muted">Subtotal</small>
-                    </div>
-                    <div class="col-md-1 text-end">
-                      <button class="btn-eliminar">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Producto 2 -->
-                <div class="producto-item">
-                  <div class="row align-items-center">
-                    <div class="col-md-5">
-                      <div class="d-flex align-items-start">
-                        <div class="me-3" style="width: 60px; height: 60px; background: #f0f0f0; border-radius: 8px;"></div>
-                        <div>
-                          <h6 class="fw-bold mb-1">Jeans Slim Fit Dark Blue</h6>
-                          <div class="d-flex gap-2">
-                            <span class="badge-sku">SKU: JEANS-DB-032</span>
-                            <span class="badge-sku">Talla: 32</span>
-                            <span class="badge-sku">Color: Azul Oscuro</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-2">
-                      <input type="number" class="form-control input-cantidad" value="1" min="1" data-precio="120.00">
-                    </div>
-                    <div class="col-md-2">
-                      <h6 class="fw-bold mb-0">S/. 120.00</h6>
-                      <small class="text-muted">Precio unitario</small>
-                    </div>
-                    <div class="col-md-2">
-                      <h6 class="fw-bold mb-0 text-dark">S/. 120.00</h6>
-                      <small class="text-muted">Subtotal</small>
-                    </div>
-                    <div class="col-md-1 text-end">
-                      <button class="btn-eliminar">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Mensaje si no hay productos -->
-                <div id="sinProductos" class="text-center py-5" style="display: none;">
-                  <i class="bi bi-cart-x fs-1 text-muted mb-3"></i>
-                  <h6 class="fw-bold mb-2">No hay productos agregados</h6>
-                  <p class="text-muted mb-3">Agrega productos para generar la venta</p>
-                  <button class="btn btn-mambo" data-bs-toggle="modal" data-bs-target="#modalProductos">
-                    <i class="bi bi-plus-circle me-2"></i>Agregar Productos
-                  </button>
-                </div>
-              </div>
+          <div class="card shadow-sm p-3 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold mb-0">PRODUCTOS</h6>
+              <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#modalProductos" onclick="cargarProductos()">
+                <i class="bi bi-plus-circle me-1"></i>Agregar
+              </button>
             </div>
-          </div>
-          
-          <!-- Observaciones -->
-          <div class="card">
-            <div class="card-body">
-              <h6 class="fw-bold mb-3">OBSERVACIONES</h6>
-              <textarea class="form-control" rows="3" placeholder="Ingrese observaciones adicionales sobre la venta..."></textarea>
+            
+            <div id="listaCarrito">
+              <div class="text-center py-5 text-muted" id="emptyCartMsg">
+                <i class="bi bi-basket fs-1"></i>
+                <p class="mt-2">No hay productos en el carrito</p>
+              </div>
             </div>
           </div>
         </div>
         
-        <!-- 🔸 Panel de resumen -->
         <div class="col-lg-4">
-          <div class="resumen-panel">
-            <h6 class="fw-bold mb-4">RESUMEN DE VENTA</h6>
-            
-            <div class="resumen-linea">
+          <div class="card shadow-sm p-3 bg-dark text-white sticky-top" style="top: 20px; z-index: 100;">
+            <h6 class="fw-bold mb-4 border-bottom border-secondary pb-2">RESUMEN</h6>
+            <div class="d-flex justify-content-between mb-2">
               <span>Subtotal:</span>
-              <strong id="subtotal">S/. 210.00</strong>
+              <strong id="lblSubtotal">S/. 0.00</strong>
             </div>
-            
-            <div class="resumen-linea">
-              <span>Descuento:</span>
-              <div class="d-flex align-items-center gap-2">
-                <input type="number" class="form-control form-control-sm" style="width: 80px;" value="0.00" step="0.01" id="descuento">
-                <select class="form-select form-select-sm" style="width: 80px;" id="tipoDescuento">
-                  <option value="fijo">S/.</option>
-                  <option value="porcentaje">%</option>
-                </select>
-              </div>
-            </div>
-            
-            <div class="resumen-linea">
+            <div class="d-flex justify-content-between mb-2">
               <span>IGV (18%):</span>
-              <strong id="igv">S/. 37.80</strong>
+              <strong id="lblIgv">S/. 0.00</strong>
             </div>
-            
-            <div class="resumen-total">
+            <div class="d-flex justify-content-between fs-4 fw-bold mt-3 pt-3 border-top border-secondary">
               <span>TOTAL:</span>
-              <span id="total">S/. 247.80</span>
+              <span id="lblTotal">S/. 0.00</span>
             </div>
             
-            <!-- Información de pago -->
-            <div id="infoPago" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-              <h6 class="fw-bold mb-3">INFORMACIÓN DE PAGO</h6>
-              <div class="mb-2">
-                <span class="text-muted">Método:</span>
-                <strong id="metodoPagoTexto">Efectivo</strong>
-              </div>
-              <div id="infoVuelto" style="display: none;">
-                <div class="mb-2">
-                  <span class="text-muted">Recibido:</span>
-                  <strong id="montoRecibido">S/. 0.00</strong>
-                </div>
-                <div class="mb-2">
-                  <span class="text-muted">Vuelto:</span>
-                  <strong id="vuelto" class="text-success">S/. 0.00</strong>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Botones de acción -->
-            <div class="mt-4 d-grid gap-2">
-              <button id="btnGuardar" class="btn btn-mambo btn-lg">
-                <i class="bi bi-save me-2"></i>Guardar Venta
-              </button>
-              <button id="btnImprimir" class="btn btn-outline-mambo">
-                <i class="bi bi-printer me-2"></i>Guardar e Imprimir
-              </button>
-            </div>
-            
-            <!-- Estado de la venta -->
-            <div class="mt-3 text-center">
-              <span class="badge bg-success">Venta activa</span>
-              <small class="d-block text-muted mt-1">La venta se registrará en el sistema</small>
-            </div>
+            <button id="btnGuardar" class="btn btn-light w-100 mt-4 fw-bold">
+               <i class="bi bi-check-lg me-2"></i>CONFIRMAR VENTA
+            </button>
           </div>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- 🔸 Modal Buscar Cliente -->
   <div class="modal fade" id="modalClientes" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -368,404 +160,325 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Buscar por nombre, documento...">
-            <button class="btn btn-dark"><i class="bi bi-search"></i></button>
-          </div>
-          
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Cliente</th>
-                  <th>Documento</th>
-                  <th>Email</th>
-                  <th>Acción</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Juan Pérez</strong><br><small>Cliente frecuente</small></td>
-                  <td>DNI: 70123456</td>
-                  <td>juan@email.com</td>
-                  <td><button class="btn btn-sm btn-dark seleccionar-cliente" data-cliente='{"nombre":"Juan Pérez","documento":"70123456","email":"juan@email.com"}'>Seleccionar</button></td>
-                </tr>
-                <tr>
-                  <td><strong>María López</strong><br><small>Cliente premium</small></td>
-                  <td>DNI: 71234567</td>
-                  <td>maria@email.com</td>
-                  <td><button class="btn btn-sm btn-dark seleccionar-cliente" data-cliente='{"nombre":"María López","documento":"71234567","email":"maria@email.com"}'>Seleccionar</button></td>
-                </tr>
-                <tr>
-                  <td><strong>Empresa S.A.C.</strong><br><small>RUC 20123456789</small></td>
-                  <td>RUC: 20123456789</td>
-                  <td>contacto@empresa.com</td>
-                  <td><button class="btn btn-sm btn-dark seleccionar-cliente" data-cliente='{"nombre":"Empresa S.A.C.","documento":"20123456789","email":"contacto@empresa.com","ruc":"20123456789"}'>Seleccionar</button></td>
-                </tr>
-              </tbody>
+          <input type="text" id="inputBuscarCliente" class="form-control mb-3" placeholder="Filtrar por nombre o DNI..." onkeyup="filtrarClientes()">
+          <div class="table-responsive" style="max-height: 400px;">
+            <table class="table table-hover align-middle">
+              <thead class="table-light"><tr><th>Nombre</th><th>Documento</th><th>Acción</th></tr></thead>
+              <tbody id="tablaClientesBody">
+                </tbody>
             </table>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-dark" id="btnClienteNuevo">
-            <i class="bi bi-person-plus me-2"></i>Nuevo Cliente
-          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 🔸 Modal Buscar Productos -->
   <div class="modal fade" id="modalProductos" tabindex="-1">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header bg-dark text-white">
-          <h5 class="modal-title">Seleccionar Productos</h5>
+          <h5 class="modal-title">Catálogo de Productos</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
-          <div class="row mb-3">
-            <div class="col-md-8">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Buscar por nombre, SKU, categoría...">
-                <button class="btn btn-dark"><i class="bi bi-search"></i></button>
-              </div>
+        <div class="modal-body bg-light">
+          <input type="text" id="inputBuscarProducto" class="form-control mb-3" placeholder="Buscar por nombre, SKU o categoría..." onkeyup="filtrarProductos()">
+          <div class="row" id="gridProductos" style="max-height: 500px; overflow-y: auto;">
             </div>
-            <div class="col-md-4">
-              <select class="form-select">
-                <option>Todas las categorías</option>
-                <option>Polos</option>
-                <option>Jeans</option>
-                <option>Casacas</option>
-                <option>Accesorios</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="row" id="listaModalProductos">
-            <!-- Producto 1 -->
-            <div class="col-md-4 mb-3">
-              <div class="modal-producto" data-producto='{"id":1,"nombre":"Polo MAMBO Classic Black","sku":"POLO-BLK-001","precio":45.00,"stock":25,"categoria":"Polos"}'>
-                <div class="d-flex align-items-start">
-                  <div style="width: 60px; height: 60px; background: #f0f0f0; border-radius: 8px; margin-right: 10px;"></div>
-                  <div>
-                    <h6 class="fw-bold mb-1">Polo MAMBO Classic Black</h6>
-                    <p class="text-muted mb-1">SKU: POLO-BLK-001</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <strong class="text-dark">S/. 45.00</strong>
-                      <span class="stock-badge stock-bueno">Stock: 25</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Producto 2 -->
-            <div class="col-md-4 mb-3">
-              <div class="modal-producto" data-producto='{"id":2,"nombre":"Jeans Slim Fit Dark Blue","sku":"JEANS-DB-032","precio":120.00,"stock":8,"categoria":"Jeans"}'>
-                <div class="d-flex align-items-start">
-                  <div style="width: 60px; height: 60px; background: #f0f0f0; border-radius: 8px; margin-right: 10px;"></div>
-                  <div>
-                    <h6 class="fw-bold mb-1">Jeans Slim Fit Dark Blue</h6>
-                    <p class="text-muted mb-1">SKU: JEANS-DB-032</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <strong class="text-dark">S/. 120.00</strong>
-                      <span class="stock-badge stock-bajo">Stock: 8</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Producto 3 -->
-            <div class="col-md-4 mb-3">
-              <div class="modal-producto" data-producto='{"id":3,"nombre":"Gorra MAMBO Adjustable","sku":"GORRA-RED-001","precio":35.00,"stock":15,"categoria":"Accesorios"}'>
-                <div class="d-flex align-items-start">
-                  <div style="width: 60px; height: 60px; background: #f0f0f0; border-radius: 8px; margin-right: 10px;"></div>
-                  <div>
-                    <h6 class="fw-bold mb-1">Gorra MAMBO Adjustable</h6>
-                    <p class="text-muted mb-1">SKU: GORRA-RED-001</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <strong class="text-dark">S/. 35.00</strong>
-                      <span class="stock-badge stock-bueno">Stock: 15</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Más productos... -->
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-dark" data-bs-dismiss="modal">
-            <i class="bi bi-check-circle me-2"></i>Continuar
-          </button>
         </div>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
   <script>
+    // --- ESTADO GLOBAL ---
+    let carrito = [];
+    let todosLosClientes = []; // Cache simple
+    let todosLosProductos = []; // Cache simple
+
+    // --- INICIALIZACIÓN ---
     document.addEventListener("DOMContentLoaded", () => {
-      // Variables globales
-      let productos = [
-        { id: 1, nombre: "Polo MAMBO Classic Black", sku: "POLO-BLK-001", precio: 45.00, cantidad: 2, subtotal: 90.00 },
-        { id: 2, nombre: "Jeans Slim Fit Dark Blue", sku: "JEANS-DB-032", precio: 120.00, cantidad: 1, subtotal: 120.00 }
-      ];
+      document.getElementById("fechaActual").textContent = new Date().toLocaleString();
       
-      let clienteSeleccionado = null;
+      // Asignar evento al botón de arriba también
+      document.getElementById("btnGenerar").addEventListener("click", () => document.getElementById("btnGuardar").click());
+    });
+
+    // --- 1. LÓGICA DE CLIENTES (API) ---
+    function cargarClientes() {
+      const tbody = document.getElementById("tablaClientesBody");
+      tbody.innerHTML = '<tr><td colspan="3" class="text-center">Cargando clientes...</td></tr>';
       
-      // 🔹 Cambiar entre Boleta y Factura
-      document.getElementById('boleta').addEventListener('change', function() {
-        if (this.checked) {
-          document.getElementById('datosFactura').style.display = 'none';
-          actualizarNumeroComprobante('B001');
-        }
-      });
+      fetch('/api/ventas/buscar-clientes?term=') 
+        .then(res => res.json())
+        .then(data => {
+          todosLosClientes = data;
+          renderizarClientes(data);
+        })
+        .catch(err => {
+          console.error("Error cargando clientes", err);
+          tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Error al cargar clientes</td></tr>';
+        });
+    }
+
+    function renderizarClientes(lista) {
+      const tbody = document.getElementById("tablaClientesBody");
+      tbody.innerHTML = "";
       
-      document.getElementById('factura').addEventListener('change', function() {
-        if (this.checked) {
-          document.getElementById('datosFactura').style.display = 'block';
-          actualizarNumeroComprobante('F001');
-        }
-      });
-      
-      function actualizarNumeroComprobante(serie) {
-        const fecha = new Date();
-        const numero = Math.floor(Math.random() * 10000).toString().padStart(8, '0');
-        document.querySelector('.numero-comprobante').textContent = `${serie}-${numero}`;
+      if(lista.length === 0) {
+         tbody.innerHTML = '<tr><td colspan="3" class="text-center">No se encontraron clientes</td></tr>';
+         return;
       }
-      
-      // 🔹 Mostrar/ocultar formulario de cliente
-      document.getElementById('btnQuitarCliente').addEventListener('click', function() {
-        document.querySelector('.cliente-seleccionado').style.display = 'none';
-        document.getElementById('formCliente').style.display = 'block';
+
+      lista.forEach(c => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <div class="fw-bold">${c.nombres} ${c.apellidos}</div>
+            <small class="text-muted">${c.correo}</small>
+          </td>
+          <td>${c.tipoIdentificacion}: ${c.nIdentificacion}</td>
+          <td>
+            <button class="btn btn-sm btn-dark" onclick='seleccionarCliente(${JSON.stringify(c)})'>
+              Seleccionar
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
       });
+    }
+
+    function filtrarClientes() {
+      const term = document.getElementById("inputBuscarCliente").value.toLowerCase();
+      const filtrados = todosLosClientes.filter(c => 
+        c.nombres.toLowerCase().includes(term) || 
+        c.apellidos.toLowerCase().includes(term) ||
+        c.nIdentificacion.includes(term)
+      );
+      renderizarClientes(filtrados);
+    }
+
+    function seleccionarCliente(cliente) {
+      document.getElementById("lblNombreCliente").textContent = cliente.nombres + " " + cliente.apellidos;
+      document.getElementById("lblDocCliente").textContent = `${cliente.tipoIdentificacion}: ${cliente.nIdentificacion}`;
+      document.getElementById("idClienteSeleccionado").value = cliente.id;
+      document.getElementById("btnLimpiarCliente").style.display = "inline-block";
       
-      document.getElementById('btnClienteNuevo').addEventListener('click', function() {
-        document.querySelector('.cliente-seleccionado').style.display = 'none';
-        document.getElementById('formCliente').style.display = 'block';
-        bootstrap.Modal.getInstance(document.getElementById('modalClientes')).hide();
-      });
-      
-      // 🔹 Seleccionar cliente del modal
-      document.querySelectorAll('.seleccionar-cliente').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const cliente = JSON.parse(this.dataset.cliente);
-          clienteSeleccionado = cliente;
-          
-          document.querySelector('.cliente-seleccionado h6').textContent = cliente.nombre.toUpperCase();
-          document.querySelector('.cliente-seleccionado p').textContent = 
-            `Documento: ${cliente.documento} ${cliente.email ? '| Email: ' + cliente.email : ''}`;
-          
-          bootstrap.Modal.getInstance(document.getElementById('modalClientes')).hide();
+      const modal = bootstrap.Modal.getInstance(document.getElementById('modalClientes'));
+      modal.hide();
+    }
+
+    document.getElementById("btnLimpiarCliente").addEventListener("click", () => {
+      document.getElementById("lblNombreCliente").textContent = "CLIENTE OCASIONAL";
+      document.getElementById("lblDocCliente").textContent = "DNI: 00000000";
+      document.getElementById("idClienteSeleccionado").value = "";
+      document.getElementById("btnLimpiarCliente").style.display = "none";
+    });
+
+    // --- 2. LÓGICA DE PRODUCTOS (API) ---
+    function cargarProductos() {
+      const grid = document.getElementById("gridProductos");
+      grid.innerHTML = '<div class="col-12 text-center py-5">Cargando productos...</div>';
+
+      fetch('/api/ventas/buscar-productos?term=')
+        .then(res => res.json())
+        .then(data => {
+          todosLosProductos = data;
+          renderizarGridProductos(data);
+        })
+        .catch(err => {
+           grid.innerHTML = '<div class="col-12 text-center text-danger py-5">Error al cargar productos</div>';
         });
-      });
+    }
+
+    function renderizarGridProductos(lista) {
+      const grid = document.getElementById("gridProductos");
+      grid.innerHTML = "";
       
-      // 🔹 Agregar productos desde el modal
-      document.querySelectorAll('.modal-producto').forEach(producto => {
-        producto.addEventListener('click', function() {
-          const prod = JSON.parse(this.dataset.producto);
-          
-          // Verificar si ya existe
-          const existe = productos.find(p => p.id === prod.id);
-          if (existe) {
-            existe.cantidad += 1;
-            existe.subtotal = existe.precio * existe.cantidad;
-          } else {
-            productos.push({
-              id: prod.id,
-              nombre: prod.nombre,
-              sku: prod.sku,
-              precio: prod.precio,
-              cantidad: 1,
-              subtotal: prod.precio
-            });
-          }
-          
-          actualizarListaProductos();
-          calcularTotales();
-        });
-      });
-      
-      // 🔹 Eliminar producto
-      document.addEventListener('click', function(e) {
-        if (e.target.closest('.btn-eliminar')) {
-          const fila = e.target.closest('.producto-item');
-          const sku = fila.querySelector('.badge-sku').textContent.split(': ')[1];
-          
-          productos = productos.filter(p => p.sku !== sku);
-          actualizarListaProductos();
-          calcularTotales();
-        }
-      });
-      
-      // 🔹 Actualizar cantidad de producto
-      document.addEventListener('input', function(e) {
-        if (e.target.classList.contains('input-cantidad')) {
-          const cantidad = parseInt(e.target.value) || 1;
-          const precio = parseFloat(e.target.dataset.precio);
-          const fila = e.target.closest('.producto-item');
-          const sku = fila.querySelector('.badge-sku').textContent.split(': ')[1];
-          
-          const producto = productos.find(p => p.sku === sku);
-          if (producto) {
-            producto.cantidad = cantidad;
-            producto.subtotal = producto.precio * cantidad;
-            
-            // Actualizar subtotal en la fila
-            fila.querySelectorAll('h6')[2].textContent = `S/. ${producto.subtotal.toFixed(2)}`;
-            
-            calcularTotales();
-          }
-        }
-      });
-      
-      // 🔹 Actualizar lista de productos en la UI
-      function actualizarListaProductos() {
-        const lista = document.getElementById('listaProductos');
-        const sinProductos = document.getElementById('sinProductos');
-        
-        if (productos.length === 0) {
-          sinProductos.style.display = 'block';
-          lista.innerHTML = '';
-          return;
-        }
-        
-        sinProductos.style.display = 'none';
-        
-        let html = '';
-        productos.forEach(prod => {
-          html += `
-            <div class="producto-item">
-              <div class="row align-items-center">
-                <div class="col-md-5">
-                  <div class="d-flex align-items-start">
-                    <div class="me-3" style="width: 60px; height: 60px; background: #f0f0f0; border-radius: 8px;"></div>
-                    <div>
-                      <h6 class="fw-bold mb-1">${prod.nombre}</h6>
-                      <div class="d-flex gap-2">
-                        <span class="badge-sku">SKU: ${prod.sku}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <input type="number" class="form-control input-cantidad" value="${prod.cantidad}" min="1" data-precio="${prod.precio.toFixed(2)}">
-                </div>
-                <div class="col-md-2">
-                  <h6 class="fw-bold mb-0">S/. ${prod.precio.toFixed(2)}</h6>
-                  <small class="text-muted">Precio unitario</small>
-                </div>
-                <div class="col-md-2">
-                  <h6 class="fw-bold mb-0 text-dark">S/. ${prod.subtotal.toFixed(2)}</h6>
-                  <small class="text-muted">Subtotal</small>
-                </div>
-                <div class="col-md-1 text-end">
-                  <button class="btn-eliminar">
-                    <i class="bi bi-trash"></i>
-                  </button>
+      if(lista.length === 0) {
+         grid.innerHTML = '<div class="col-12 text-center py-5">No hay productos disponibles</div>';
+         return;
+      }
+
+      lista.forEach(p => {
+        const stockClass = p.stock > 10 ? 'stock-bueno' : 'stock-bajo';
+        const card = document.createElement("div");
+        card.className = "col-md-4 mb-3";
+        card.innerHTML = `
+          <div class="modal-producto bg-white h-100 position-relative" onclick='agregarAlCarrito(${JSON.stringify(p)})'>
+            <div class="d-flex align-items-center">
+              <div class="me-3 fs-1 text-secondary"><i class="bi bi-box"></i></div>
+              <div class="flex-grow-1">
+                <h6 class="fw-bold mb-1 text-truncate" title="${p.nombre}">${p.nombre}</h6>
+                <p class="mb-1 small text-muted">SKU: ${p.sku}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong class="text-dark">S/. ${p.precio.toFixed(2)}</strong>
+                  <span class="stock-badge ${stockClass}">Stock: ${p.stock}</span>
                 </div>
               </div>
             </div>
-          `;
-        });
-        
-        lista.innerHTML = html;
-      }
-      
-      // 🔹 Calcular totales
-      function calcularTotales() {
-        const subtotal = productos.reduce((sum, prod) => sum + prod.subtotal, 0);
-        const descuentoInput = document.getElementById('descuento');
-        const tipoDescuento = document.getElementById('tipoDescuento').value;
-        let descuento = parseFloat(descuentoInput.value) || 0;
-        
-        // Aplicar descuento
-        if (tipoDescuento === 'porcentaje') {
-          descuento = subtotal * (descuento / 100);
-        }
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
 
-        const b = subtotal;
-        const baseImponible = b /1.18;
-        const igv = baseImponible * 0.18;
-        const total = b;
-        
-        // Actualizar UI
-        document.getElementById('subtotal').textContent = `S/. ${baseImponible.toFixed(2)}`;
-        document.getElementById('igv').textContent = `S/. ${igv.toFixed(2)}`;
-        document.getElementById('total').textContent = `S/. ${total.toFixed(2)}`;
-        
-        // Calcular vuelto si es pago en efectivo
-        const metodoPago = document.getElementById('metodoPago').value;
-        if (metodoPago === 'efectivo') {
-          const recibido = parseFloat(document.querySelector('#campoVuelto input').value) || 0;
-          const vuelto = recibido - total;
-          
-          if (vuelto >= 0) {
-            document.getElementById('vuelto').textContent = `S/. ${vuelto.toFixed(2)}`;
-            document.getElementById('vuelto').className = 'text-success';
-          } else {
-            document.getElementById('vuelto').textContent = `Faltan S/. ${Math.abs(vuelto).toFixed(2)}`;
-            document.getElementById('vuelto').className = 'text-danger';
-          }
-        }
-      }
-      
-      // 🔹 Cambiar método de pago
-      document.getElementById('metodoPago').addEventListener('change', function() {
-        const campoVuelto = document.getElementById('campoVuelto');
-        const infoVuelto = document.getElementById('infoVuelto');
-        
-        if (this.value === 'efectivo') {
-          campoVuelto.style.display = 'block';
-          infoVuelto.style.display = 'block';
-          document.getElementById('metodoPagoTexto').textContent = 'Efectivo';
-        } else {
-          campoVuelto.style.display = 'none';
-          infoVuelto.style.display = 'none';
-          document.getElementById('metodoPagoTexto').textContent = this.options[this.selectedIndex].text;
-        }
-      });
-      
-      // 🔹 Aplicar descuento
-      document.getElementById('descuento').addEventListener('input', calcularTotales);
-      document.getElementById('tipoDescuento').addEventListener('change', calcularTotales);
-      
-      // 🔹 Guardar venta
-      document.getElementById('btnGuardar').addEventListener('click', function() {
-        if (productos.length === 0) {
-          alert('Debe agregar al menos un producto');
+    function filtrarProductos() {
+      const term = document.getElementById("inputBuscarProducto").value.toLowerCase();
+      const filtrados = todosLosProductos.filter(p => 
+          p.nombre.toLowerCase().includes(term) || 
+          p.sku.toLowerCase().includes(term) ||
+          p.categoria.toLowerCase().includes(term)
+      );
+      renderizarGridProductos(filtrados);
+    }
+
+    // --- 3. LÓGICA DEL CARRITO ---
+    function agregarAlCarrito(producto) {
+      if(producto.stock <= 0) {
+          alert("Producto sin stock disponible");
           return;
+      }
+
+      const existe = carrito.find(item => item.id === producto.id);
+      if (existe) {
+        if (existe.cantidad < producto.stock) {
+          existe.cantidad++;
+        } else {
+          alert("No hay más stock disponible para este producto");
         }
-        
-        const tipoComprobante = document.getElementById('boleta').checked ? 'BOLETA' : 'FACTURA';
-        const numero = document.querySelector('.numero-comprobante').textContent;
-        
-        // Aquí iría la lógica para guardar en el backend
-        alert(`Venta ${numero} guardada exitosamente`);
-        
-        // Redirigir a la lista de ventas
-        window.location.href = '/admin/ventas';
-      });
+      } else {
+        carrito.push({
+          id: producto.id,
+          nombre: producto.nombre,
+          precio: producto.precio,
+          cantidad: 1,
+          stockMax: producto.stock
+        });
+      }
+      renderizarCarrito();
       
-      // 🔹 Guardar e imprimir
-      document.getElementById('btnImprimir').addEventListener('click', function() {
-        document.getElementById('btnGuardar').click();
-        // Aquí iría la lógica para imprimir
-        setTimeout(() => {
-          alert('Comprobante enviado a impresión');
-        }, 500);
-      });
+      // Mostrar feedback visual (Toast simple)
+      // alert("Producto agregado: " + producto.nombre);
+    }
+
+    function renderizarCarrito() {
+      const contenedor = document.getElementById("listaCarrito");
+      const msgVacio = document.getElementById("emptyCartMsg");
       
-      // Inicializar
-      actualizarListaProductos();
+      if (carrito.length === 0) {
+        contenedor.innerHTML = "";
+        contenedor.appendChild(msgVacio);
+        msgVacio.style.display = "block";
+      } else {
+        msgVacio.style.display = "none";
+        contenedor.innerHTML = "";
+        
+        carrito.forEach((item, index) => {
+          const subtotal = item.precio * item.cantidad;
+          const row = document.createElement("div");
+          row.className = "producto-item d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom";
+          row.innerHTML = `
+            <div class="col-5">
+              <h6 class="mb-0 small fw-bold text-truncate">${item.nombre}</h6>
+              <small class="text-muted">Unit: S/. ${item.precio.toFixed(2)}</small>
+            </div>
+            <div class="col-3 d-flex align-items-center">
+              <input type="number" class="form-control form-control-sm text-center" value="${item.cantidad}" 
+                     min="1" max="${item.stockMax}" onchange="actualizarCantidad(${index}, this.value)">
+            </div>
+            <div class="col-3 text-end fw-bold">S/. ${subtotal.toFixed(2)}</div>
+            <div class="col-1 text-end">
+              <button class="btn btn-sm text-danger p-0" onclick="eliminarDelCarrito(${index})"><i class="bi bi-trash-fill"></i></button>
+            </div>
+          `;
+          contenedor.appendChild(row);
+        });
+      }
       calcularTotales();
+    }
+
+    function actualizarCantidad(index, valor) {
+      const cantidad = parseInt(valor);
+      if (cantidad > 0 && cantidad <= carrito[index].stockMax) {
+        carrito[index].cantidad = cantidad;
+        renderizarCarrito();
+      } else {
+        alert("Cantidad inválida o supera el stock disponible (" + carrito[index].stockMax + ")");
+        renderizarCarrito(); // Reset visual
+      }
+    }
+
+    function eliminarDelCarrito(index) {
+      carrito.splice(index, 1);
+      renderizarCarrito();
+    }
+
+    function calcularTotales() {
+      const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+      const base = total / 1.18;
+      const igv = total - base;
+
+      document.getElementById("lblSubtotal").textContent = "S/. " + base.toFixed(2);
+      document.getElementById("lblIgv").textContent = "S/. " + igv.toFixed(2);
+      document.getElementById("lblTotal").textContent = "S/. " + total.toFixed(2);
+    }
+
+    // --- 4. GUARDAR VENTA (API) ---
+    // --- 4. GUARDAR VENTA (API) ---
+    document.getElementById("btnGuardar").addEventListener("click", () => {
+      if (carrito.length === 0) {
+        alert("⚠️ El carrito está vacío. Agregue productos.");
+        return;
+      }
+
+      // Preparar objeto JSON
+      const ventaRequest = {
+        clienteId: document.getElementById("idClienteSeleccionado").value || null,
+        tipoComprobante: document.querySelector('input[name="tipoComprobante"]:checked').value,
+        metodoPago: document.getElementById("metodoPago").value,
+        total: parseFloat(document.getElementById("lblTotal").textContent.replace("S/. ", "")),
+        nombreCliente: document.getElementById("lblNombreCliente").textContent === "CLIENTE OCASIONAL" ? "Cliente Ocasional" : null,
+        
+        productos: carrito.map(item => ({
+          productoId: item.id, // Ojo: Aquí mandamos el ID de la variante
+          cantidad: item.cantidad,
+          precioUnitario: item.precio,
+          subtotal: item.precio * item.cantidad
+        }))
+      };
+
+      // Loading state
+      const btn = document.getElementById("btnGuardar");
+      const textoOriginal = btn.innerHTML;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...';
+      btn.disabled = true;
+
+      // Enviar al backend
+      fetch('/api/ventas/crear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ventaRequest)
+      })
+      .then(res => {
+        if(res.ok) return res.text();
+        return res.text().then(text => { throw new Error(text) });
+      })
+      .then(msg => {
+        alert("✅ VENTA REGISTRADA CON ÉXITO\n\n" + msg);
+        
+        // --- CAMBIO CLAVE AQUÍ ---
+        // Redirigir a la lista de VENTAS en lugar de Pedidos
+        window.location.href = "/admin/ventas"; 
+      })
+      .catch(err => {
+        alert("❌ Error al guardar venta:\n" + err.message);
+        btn.innerHTML = textoOriginal;
+        btn.disabled = false;
+      });
     });
+
   </script>
 </body>
 </html>

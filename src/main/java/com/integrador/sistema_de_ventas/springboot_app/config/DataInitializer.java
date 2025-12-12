@@ -13,7 +13,7 @@ import com.integrador.sistema_de_ventas.springboot_app.repository.UsuarioReposit
  * Inicializa datos por defecto al arrancar la aplicación
  * Crea un usuario administrador y un usuario cliente de prueba
  */
-//@Component
+@Component
 public class DataInitializer implements CommandLineRunner {
 
     @Autowired
@@ -34,7 +34,8 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
-    private void inicializarUsuarioAdmin() { //Inicializa el usuario administrador por defecto
+    private void inicializarUsuarioAdmin() { 
+        // Verificamos si existe por correo
         if (usuarioRepository.findByCorreo("admin1@mambo.com").isEmpty()) {
             Usuario admin = new Usuario();
 
@@ -46,7 +47,10 @@ public class DataInitializer implements CommandLineRunner {
             admin.setContrasena(passwordEncoder.encode("admin123"));
             admin.setTelefono("997304509");
             admin.setDireccion("Av. la colectora, Ate");
-            admin.setRol("ADMIN");
+            
+            // ASIGNACIÓN DE ROL CORRECTA (ENUM)
+            admin.setRol(Usuario.Rol.ADMINISTRADOR); 
+            
             admin.setEstado(true);
 
             usuarioRepository.save(admin);
@@ -58,7 +62,7 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
-    private void inicializarUsuarioCliente() { // Inicializa un usuario cliente de prueba
+    private void inicializarUsuarioCliente() { 
         if (usuarioRepository.findByCorreo("cliente1@mambo.com").isEmpty()) {
             Usuario cliente = new Usuario();
 
@@ -70,7 +74,10 @@ public class DataInitializer implements CommandLineRunner {
             cliente.setContrasena(passwordEncoder.encode("cliente123"));
             cliente.setTelefono("123456789");
             cliente.setDireccion("Carretera central");
-            cliente.setRol("CLIENTE");
+            
+            // ASIGNACIÓN DE ROL CORRECTA (ENUM)
+            cliente.setRol(Usuario.Rol.CLIENTE);
+            
             cliente.setEstado(true);
 
             usuarioRepository.save(cliente);

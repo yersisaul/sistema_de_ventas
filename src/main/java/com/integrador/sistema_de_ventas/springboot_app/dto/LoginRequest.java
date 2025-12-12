@@ -1,14 +1,11 @@
 package com.integrador.sistema_de_ventas.springboot_app.dto;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class LoginRequest {
-    //private String correo;
+    @JsonProperty("n_identificacion") // Para que coincida con el JSON del frontend
     private String nIdentificacion;
     private String contrasena;
 }

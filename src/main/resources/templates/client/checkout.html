@@ -173,6 +173,12 @@
     
     document.addEventListener("DOMContentLoaded", function() {
         cargarResumenCompra();
+        
+        // Cargar datos de perfil por defecto si es posible
+        // Llenar campos con datos del usuario logueado (si los tienes disponibles en Thymeleaf)
+        // Por ahora, solo precargaremos un ejemplo:
+        // document.getElementById('direccionEnvio').value = 'Av. Fija de Cliente';
+        // document.getElementById('telefonoContacto').value = '999888777';
     });
 
     function cargarResumenCompra() {
@@ -186,6 +192,9 @@
         if(carrito.length === 0) {
             contenedor.innerHTML = '<p class="text-center text-muted">No hay productos en el carrito.</p>';
             btnConfirmar.disabled = true;
+            txtSubtotal.innerText = 'S/. 0.00';
+            txtEnvio.innerText = 'S/. 0.00';
+            txtTotal.innerText = 'S/. 0.00';
             return;
         }
 
@@ -218,10 +227,11 @@
         txtSubtotal.innerText = 'S/. ' + subtotal.toFixed(2);
         txtEnvio.innerText = 'S/. ' + COSTO_ENVIO.toFixed(2);
         txtTotal.innerText = 'S/. ' + total.toFixed(2);
+        btnConfirmar.disabled = false;
     }
 
     async function procesarCompra(e) {
-        e.preventDefault(); // Evitar recarga
+        e.preventDefault(); 
         
         const btn = document.getElementById('btnConfirmar');
         btn.disabled = true;
@@ -230,54 +240,72 @@
         // 1. Obtener datos del carrito (LocalStorage)
         const carrito = JSON.parse(localStorage.getItem(CART_KEY)) || [];
         
-        if(carrito.length === 0) {
-            alert("El carrito está vacío");
+        if(carrito.length === 0 || !document.getElementById('direccionEnvio').value || !document.getElementById('telefonoContacto').value) {
+            alert("Por favor, llene todos los campos requeridos y asegúrese de que el carrito no esté vacío.");
+            btn.disabled = false;
+            btn.innerText = "CONFIRMAR COMPRA";
             return;
         }
 
-        // 2. Mapear items al formato DetalleCarritoDTO que espera Java
-        // Tu Java espera: { varianteProductoId, cantidad } dentro de la lista 'detalles'
+        // 2. Mapear items al formato esperado por Java
         const detallesDTO = carrito.map(item => ({
-            varianteProductoId: parseInt(item.varianteId), // Asegurar Long
+            // Asegúrate de que item.varianteId realmente sea el ID de la variante (Long)
+            varianteProductoId: parseInt(item.varianteId), 
             cantidad: parseInt(item.cantidad)
         }));
 
         // 3. Construir el objeto PedidoCreateDTO
         const pedidoDTO = {
             detalles: detallesDTO,
-            // clienteId se pone en el backend por seguridad usando el token/session
             costoEnvio: COSTO_ENVIO,
             direccionEnvio: document.getElementById('direccionEnvio').value,
             telefonoContacto: document.getElementById('telefonoContacto').value,
             notas: document.getElementById('notas').value
+            // No enviar total, que el backend lo calcule y valide.
         };
 
-        // 4. Enviar al Backend
+        // 4. Configurar headers de seguridad (CSRF)
+        const csrfTokenMeta = document.querySelector('meta[name="_csrf"]');
+        const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+        
+        const headers = { 'Content-Type': 'application/json' };
+
+        if (csrfTokenMeta && csrfHeaderMeta && csrfTokenMeta.content) {
+            headers[csrfHeaderMeta.content] = csrfTokenMeta.content;
+        }
+
+        // 5. Enviar al Backend y procesar respuesta
         try {
-            const csrfTokenMeta = document.querySelector('meta[name="_csrf"]');
-    const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
-    
-    const headers = {
-        'Content-Type': 'application/json'
-    };
+            const response = await fetch('/api/pedidos/crear', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(pedidoDTO)
+            });
 
-    // Solo agregamos el token si existe en el HTML
-    if (csrfTokenMeta && csrfHeaderMeta && csrfTokenMeta.content) {
-        headers[csrfHeaderMeta.content] = csrfTokenMeta.content;
-    }
+            if (response.ok) {
+                // ÉXITO: Limpiar carrito y redirigir
+                localStorage.removeItem(CART_KEY);
+                alert("✅ ¡Compra finalizada con éxito! Serás redirigido a tus pedidos.");
+                window.location.href = '/client/mispedidos'; // Redirigir al historial del cliente
+            } else {
+                // ERROR: Leer mensaje del servidor
+                const errorText = await response.text();
+                throw new Error(`Error ${response.status}: ${errorText}`);
+            }
 
-    const response = await fetch('/api/pedidos/crear', {
-        method: 'POST',
-        headers: headers, // Usamos el objeto headers seguro
-        body: JSON.stringify(pedidoDTO)
-    });
         } catch (error) {
-            console.error(error);
-            alert("Error de conexión con el servidor.");
+            console.error("Error en la compra:", error);
+            
+            // Mostrar mensaje de error más específico al usuario
+            const displayError = error.message.includes("Stock insuficiente") ? error.message : "Error al procesar la compra. Intente nuevamente.";
+
+            alert(`❌ Venta fallida: ${displayError}`);
+            
             btn.disabled = false;
-            btn.innerText = "INTENTAR DE NUEVO";
+            btn.innerText = "CONFIRMAR COMPRA";
+            cargarResumenCompra(); // Volver a calcular por si el stock ha cambiado
         }
     }
-  </script>
+</script>
 </body>
 </html>

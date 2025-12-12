@@ -8,37 +8,50 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin/auth")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*") // Permite peticiones desde cualquier frontend (React, Angular, etc.)
 public class LoginController {
+
     @Autowired
     private UsuarioService usuarioService;
     
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
+            // 1. Validar credenciales (DNI y Contraseña)
             if (usuarioService.validarCredenciales(loginRequest.getNIdentificacion(), loginRequest.getContrasena())) {
-                Optional<Usuario> usuario = usuarioService.obtenerUsuarioPorIdentificacion(loginRequest.getNIdentificacion());
-                if (usuario.isPresent() && "ADMIN".equals(usuario.get().getRol())) {
-                    LoginResponse response = new LoginResponse(
-                        usuario.get().getId(),
-                        usuario.get().getNombres(),
-                        usuario.get().getApellidos(),
-                        usuario.get().getNIdentificacion(),
-                        usuario.get().getCorreo(),
-                        usuario.get().getRol(),
-                        "Login exitoso"
-                    );
-                    return ResponseEntity.ok(response);
+                
+                Optional<Usuario> usuarioOpt = usuarioService.obtenerUsuarioPorIdentificacion(loginRequest.getNIdentificacion());
+                
+                // 2. Verificar si existe y si el Rol es ADMINISTRADOR (Usando el Enum)
+                if (usuarioOpt.isPresent()) {
+                    Usuario usuario = usuarioOpt.get();
+                    
+                    if (usuario.getRol() == Usuario.Rol.ADMINISTRADOR) {
+                        LoginResponse response = new LoginResponse(
+                            usuario.getId(),
+                            usuario.getNombres(),
+                            usuario.getApellidos(),
+                            usuario.getNIdentificacion(),
+                            usuario.getCorreo(),
+                            usuario.getRol().toString(), // Convertimos el Enum a String para enviarlo al frontend
+                            "Login exitoso"
+                        );
+                        return ResponseEntity.ok(response);
+                    } else {
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body(new LoginResponse(null, null, null, null, null, null, "Acceso denegado: No tienes permisos de administrador"));
+                    }
                 }
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new LoginResponse(null, null, null, null, null, null, "Acceso denegado: no es administrador"));
             }
+            
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new LoginResponse(null, null, null, null, null, null, "Credenciales inválidas"));
+                
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new LoginResponse(null, null, null, null, null, null, "Error en el servidor: " + e.getMessage()));
@@ -48,8 +61,11 @@ public class LoginController {
     @PostMapping("/register-admin")
     public ResponseEntity<?> registrarAdmin(@RequestBody Usuario usuario) {
         try {
-            usuario.setRol("ADMIN");
+            // CORREGIDO: Asignamos el Enum directamente, no un String
+            usuario.setRol(Usuario.Rol.ADMINISTRADOR);
+            
             Usuario nuevoAdmin = usuarioService.crearUsuario(usuario);
+            
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new LoginResponse(
                     nuevoAdmin.getId(),
@@ -57,7 +73,7 @@ public class LoginController {
                     nuevoAdmin.getApellidos(),
                     nuevoAdmin.getNIdentificacion(),
                     nuevoAdmin.getCorreo(),
-                    nuevoAdmin.getRol(),
+                    nuevoAdmin.getRol().toString(),
                     "Administrador registrado exitosamente"
                 ));
         } catch (Exception e) {
